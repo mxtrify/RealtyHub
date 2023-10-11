@@ -23,4 +23,23 @@ public class UserAccount {
             return false;
         }
     }
+
+    public String validateProfile(String username) {
+        String query = "SELECT profile FROM user_account WHERE username = ?";
+        try{
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getString("profile");
+            } else {
+                return "";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

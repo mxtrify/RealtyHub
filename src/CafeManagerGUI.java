@@ -1,16 +1,16 @@
 import javax.swing.*;
 
-public class SystemAdminGUI {
-    public SystemAdminGUI() {
-        displaySystemAdminGUI();
+public class CafeManagerGUI {
+    public CafeManagerGUI() {
+        displayCafeManagerGUI();
     }
 
-    public void displaySystemAdminGUI() {
-        JFrame frame = new JFrame("System Admin");
+    public void displayCafeManagerGUI() {
+        JFrame frame = new JFrame("Cafe Manager");
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        JLabel titleLabel = new JLabel("Welcome, System Admin");
+        JLabel titleLabel = new JLabel("Welcome, Cafe Manager");
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 

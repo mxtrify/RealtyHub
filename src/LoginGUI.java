@@ -50,9 +50,21 @@ public class LoginGUI extends JFrame {
 
             if (new LoginController().login(username, password)) {
                 JOptionPane.showMessageDialog(frame, "Successfully login", "Login Success", JOptionPane.ERROR_MESSAGE);
+                frame.dispose();
+                if(new LoginController().validateProfile(username).equals("system_admin")) {
+                    new SystemAdminGUI();
+                } else if(new LoginController().validateProfile(username).equals("cafe_owner")) {
+                    new CafeOwnerGUI();
+                } else if(new LoginController().validateProfile(username).equals("cafe_manager")) {
+                    new CafeManagerGUI();
+                } else if (new LoginController().validateProfile(username).equals("cafe_staff")) {
+                    new CafeStaffGUI();
+                }
             } else {
                 JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
             }
+
+
         });
 
     }
