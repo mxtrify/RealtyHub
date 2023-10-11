@@ -7,10 +7,10 @@ public class LoginGUI extends JFrame {
     private JPasswordField passwordField;
 
     public LoginGUI() {
-        displayLoginGUI();
+        displayLogin();
     }
 
-    public void displayLoginGUI() {
+    public void displayLogin() {
         JFrame frame = new JFrame("Login");
         JPanel panel = new JPanel();
         panel.setLayout(null);
