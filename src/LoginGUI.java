@@ -9,6 +9,7 @@ public class LoginGUI extends JFrame {
         initLoginGUI();
     }
 
+    // Hi
     public void initLoginGUI() {
         JFrame frame = new JFrame("Login");
         JPanel panel = new JPanel();
