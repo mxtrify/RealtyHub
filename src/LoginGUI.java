@@ -1,4 +1,3 @@
-package CSIT314_Buddies_Code.src;
 
 import javax.swing.*;
 
@@ -49,12 +48,8 @@ public class LoginGUI extends JFrame {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
 
-            UserAccount user = new UserAccount();
-            if (user.validateLogin(username, password)) {
+            if (new LoginController().login(username, password)) {
                 JOptionPane.showMessageDialog(frame, "Successfully login", "Login Success", JOptionPane.ERROR_MESSAGE);
-                new LoginController().login(username, password);
-                // Successful login
-                // You can open the appropriate GUI based on the user's role here
             } else {
                 JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
             }
