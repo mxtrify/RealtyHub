@@ -15,8 +15,8 @@ public class LoginGUI extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        JLabel titleLabel = new JLabel("Cafe Management System");
-        titleLabel.setBounds(120,20, 500, 25);
+        JLabel titleLabel = new JLabel("Cafe Staff Management System");
+        titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 
         JLabel usernameLabel = new JLabel("Username : ");
