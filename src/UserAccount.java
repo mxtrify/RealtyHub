@@ -14,7 +14,7 @@ public class UserAccount {
     String DB_PASSWORD = "";
 
     public boolean validateLogin(String username, String password) {
-        String query = "SELECT * FROM user_account WHERE username = '"+ username +"' AND password = '"+ password + "'";
+        String query = "SELECT * FROM user_account WHERE username = '" + username + "' AND password = '"+ password + "'";
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
