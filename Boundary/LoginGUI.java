@@ -49,7 +49,6 @@ public class LoginGUI extends JFrame {
             String password = new String(passwordField.getPassword());
 
             if (new LoginController().login(username, password)) {
-                JOptionPane.showMessageDialog(frame, "Successfully login", "Login Success", JOptionPane.ERROR_MESSAGE);
                 frame.dispose();
                 if(new LoginController().validateProfile(username).equals("system_admin")) {
                     new SystemAdminGUI();
