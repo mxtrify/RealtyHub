@@ -5,10 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserAccount {
+    // Database url, user and password
     String DB_URL = "jdbc:mysql://localhost:3306/buddies";
     String DB_USER = "root";
     String DB_PASSWORD = "";
 
+    // Function for validating login
     public boolean validateLogin(String username, String password) {
         String query = "SELECT * FROM user_account WHERE username = ? AND password = ?";
         try{
@@ -24,6 +26,7 @@ public class UserAccount {
         }
     }
 
+    // Function for validating profile
     public String validateProfile(String username) {
         String query = "SELECT profile FROM user_account WHERE username = ?";
         try{
@@ -32,8 +35,8 @@ public class UserAccount {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next()) {
-                return resultSet.getString("profile");
+            if(resultSet.next()) { // Return true if there's a record
+                return resultSet.getString("profile"); // Get column "profile" value
             } else {
                 return "";
             }
