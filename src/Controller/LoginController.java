@@ -1,3 +1,7 @@
+package Controller;
+
+import Entity.UserAccount;
+
 public class LoginController {
     // Checking username and password
     public boolean login(String username, String password) {

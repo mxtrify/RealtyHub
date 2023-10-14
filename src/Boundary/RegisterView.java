@@ -1,3 +1,5 @@
+package Boundary;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -124,7 +126,7 @@ class User{
             int rowsInserted = prepared.executeUpdate();
 
             if (rowsInserted > 0) {
-                System.out.println("User inserted successfully!");
+                System.out.println("Boundary.User inserted successfully!");
             }
 
             prepared.close();
