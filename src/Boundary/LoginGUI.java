@@ -1,8 +1,10 @@
+
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginGUI extends JFrame {
     // Variables
+    private JFrame frame;
     private JButton loginButton;
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -14,7 +16,7 @@ public class LoginGUI extends JFrame {
 
     // Display login function
     public void displayLogin() {
-        JFrame frame = new JFrame("Login");
+        frame = new JFrame("Login");
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
@@ -51,7 +53,7 @@ public class LoginGUI extends JFrame {
         frame.add(panel);
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+
 
         // Action for Login Button
         loginButton.addActionListener(e -> {
@@ -84,7 +86,8 @@ public class LoginGUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new LoginGUI();
+                LoginGUI loginGUI = new LoginGUI();
+                loginGUI.frame.setVisible(true);
             }
         });
     }

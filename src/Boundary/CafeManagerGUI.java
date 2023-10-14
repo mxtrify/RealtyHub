@@ -1,6 +1,4 @@
-
 import javax.swing.*;
-
 public class CafeManagerGUI {
     // Constructor
     public CafeManagerGUI() {
