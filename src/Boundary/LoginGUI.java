@@ -1,3 +1,6 @@
+package Boundary;
+
+import Controller.LoginController;
 
 import javax.swing.*;
 import java.awt.*;

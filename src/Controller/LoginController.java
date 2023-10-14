@@ -1,3 +1,7 @@
+package Controller;
+
+import Entity.UserAccount;
+
 import java.sql.SQLException;
 
 public class LoginController {
