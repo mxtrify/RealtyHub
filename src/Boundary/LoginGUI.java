@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class LoginGUI extends JFrame {
     // Variables
@@ -80,6 +81,11 @@ public class LoginGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new LoginGUI();
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new LoginGUI();
+            }
+        });
     }
 }

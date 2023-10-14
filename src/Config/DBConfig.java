@@ -1,0 +1,14 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DBConfig {
+    // Database url, user and password
+    String DB_URL = "jdbc:mysql://localhost:3306/buddies";
+    String DB_USER = "root";
+    String DB_PASSWORD = "";
+
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+}
