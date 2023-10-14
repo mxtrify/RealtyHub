@@ -1,12 +1,13 @@
 package Entity;
 
+import Config.DBConfig;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserAccount {
-    private Connection conn;
     private String username;
     private String password;
     private String profile;
@@ -48,6 +49,7 @@ public class UserAccount {
     public boolean validateLogin(UserAccount userAccount) {
         String query = "SELECT * FROM user_account WHERE username = ? AND password = ?";
         try{
+            Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, userAccount.getUsername());
             preparedStatement.setString(2, userAccount.getPassword());
@@ -63,6 +65,7 @@ public class UserAccount {
     public String validateProfile(String username) {
         String query = "SELECT profile FROM user_account WHERE username = ?";
         try{
+            Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
