@@ -1,5 +1,3 @@
-package Boundary;
-
 import javax.swing.*;
 import java.awt.*;
 

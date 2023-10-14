@@ -1,4 +1,3 @@
-package Boundary;
 
 import javax.swing.*;
 
