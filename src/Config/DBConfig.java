@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+// Database Connector
 public class DBConfig {
     // Database url, user and password
     String DB_URL = "jdbc:mysql://localhost:3306/buddies";
