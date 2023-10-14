@@ -10,6 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/DAO" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/DBConfig" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Entity" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
