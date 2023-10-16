@@ -1,13 +1,13 @@
 package Boundary;
 
 import Controller.LoginController;
+import Entity.UserAccount;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginGUI extends JFrame {
     // Variables
-    private JFrame frame;
     private JButton loginButton;
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -19,7 +19,7 @@ public class LoginGUI extends JFrame {
 
     // Display login function
     public void displayLogin() {
-        frame = new JFrame("Login");
+        JFrame frame = new JFrame("Login");
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
@@ -53,18 +53,20 @@ public class LoginGUI extends JFrame {
         loginButton.setBounds(150, 175, 100, 25);
         panel.add(loginButton);
 
-        frame.add(panel);
+        frame.setContentPane(panel);
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
 
 
         // Action for Login Button
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
+            UserAccount userAccount = new UserAccount(username, password);
 
             // Delete the login display and create GUI depends on the profile
-            if (new LoginController().login(username, password)) {
+            if (new LoginController().login(userAccount)) {
                 frame.dispose();
                 if(new LoginController().validateProfile(username).equals("system_admin")) {
                     new SystemAdminGUI();
@@ -89,8 +91,7 @@ public class LoginGUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                LoginGUI loginGUI = new LoginGUI();
-                loginGUI.frame.setVisible(true);
+                new LoginGUI();
             }
         });
     }

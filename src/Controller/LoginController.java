@@ -2,12 +2,12 @@ package Controller;
 
 import Entity.UserAccount;
 
+import javax.jws.soap.SOAPBinding;
 import java.sql.SQLException;
 
 public class LoginController {
     // Checking username and password
-    public boolean login(String username, String password) {
-        UserAccount userAccount = new UserAccount(username, password);
+    public boolean login(UserAccount userAccount) {
         // Return true if match
         return new UserAccount().validateLogin(userAccount);
     }
