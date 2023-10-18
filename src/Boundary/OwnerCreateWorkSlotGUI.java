@@ -5,9 +5,11 @@ import javax.swing.*;
 // Need to extend JFrame?
 public class OwnerCreateWorkSlotGUI {
     private JButton backButton;
+    private JButton createButton;
     private JTextField dateField;
     private JTextField timeField;
-    private JTextField amount;
+    private JComboBox<String> roleField;
+    private JTextField amountField;
 
     public OwnerCreateWorkSlotGUI(){
         displayCreateWorkSlotGUI();
@@ -43,11 +45,39 @@ public class OwnerCreateWorkSlotGUI {
         timeField.setBounds(150, 115, 100, 25);
         panel.add(timeField);
 
+        //Role Label
+        JLabel roleLabel = new JLabel("Role: ");
+        roleLabel.setBounds(75, 155, 100, 25);
+        panel.add(roleLabel);
+
+        //Role Field
+        String[] roles = {"Chef", "Waiter", "Cashier"};
+        roleField = new JComboBox<>(roles);
+        roleField.setBounds(150, 155, 100, 25);
+        panel.add(roleField);
+
+        // Amount Label
+        JLabel amountLabel = new JLabel("Amount: ");
+        amountLabel.setBounds(75, 195, 100, 25);
+        panel.add(amountLabel);
+
+        // Amount Field
+        amountField = new JTextField(20);
+        amountField.setBounds(150, 195, 100, 25);
+        panel.add(amountField);
+
+        // Create Button
+        createButton = new JButton("Create");
+        createButton.setBounds(250, 220, 100, 25);
+        panel.add(createButton);
 
         // Back Button
         backButton = new JButton("Back");
         backButton.setBounds(20, 220, 100, 25);
         panel.add(backButton);
+
+        // Action for create button
+
 
         // Action for back button
         backButton.addActionListener(e -> {
