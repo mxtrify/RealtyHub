@@ -19,10 +19,11 @@ public class SystemAdminGUI {
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 
-        // #3 SysAdmin Create account
-        JButton createAccButton = new JButton("Create Account");
-        createAccButton.setBounds(150, 50, 100, 25);
-        panel.add(createAccButton);
+        JTextField searchTextField = new JTextField();
+        panel.add(searchTextField);
+
+        JTable jTable = new JTable();
+
 
         // Logout Button
         JButton logoutButton = new JButton("Logout");
@@ -38,12 +39,7 @@ public class SystemAdminGUI {
         logoutButton.addActionListener(e -> {
             frame.dispose();
             new LoginGUI();
-        });
 
-        // Action for Create Account
-        createAccButton.addActionListener(e -> {
-            frame.dispose();
-            new SystemAdminCreateAcc();
         });
     }
 }
