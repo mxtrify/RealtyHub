@@ -24,10 +24,22 @@ public class CafeOwnerGUI {
         logoutButton.setBounds(150, 175, 100, 25);
         panel.add(logoutButton);
 
+        // Create workSlot button
+        JButton createWorkSlotButton = new JButton("Create Slot");
+        createWorkSlotButton.setBounds(175, 100, 100, 25);
+        panel.add(createWorkSlotButton);
+
+
         frame.add(panel);
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        // Action for createWorkSlotButton
+        createWorkSlotButton.addActionListener(e -> {
+            frame.dispose();
+            new OwnerCreateWorkSlotGUI();
+        });
 
         // Action for logout button
         logoutButton.addActionListener(e -> {
