@@ -1,60 +1,72 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: Oct 11, 2023 at 07:22 PM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.1.2
+CREATE DATABASE `buddies`;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+USE `buddies`;
 
+CREATE TABLE `profile` (
+    `profile_id` INT NOT NULL AUTO_INCREMENT ,
+    `profile_name` VARCHAR(64) NOT NULL ,
+    `profile_desc` VARCHAR(256) NOT NULL ,
+    PRIMARY KEY (`profile_id`)
+);
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `buddies`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_account`
---
+CREATE TABLE `role` (
+    `role_id` INT NOT NULL AUTO_INCREMENT,
+    `role_name` VARCHAR(64) NOT NULL,
+    `role_desc` VARCHAR(256) NOT NULL,
+    PRIMARY KEY (`role_id`)
+);
 
 CREATE TABLE `user_account` (
-  `username` varchar(18) NOT NULL,
-  `password` varchar(18) NOT NULL,
-  `profile` varchar(18) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `username` VARCHAR(64) NOT NULL,
+    `password` VARCHAR(256) NOT NULL,
+    `f_name` VARCHAR(64) NOT NULL,
+    `l_name` VARCHAR(64) NOT NULL,
+    `email` VARCHAR(64) NOT NULL,
+    `max_slot` INT NULL,
+    `profile_id` INT NOT NULL,
+    `role_id` INT NULL,
+    `status` BOOLEAN NOT NULL,
+    PRIMARY KEY (`username`),
+    FOREIGN KEY (`profile_id`) REFERENCES profile(`profile_id`),
+    FOREIGN KEY (`role_id`) REFERENCES role(`role_id`)
+);
 
---
--- Dumping data for table `user_account`
---
+CREATE TABLE `work_slot` (
+    `slot_id` INT NOT NULL AUTO_INCREMENT,
+    `date` DATE NOT NULL,
+    `slot_limit` INT NOT NULL,
+    `role_id` INT NOT NULL,
+    PRIMARY KEY (`slot_id`),
+    FOREIGN KEY (`role_id`) REFERENCES role(`role_id`)
+);
 
-INSERT INTO `user_account` (`username`, `password`, `profile`) VALUES
-('admin', 'admin', 'system_admin'),
-('manager', 'manager', 'cafe_manager'),
-('owner', 'owner', 'cafe_owner'),
-('staff', 'staff', 'cafe_staff');
+CREATE TABLE `bid` (
+    `bid_id` INT NOT NULL AUTO_INCREMENT,
+    `bid_status` VARCHAR(64) NOT NULL,
+    `username` VARCHAR(64) NOT NULL,
+    `slot_id` INT NOT NULL,
+    PRIMARY KEY (`bid_id`),
+    FOREIGN KEY (`username`) REFERENCES user_account(`username`),
+    FOREIGN KEY (`slot_id`) REFERENCES work_slot(`slot_id`)
+);
 
---
--- Indexes for dumped tables
---
+INSERT INTO `role` (role_name, role_desc) VALUES
+    ('Waiter', 'Serving customer'),
+    ('Cashier', 'Do transaction'),
+    ('Chef', 'Cook food');
 
---
--- Indexes for table `user_account`
---
-ALTER TABLE `user_account`
-  ADD PRIMARY KEY (`username`),
-  ADD UNIQUE KEY `username` (`username`);
-COMMIT;
+INSERT INTO `profile`(profile_name, profile_desc) VALUES
+    ('System Admin', 'Make user account'),
+    ('Cafe Owner', 'Make work slot'),
+    ('Cafe Manager', 'Manage bids'),
+    ('Cafe Staff', 'Make bids');
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, profile_id, role_id, status) VALUES
+    ('admin', 'admin', 'Fadmin', 'Ladmin', 'admin@gmail.com', NULL, 1, NULL, TRUE),
+    ('owner', 'owner', 'Fowner', 'Lowner', 'owner@gmail.com', NULL, 2, NULL, TRUE),
+    ('manager', 'manager', 'Fanager', 'Lanager', 'manager@gmail.com', NULL, 3, NULL, TRUE),
+    ('chef', 'chef', 'Gordon', 'Ramsay', 'chef@gmail.com', 5, 4, 3, TRUE),
+    ('cashier', 'cashier', 'Jerry', 'Ma', 'cashier@gmail.com', 5, 4, 2, TRUE),
+    ('waiter', 'waiter', 'Tom', 'Brooklyn', 'waiter@gmail.com', 5, 4, 1, TRUE)
+    ;
+

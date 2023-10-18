@@ -81,8 +81,6 @@ public class LoginGUI extends JFrame {
                 // Error message for invalid username or password
                 JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
             }
-
-
         });
 
     }

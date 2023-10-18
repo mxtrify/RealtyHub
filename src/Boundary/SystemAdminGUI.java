@@ -20,9 +20,11 @@ public class SystemAdminGUI {
         panel.add(titleLabel);
 
         JTextField searchTextField = new JTextField();
+        searchTextField.setBounds(150, 50, 100, 25);
         panel.add(searchTextField);
 
-        JTable jTable = new JTable();
+        JTable userAccountTable = new JTable();
+
 
 
         // Logout Button
@@ -30,8 +32,14 @@ public class SystemAdminGUI {
         logoutButton.setBounds(150, 175, 100, 25);
         panel.add(logoutButton);
 
+        // Create Account Button
+        JButton createAccountButton = new JButton("Create Account");
+        createAccountButton.setBounds(200, 200, 150, 25);
+        panel.add(createAccountButton);
+
+
         frame.add(panel);
-        frame.setSize(400, 300);
+        frame.setSize(600, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
@@ -39,6 +47,10 @@ public class SystemAdminGUI {
         logoutButton.addActionListener(e -> {
             frame.dispose();
             new LoginGUI();
+
+        });
+
+        createAccountButton.addActionListener(e -> {
 
         });
     }
