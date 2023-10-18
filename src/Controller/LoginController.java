@@ -13,7 +13,7 @@ public class LoginController {
     }
 
     // Checking profile
-    public String validateProfile(String username) {
+    public int validateProfile(String username) {
         // Return the profile name
         return new UserAccount().validateProfile(username);
     }

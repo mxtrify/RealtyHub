@@ -62,8 +62,8 @@ public class UserAccount {
     }
 
     // Function for validating profile
-    public String validateProfile(String username) {
-        String query = "SELECT profile FROM user_account WHERE username = ?";
+    public int validateProfile(String username) {
+        String query = "SELECT profile_id FROM user_account WHERE username = ?";
         try{
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -71,13 +71,13 @@ public class UserAccount {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()) { // Return true if there's a record
-                return resultSet.getString("profile"); // Get column "profile" value
+                return resultSet.getInt("profile_id"); // Get column "profile" value
             } else {
-                return "";
+                return 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return "";
+            return 0;
         }
     }
 }

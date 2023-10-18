@@ -68,13 +68,13 @@ public class LoginGUI extends JFrame {
             // Delete the login display and create GUI depends on the profile
             if (new LoginController().login(userAccount)) {
                 frame.dispose();
-                if(new LoginController().validateProfile(username).equals("system_admin")) {
+                if(new LoginController().validateProfile(username) == 1) {
                     new SystemAdminGUI();
-                } else if(new LoginController().validateProfile(username).equals("cafe_owner")) {
+                } else if(new LoginController().validateProfile(username) == 2) {
                     new CafeOwnerGUI();
-                } else if(new LoginController().validateProfile(username).equals("cafe_manager")) {
+                } else if(new LoginController().validateProfile(username) == 3) {
                     new CafeManagerGUI();
-                } else if (new LoginController().validateProfile(username).equals("cafe_staff")) {
+                } else if (new LoginController().validateProfile(username) == 4) {
                     new CafeStaffGUI();
                 }
             } else {
