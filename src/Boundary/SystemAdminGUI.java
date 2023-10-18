@@ -19,6 +19,12 @@ public class SystemAdminGUI {
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 
+        JTextField searchTextField = new JTextField();
+        panel.add(searchTextField);
+
+        JTable jTable = new JTable();
+
+
         // Logout Button
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(150, 175, 100, 25);
@@ -33,6 +39,7 @@ public class SystemAdminGUI {
         logoutButton.addActionListener(e -> {
             frame.dispose();
             new LoginGUI();
+
         });
     }
 }
