@@ -1,15 +1,17 @@
 package Boundary;
 
+import Entity.UserAccount;
+
 import javax.swing.*;
 
 public class CafeOwnerGUI {
     // Constructor
-    public CafeOwnerGUI() {
-        displayCafeOwnerGUI();
+    public CafeOwnerGUI(UserAccount u) {
+        displayCafeOwnerGUI(u);
     }
 
     // Display cafe owner GUI
-    public void displayCafeOwnerGUI() {
+    public void displayCafeOwnerGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Owner");
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -38,7 +40,7 @@ public class CafeOwnerGUI {
         // Action for createWorkSlotButton
         createWorkSlotButton.addActionListener(e -> {
             frame.dispose();
-            new OwnerCreateWorkSlotGUI();
+            new OwnerCreateWorkSlotGUI(u);
         });
 
         // Action for logout button

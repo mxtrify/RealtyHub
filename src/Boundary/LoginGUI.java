@@ -1,7 +1,7 @@
 package Boundary;
 
 import Controller.LoginController;
-import Entity.UserAccount;
+import Entity.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,26 +63,25 @@ public class LoginGUI extends JFrame {
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
-            UserAccount userAccount = new UserAccount(username, password);
+            UserAccount userAccount = new LoginController().login(username, password);
 
-            // Delete the login display and create GUI depends on the profile
-            if (new LoginController().login(userAccount)) {
-                frame.dispose();
-                if(new LoginController().validateProfile(username) == 1) {
-                    new SystemAdminGUI(userAccount);
-                } else if(new LoginController().validateProfile(username) == 2) {
-                    new CafeOwnerGUI();
-                } else if(new LoginController().validateProfile(username) == 3) {
-                    new CafeManagerGUI();
-                } else if (new LoginController().validateProfile(username) == 4) {
-                    new CafeStaffGUI();
-                }
-            } else {
+
+            if (userAccount == null) {
                 // Error message for invalid username or password
                 JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                frame.dispose();
+                if(userAccount instanceof SystemAdmin) {
+                    new SystemAdminGUI(userAccount);
+                } else if (userAccount instanceof CafeOwner) {
+                    new CafeOwnerGUI(userAccount);
+                } else if (userAccount instanceof CafeManager) {
+                    new CafeManagerGUI(userAccount);
+                } else if (userAccount instanceof CafeStaff) {
+                    new CafeStaffGUI(userAccount);
+                }
             }
         });
-
     }
 
     public static void main(String[] args) {

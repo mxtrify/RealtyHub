@@ -1,15 +1,17 @@
 package Boundary;
 
+import Entity.UserAccount;
+
 import javax.swing.*;
 
 public class CafeStaffGUI {
     // Constructor
-    public CafeStaffGUI() {
-        displayCafeStaffGUI();
+    public CafeStaffGUI(UserAccount u) {
+        displayCafeStaffGUI(u);
     }
 
     // Display cafe staff GUI
-    public void displayCafeStaffGUI() {
+    public void displayCafeStaffGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Staff");
         JPanel panel = new JPanel();
         panel.setLayout(null);

@@ -39,38 +39,32 @@ public class UserAccount {
     }
 
     // Function for validating login
-    public boolean validateLogin(UserAccount userAccount) {
+    public UserAccount validateLogin(String username, String password) {
         String query = "SELECT * FROM user_account WHERE username = ? AND password = ?";
         try{
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, userAccount.getUsername());
-            preparedStatement.setString(2, userAccount.getPassword());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next(); // Return true if there's a matching record
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Function for validating profile
-    public int validateProfile(String username) {
-        String query = "SELECT profile_id FROM user_account WHERE username = ?";
-        try{
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()) { // Return true if there's a record
-                return resultSet.getInt("profile_id"); // Get column "profile" value
+            if(resultSet.next()) {
+                if(resultSet.getInt("profile_id") == 1) {
+                    return new SystemAdmin(username, password);
+                } else if (resultSet.getInt("profile_id") == 2) {
+                    return new CafeOwner(username, password);
+                } else if (resultSet.getInt("profile_id") == 3) {
+                    return new CafeManager(username, password);
+                } else if (resultSet.getInt("profile_id") == 4) {
+                    return new CafeStaff();
+                } else {
+                    return null;
+                }
             } else {
-                return 0;
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return 0;
+            return null;
         }
     }
 }

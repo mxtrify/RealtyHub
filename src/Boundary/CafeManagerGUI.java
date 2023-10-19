@@ -1,14 +1,16 @@
 package Boundary;
 
+import Entity.UserAccount;
+
 import javax.swing.*;
 public class CafeManagerGUI {
     // Constructor
-    public CafeManagerGUI() {
-        displayCafeManagerGUI();
+    public CafeManagerGUI(UserAccount u) {
+        displayCafeManagerGUI(u);
     }
 
     // Display cafe manager GUI
-    public void displayCafeManagerGUI() {
+    public void displayCafeManagerGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Manager");
         JPanel panel = new JPanel();
         panel.setLayout(null);

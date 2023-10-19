@@ -4,14 +4,9 @@ import Entity.UserAccount;
 
 public class LoginController {
     // Checking username and password
-    public boolean login(UserAccount userAccount) {
-        // Return true if match
-        return new UserAccount().validateLogin(userAccount);
-    }
+    public UserAccount login(String username, String password) {
 
-    // Checking profile
-    public int validateProfile(String username) {
-        // Return the profile name
-        return new UserAccount().validateProfile(username);
+        // Return true if match
+        return new UserAccount().validateLogin(username, password);
     }
 }

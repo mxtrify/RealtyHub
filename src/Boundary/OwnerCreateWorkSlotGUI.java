@@ -1,5 +1,7 @@
 package Boundary;
 
+import Entity.UserAccount;
+
 import javax.swing.*;
 
 // Need to extend JFrame?
@@ -12,12 +14,12 @@ public class OwnerCreateWorkSlotGUI {
     private JComboBox<String> roleField;
     private JTextField amountField;
 
-    public OwnerCreateWorkSlotGUI(){
-        displayCreateWorkSlotGUI();
+    public OwnerCreateWorkSlotGUI(UserAccount u){
+        displayCreateWorkSlotGUI(u);
     }
 
     // Need each part to be an object?
-    public void displayCreateWorkSlotGUI(){
+    public void displayCreateWorkSlotGUI(UserAccount u){
         JFrame frame = new JFrame("Create Work Slot");
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -92,7 +94,7 @@ public class OwnerCreateWorkSlotGUI {
         // Action for back button
         backButton.addActionListener(e -> {
             frame.dispose();
-            new CafeOwnerGUI();
+            new CafeOwnerGUI(u);
         });
 
         frame.add(panel);
