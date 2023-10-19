@@ -69,7 +69,7 @@ public class LoginGUI extends JFrame {
             if (new LoginController().login(userAccount)) {
                 frame.dispose();
                 if(new LoginController().validateProfile(username) == 1) {
-                    new SystemAdminGUI();
+                    new SystemAdminGUI(userAccount);
                 } else if(new LoginController().validateProfile(username) == 2) {
                     new CafeOwnerGUI();
                 } else if(new LoginController().validateProfile(username) == 3) {
