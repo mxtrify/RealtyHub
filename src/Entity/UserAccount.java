@@ -10,10 +10,10 @@ import java.sql.SQLException;
 public class UserAccount {
     private String username;
     private String password;
-    private String profile;
 
     public UserAccount() {
-
+        this.username = "";
+        this.password = "";
     }
 
     public UserAccount(String username, String password) {
@@ -29,9 +29,6 @@ public class UserAccount {
         return password;
     }
 
-    public String getProfile() {
-        return profile;
-    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -39,10 +36,6 @@ public class UserAccount {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
     }
 
     // Function for validating login
