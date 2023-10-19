@@ -1,8 +1,11 @@
 package Boundary;
 
 import Entity.UserAccount;
-
+import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 // Need to extend JFrame?
 public class OwnerCreateWorkSlotGUI {
@@ -10,6 +13,7 @@ public class OwnerCreateWorkSlotGUI {
     private JButton createButton;
     private JTextField searchField;
     private JTextField dateField;
+    private JDateChooser dateChosen;
     private JTextField timeField;
     private JComboBox<String> roleField;
     private JTextField amountField;
@@ -43,6 +47,16 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(dateLabel);
 
         // Date Field
+        /*
+        dateChosen = new JDateChooser();
+        dateChosen.setDateFormatString("dd-MM-yyyy");
+
+        dateField = new JTextField(20);
+        dateField = setEditable(false);
+        panel.add(dateChosen);
+        panel.add(dateField);
+
+        */ // Calendar Testing
         dateField = new JTextField(20);
         dateField.setBounds(150, 75, 175, 25);
         panel.add(dateField);
@@ -98,7 +112,7 @@ public class OwnerCreateWorkSlotGUI {
         });
 
         frame.add(panel);
-        frame.setSize(500, 300);
+        frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
