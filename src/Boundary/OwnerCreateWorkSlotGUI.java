@@ -1,6 +1,8 @@
 package Boundary;
 
+import Controller.WorkSlotController;
 import Entity.UserAccount;
+import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import java.awt.*;
@@ -99,6 +101,22 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(backButton);
 
         // Action for create button
+        createButton.addActionListener(e -> {
+            String date = dateField.getText();
+            int numOfChef = Integer.parseInt(chefField.getText());
+            int numOfCashier = Integer.parseInt(cashierField.getText());
+            int numOfStaff = Integer.parseInt(staffField.getText());
+            WorkSlot workSlot = new WorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfStaff);
+
+            if(numOfCashier < 1 || numOfChef < 1 || numOfStaff < 1) {
+                JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Successfully created!");
+                frame.dispose();
+                new CafeOwnerGUI(u);
+            }
+
+        });
 
 
         // Action for back button
