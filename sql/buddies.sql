@@ -32,11 +32,17 @@ CREATE TABLE `user_account` (
 );
 
 CREATE TABLE `work_slot` (
-    `slot_id` INT NOT NULL AUTO_INCREMENT,
+    `work_slot_id` INT NOT NULL AUTO_INCREMENT,
     `date` DATE NOT NULL,
-    `slot_limit` INT NOT NULL,
+    PRIMARY KEY (`work_slot_id`)
+);
+
+CREATE TABLE `role_amount` (
+    `work_slot_id` INT NOT NULL AUTO_INCREMENT,
     `role_id` INT NOT NULL,
-    PRIMARY KEY (`slot_id`),
+    `amount` INT NOT NULL,
+    PRIMARY KEY (`work_slot_id`, `role_id`),
+    FOREIGN KEY (`work_slot_id`) REFERENCES work_slot(`work_slot_id`),
     FOREIGN KEY (`role_id`) REFERENCES role(`role_id`)
 );
 
@@ -44,10 +50,10 @@ CREATE TABLE `bid` (
     `bid_id` INT NOT NULL AUTO_INCREMENT,
     `bid_status` VARCHAR(64) NOT NULL,
     `username` VARCHAR(64) NOT NULL,
-    `slot_id` INT NOT NULL,
+    `work_slot_id` INT NOT NULL,
     PRIMARY KEY (`bid_id`),
     FOREIGN KEY (`username`) REFERENCES user_account(`username`),
-    FOREIGN KEY (`slot_id`) REFERENCES work_slot(`slot_id`)
+    FOREIGN KEY (`work_slot_id`) REFERENCES work_slot(`work_slot_id`)
 );
 
 INSERT INTO `role` (role_name, role_desc) VALUES
