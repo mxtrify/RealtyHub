@@ -38,7 +38,7 @@ CREATE TABLE `work_slot` (
 );
 
 CREATE TABLE `role_amount` (
-    `work_slot_id` INT NOT NULL AUTO_INCREMENT,
+    `work_slot_id` INT NOT NULL,
     `role_id` INT NOT NULL,
     `amount` INT NOT NULL,
     PRIMARY KEY (`work_slot_id`, `role_id`),
@@ -48,14 +48,15 @@ CREATE TABLE `role_amount` (
 
 CREATE TABLE `bid` (
     `bid_id` INT NOT NULL AUTO_INCREMENT,
-    `bid_status` VARCHAR(64) NOT NULL,
     `username` VARCHAR(64) NOT NULL,
     `work_slot_id` INT NOT NULL,
+	`bid_status` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`bid_id`),
     FOREIGN KEY (`username`) REFERENCES user_account(`username`),
     FOREIGN KEY (`work_slot_id`) REFERENCES work_slot(`work_slot_id`)
 );
 
+-- Initial data
 INSERT INTO `role` (role_name, role_desc) VALUES
     ('Waiter', 'Serving customer'),
     ('Cashier', 'Do transaction'),
@@ -74,5 +75,14 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('chef', 'chef', 'Gordon', 'Ramsay', 'chef@gmail.com', 5, 4, 3, TRUE),
     ('cashier', 'cashier', 'Jerry', 'Ma', 'cashier@gmail.com', 5, 4, 2, TRUE),
     ('waiter', 'waiter', 'Tom', 'Brooklyn', 'waiter@gmail.com', 5, 4, 1, TRUE)
-    ;
+;
 
+INSERT into `work_slot`(`date`) VALUES (CURDATE());
+
+INSERT into `role_amount`(`work_slot_id`, `role_id`, `amount`) VALUES (1, 1, 3);
+INSERT into `role_amount`(`work_slot_id`, `role_id`, `amount`) VALUES (1, 2, 2);
+INSERT into `role_amount`(`work_slot_id`, `role_id`, `amount`) VALUES (1, 3, 1);
+
+INSERT INTO `bid`(`bid_status`, `username`, `work_slot_id`) VALUES ("Pending", "chef", 1);
+INSERT INTO `bid`(`bid_status`, `username`, `work_slot_id`) VALUES ("Pending", "cashier", 1);
+INSERT INTO `bid`(`bid_status`, `username`, `work_slot_id`) VALUES ("Pending", "waiter", 1);
