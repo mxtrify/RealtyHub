@@ -130,6 +130,16 @@ public class CreateAccountGUI {
 
         createButton.addActionListener(e -> {
             frame.dispose();
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            String email = emailField.getText();
+            int profile = profileComboBox.getSelectedIndex();
+            int role = roleComboBox.getSelectedIndex();
+            int maxSlot = Integer.parseInt(maxSlotField.getText());
+            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile, role, maxSlot, true);
+            new SystemAdminController().addAccount(newUser);
             new SystemAdminGUI(u);
         });
     }

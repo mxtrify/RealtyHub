@@ -82,4 +82,24 @@ public class SystemAdmin extends UserAccount {
             throw new RuntimeException(e);
         }
     }
+
+    public void insertAccount(UserAccount newUser) {
+        String query = "INSERT INTO user_account VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, newUser.getUsername());
+            preparedStatement.setString(2, newUser.getPassword());
+            preparedStatement.setString(3, newUser.getFirstName());
+            preparedStatement.setString(4, newUser.getLastName());
+            preparedStatement.setString(5, newUser.getEmail());
+            preparedStatement.setInt(6, newUser.getProfile());
+            preparedStatement.setInt(7, newUser.getRole());
+            preparedStatement.setInt(8, newUser.getMaxSlot());
+            preparedStatement.setBoolean(9, true);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
