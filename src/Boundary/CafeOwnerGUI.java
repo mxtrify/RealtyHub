@@ -3,8 +3,13 @@ package Boundary;
 import Entity.UserAccount;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class CafeOwnerGUI {
+    JPanel panel = new JPanel();
+    private JTable workSlotTable;
+    private DefaultTableModel tableComponents;
+
     // Constructor
     public CafeOwnerGUI(UserAccount u) {
         displayCafeOwnerGUI(u);
@@ -13,7 +18,6 @@ public class CafeOwnerGUI {
     // Display cafe owner GUI
     public void displayCafeOwnerGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Owner");
-        JPanel panel = new JPanel();
         panel.setLayout(null);
 
         // Title Label
@@ -23,14 +27,21 @@ public class CafeOwnerGUI {
 
         // Logout Button
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(150, 175, 100, 25);
+        logoutButton.setBounds(650, 50, 100, 25);
         panel.add(logoutButton);
+
+        // Search bar
+        JTextField searchField = new JTextField();
+        searchField.setBounds(100, 100, 150, 25);
+        panel.add(searchField);
 
         // Create workSlot button
         JButton createWorkSlotButton = new JButton("Create Slot");
-        createWorkSlotButton.setBounds(175, 100, 100, 25);
+        createWorkSlotButton.setBounds(300, 100, 100, 25);
         panel.add(createWorkSlotButton);
 
+        // Display Table
+        WorkSlotTable();
 
         frame.add(panel);
         frame.setSize(800, 600);
@@ -48,5 +59,20 @@ public class CafeOwnerGUI {
             frame.dispose();
             new LoginGUI();
         });
+    }
+
+    public void WorkSlotTable() {
+        tableComponents = new DefaultTableModel();
+        workSlotTable = new JTable(tableComponents);
+
+        tableComponents.addColumn("Date");
+        tableComponents.addColumn("Chef's");
+        tableComponents.addColumn("Cashier's");
+        tableComponents.addColumn("Staff's");
+        tableComponents.addColumn("Action");
+
+        JScrollPane scrollPane = new JScrollPane(workSlotTable);
+        scrollPane.setBounds(50, 150, 500, 300);
+        panel.add(scrollPane);
     }
 }
