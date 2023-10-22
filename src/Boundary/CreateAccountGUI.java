@@ -4,6 +4,8 @@ import Controller.SystemAdminController;
 import Entity.UserAccount;
 
 import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,11 +81,13 @@ public class CreateAccountGUI {
         roleLabel.setBounds(100, 400, 235, 50);
         panel.add(roleLabel);
 
+
         List<String> roleList = new SystemAdminController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
         roleComboBox.setBounds(200, 400, 235, 50);
         panel.add(roleComboBox);
+        roleComboBox.setEnabled(false);
 
         JLabel maxSlotLabel = new JLabel("Max Slot");
         maxSlotLabel.setBounds(100, 450, 235, 50);
@@ -92,6 +96,19 @@ public class CreateAccountGUI {
         JTextField maxSlotField = new JTextField();
         maxSlotField.setBounds(200, 450, 235, 50);
         panel.add(maxSlotField);
+        maxSlotField.setEnabled(false);
+
+        profileComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (profileComboBox.getSelectedIndex() == 3) {
+                    roleComboBox.setEnabled(true);
+                    maxSlotField.setEnabled(true);
+                } else {
+                    roleComboBox.setEnabled(false);
+                    maxSlotField.setEnabled(false);
+                }
+            }
+        });
 
         JButton backButton = new JButton("Back");
         backButton.setBounds(100, 500, 235, 30);
