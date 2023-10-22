@@ -8,6 +8,12 @@ public class WorkSlotController {
         workSlot.createWorkSlot(date);
         return workSlot;
     }
+
+    public WorkSlot viewWorkSlot(int workSlotID) {
+        WorkSlot viewWorkSlot = new WorkSlot();
+        viewWorkSlot.viewWorkSlot(workSlotID);
+        return viewWorkSlot;
+    }
 }
 
 
