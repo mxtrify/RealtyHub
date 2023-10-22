@@ -1,5 +1,6 @@
 package Boundary;
 
+import Controller.SystemAdminController;
 import Entity.UserAccount;
 
 import javax.swing.*;
@@ -40,61 +41,12 @@ public class SystemAdminGUI {
         createAccountButton.setBounds(545, 68, 25, 25);
         panel.add(createAccountButton);
 
-        Object[][] data = {
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-                {"a", "1"},
-        };
-        String[] columnNames = {"Username", "Password"};
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        DefaultTableModel model = new DefaultTableModel();
+        new SystemAdminController().getList(model);
         JTable table = new JTable(model);
 
         table.setAutoCreateColumnsFromModel(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        model.setColumnIdentifiers(columnNames);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(100,100, 470, 300);
@@ -107,7 +59,7 @@ public class SystemAdminGUI {
         panel.add(logoutButton);
 
         frame.add(panel);
-        frame.setSize(675, 500);
+        frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
