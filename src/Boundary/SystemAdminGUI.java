@@ -19,7 +19,6 @@ public class SystemAdminGUI {
         panel.setLayout(null);
 
         // Title Label
-
         JLabel titleLabel = new JLabel("Welcome, " + u.getUsername());
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
@@ -42,16 +41,13 @@ public class SystemAdminGUI {
         panel.add(createAccountButton);
 
         DefaultTableModel model = new DefaultTableModel();
-        new SystemAdminController().getList(model);
+        new SystemAdminController().getAccountList(model);
         JTable table = new JTable(model);
-
-        table.setAutoCreateColumnsFromModel(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(100,100, 470, 300);
         frame.add(scrollPane);
-
 
         // Logout Button
         JButton logoutButton = new JButton("Logout");
@@ -71,7 +67,8 @@ public class SystemAdminGUI {
         });
 
         createAccountButton.addActionListener(e -> {
-
+            frame.dispose();
+            new CreateAccountGUI(u);
         });
     }
 }

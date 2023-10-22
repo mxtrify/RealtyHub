@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SystemAdmin extends UserAccount {
     public SystemAdmin() {
@@ -43,4 +45,41 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
+    public List<String> getProfileByName() {
+        String query = "SELECT profile_name FROM profile";
+        List<String> profileNameList = new ArrayList<>();
+
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                String profileName = resultSet.getString("profile_name");
+                profileNameList.add(profileName);
+            }
+            return profileNameList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getRoleByName() {
+        String query = "SELECT role_name FROM role";
+        List<String> roleNameList = new ArrayList<>();
+
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                String roleName = resultSet.getString("role_name");
+                roleNameList.add(roleName);
+            }
+            return roleNameList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
