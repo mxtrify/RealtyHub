@@ -1,9 +1,11 @@
 package Boundary;
 
 import Entity.UserAccount;
+import Entity.WorkSlot;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class CafeOwnerGUI {
     JPanel panel = new JPanel();
@@ -70,6 +72,17 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Cashier's");
         tableComponents.addColumn("Staff's");
         tableComponents.addColumn("Action");
+
+//        for(WorkSlot workSlot : workSlots) {
+//            Object[] rowData = {
+//                    workSlot.getDate(),
+//                    workSlot.getCashierAmount(),
+//                    workSlot.getCashierAmount(),
+//                    workSlot.getStaffAmount(),
+//                    new JButton("Test")
+//            };
+//            tableComponents.addRow(rowData);
+//        }
 
         JScrollPane scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);

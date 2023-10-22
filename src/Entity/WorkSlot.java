@@ -101,6 +101,46 @@ public class WorkSlot {
         return null;
     }
 
+    public WorkSlot viewWorkSlot(int workSlotID) {
+        WorkSlot workSlot = null;
+        String workSlotQuery = "SELECT ws.work_slot_id, ws.date, ra.role_id, ra.amount " +
+                "FROM work_slot ws JOIN role_amount ra ON ws.work_slot_id = ra.work_slot_id " +
+                "WHERE ws.work_slot_id = ?";
+
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(workSlotQuery);
+            preparedStatement.setInt(1, workSlotID);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    if (workSlot == null) {
+                        String date = resultSet.getString("date");
+                        workSlot = new WorkSlot(date, 1, 1, 1);
+                    }
+
+                    int roleId = resultSet.getInt("role_id");
+                    int amount = resultSet.getInt("amount");
+
+                    switch (roleId) {
+                        case WorkSlot.CHEF:
+                            workSlot.setChefAmount(amount);
+                            break;
+                        case WorkSlot.CASHIER:
+                            workSlot.setCashierAmount(amount);
+                            break;
+                        case WorkSlot.STAFF:
+                            workSlot.setStaffAmount(amount);
+                            break;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return workSlot;
+    }
+
 
     private void insertRoleAmount(int workSlotId, int roleId, int amount) {
         try {

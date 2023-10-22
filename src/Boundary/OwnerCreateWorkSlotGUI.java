@@ -6,8 +6,8 @@ import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 // Need to extend JFrame?
 public class OwnerCreateWorkSlotGUI {
@@ -48,16 +48,14 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(dateLabel);
 
         // Date Field
-        /*
         JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("dd-MM-yyyy");
+        dateChooser.setDateFormatString("dd/MM/yyyy");
         dateChooser.setBounds(150, 75, 175, 25);
         panel.add(dateChooser);
 
-        */ // Calendar Testing
-        dateField = new JTextField(20);
-        dateField.setBounds(150, 75, 175, 25);
-        panel.add(dateField);
+//        dateField = new JTextField(20);
+//        dateField.setBounds(150, 75, 175, 25);
+//        panel.add(dateField);
 
         // Chef Label
         JLabel chefLabel = new JLabel("Chef:");
@@ -102,7 +100,12 @@ public class OwnerCreateWorkSlotGUI {
 
         // Action for create button
         createButton.addActionListener(e -> {
-            String date = dateField.getText();
+            java.util.Date selectedDateUtil = dateChooser.getDate();
+            java.sql.Date selectedDate = new java.sql.Date(selectedDateUtil.getTime());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String date = sdf.format(selectedDate);
+
+//            String date = dateField.getText();
             int numOfChef = Integer.parseInt(chefField.getText());
             int numOfCashier = Integer.parseInt(cashierField.getText());
             int numOfStaff = Integer.parseInt(staffField.getText());
