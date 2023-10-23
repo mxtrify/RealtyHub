@@ -6,6 +6,7 @@ import Controller.WorkSlotController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class CafeOwnerGUI {
@@ -79,14 +80,24 @@ public class CafeOwnerGUI {
         WorkSlotController workSlotController = new WorkSlotController();
         List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
 
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyy-MM-dd");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
+
         for (WorkSlot workSlot : workSlotData) {
-            Object[] rowData = {
-                    workSlot.getDate(),
-                    workSlot.getChefAmount(),
-                    workSlot.getCashierAmount(),
-                    workSlot.getStaffAmount()
-            };
-            tableComponents.addRow(rowData);
+            try {
+                java.util.Date parsedDate = inputFormat.parse(workSlot.getDate());
+                String formattedDate = outputFormat.format(parsedDate);
+
+                Object[] rowData = {
+                        formattedDate,
+                        workSlot.getChefAmount(),
+                        workSlot.getCashierAmount(),
+                        workSlot.getStaffAmount()
+                };
+                tableComponents.addRow(rowData);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
 
 
