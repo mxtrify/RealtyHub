@@ -1,6 +1,7 @@
 package Controller;
 
 import Entity.SystemAdmin;
+import Entity.UserAccount;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -17,4 +18,9 @@ public class SystemAdminController {
     public List<String> getRoleList() {
         return new SystemAdmin().getRoleByName();
     }
+
+    public void addAccount(UserAccount newUser) {
+        new SystemAdmin().insertAccount(newUser);
+    }
+
 }

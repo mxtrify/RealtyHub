@@ -10,15 +10,41 @@ import java.sql.SQLException;
 public class UserAccount {
     private String username;
     private String password;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private int profile;
+    private int role;
+    private int maxSlot;
+    private boolean status;
 
     public UserAccount() {
         this.username = "";
         this.password = "";
+        this.firstName = "";
+        this.lastName = "";
+        this.email = "";
+        this.profile = 0;
+        this.role = 0;
+        this.maxSlot = 0;
+        this.status = false;
     }
 
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role, int maxSlot, boolean status) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profile = profile;
+        this.role = role;
+        this.maxSlot = maxSlot;
+        this.status = status;
     }
 
     public String getUsername() {
@@ -29,6 +55,29 @@ public class UserAccount {
         return password;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getProfile() {
+        return profile;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public int getMaxSlot() {
+        return maxSlot;
+    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -36,6 +85,30 @@ public class UserAccount {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setProfile(int profile) {
+        this.profile = profile;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
+    public void setMaxSlot(int maxSlot) {
+        this.maxSlot = maxSlot;
     }
 
     // Function for validating login

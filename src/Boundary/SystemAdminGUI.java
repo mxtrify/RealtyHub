@@ -5,6 +5,8 @@ import Entity.UserAccount;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
 
 public class SystemAdminGUI {
     // Constructor
@@ -20,24 +22,35 @@ public class SystemAdminGUI {
 
         // Title Label
         JLabel titleLabel = new JLabel("Welcome, " + u.getUsername());
-        titleLabel.setBounds(100,20, 500, 25);
+        titleLabel.setBounds(50,75, 500, 36);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         panel.add(titleLabel);
 
         JTextField searchTextField = new JTextField();
-        searchTextField.setBounds(100, 68, 150, 25);
+        searchTextField.setBounds(50, 135, 200, 36);
+        searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
 
-        String[] profileList = {"Default", "System Admin" , "Cafe Owner", "Cafe Manager", "Cafe Staff"};
-        JComboBox profileChoice = new JComboBox(profileList);
-        profileChoice.setBounds(260, 70, 150, 25);
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(250, 135, 100, 36);
+        searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(searchButton);
+
+        List<String> profileList = new SystemAdminController().getProfileList();
+        DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
+        JComboBox profileChoice = new JComboBox(profileComboModel);
+        profileChoice.setBounds(350, 135, 200, 36);
+        profileChoice.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(profileChoice);
 
         JButton viewProfileButton = new JButton("View Profile");
-        viewProfileButton.setBounds(415, 68, 115, 25);
+        viewProfileButton.setBounds(585, 135, 135, 36);
+        viewProfileButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(viewProfileButton);
 
         JButton createAccountButton = new JButton("+");
-        createAccountButton.setBounds(545, 68, 25, 25);
+        createAccountButton.setBounds(720, 135, 36, 36);
+        createAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(createAccountButton);
 
         DefaultTableModel model = new DefaultTableModel();
@@ -46,12 +59,13 @@ public class SystemAdminGUI {
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(100,100, 470, 300);
+        scrollPane.setBounds(50,175, 700, 350);
         frame.add(scrollPane);
 
         // Logout Button
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(475, 20, 100, 25);
+        logoutButton.setBounds(650, 50, 100, 36);
+        logoutButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(logoutButton);
 
         frame.add(panel);
