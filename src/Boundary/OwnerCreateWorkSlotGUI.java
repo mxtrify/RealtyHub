@@ -105,7 +105,6 @@ public class OwnerCreateWorkSlotGUI {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String date = sdf.format(selectedDate);
 
-//            String date = dateField.getText();
             int numOfChef = Integer.parseInt(chefField.getText());
             int numOfCashier = Integer.parseInt(cashierField.getText());
             int numOfStaff = Integer.parseInt(staffField.getText());

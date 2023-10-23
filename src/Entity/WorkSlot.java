@@ -16,6 +16,7 @@ public class WorkSlot {
     public static final int CHEF = 1;
     public static final int CASHIER = 2;
     public static final int STAFF = 3;
+    private int workSlotID;
     private String date;
     private int chefAmount;
     private int cashierAmount;
@@ -35,6 +36,8 @@ public class WorkSlot {
         this.staffAmount = staffAmount;
     }
 
+    public int getWorkSlotID() {return workSlotID;}
+
     public String getDate() {
         return date;
     }
@@ -49,6 +52,10 @@ public class WorkSlot {
 
     public int getStaffAmount() {
         return staffAmount;
+    }
+
+    public void setWorkSlotID(int workSlotID) {
+        this.workSlotID = workSlotID;
     }
 
     public void setDate(String date) {
@@ -103,72 +110,6 @@ public class WorkSlot {
         return null;
     }
 
-    public WorkSlot viewWorkSlot(int workSlotID) {
-        WorkSlot workSlot = null;
-        String workSlotQuery = "SELECT ws.work_slot_id, ws.date, ra.role_id, ra.amount " +
-                "FROM work_slot ws JOIN role_amount ra ON ws.work_slot_id = ra.work_slot_id " +
-                "WHERE ws.work_slot_id = ?";
-
-        try {
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(workSlotQuery);
-            preparedStatement.setInt(1, workSlotID);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    if (workSlot == null) {
-                        String date = resultSet.getString("date");
-                        workSlot = new WorkSlot(date, 1, 1, 1);
-                    }
-
-                    int roleId = resultSet.getInt("role_id");
-                    int amount = resultSet.getInt("amount");
-
-                    switch (roleId) {
-                        case WorkSlot.CHEF:
-                            workSlot.setChefAmount(amount);
-                            break;
-                        case WorkSlot.CASHIER:
-                            workSlot.setCashierAmount(amount);
-                            break;
-                        case WorkSlot.STAFF:
-                            workSlot.setStaffAmount(amount);
-                            break;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return workSlot;
-    }
-
-    public static List<WorkSlot> getAllWorkSlots() {
-        List<WorkSlot> workSlots = new ArrayList<>();
-
-        String getAllWorkSlotsQuery = "SELECT ws.work_slot_id, ws.date, ra.role_id, ra.amount " +
-                "FROM work_slot ws JOIN role_amount ra ON ws.work_slot_id = ra.work_slot_id";
-
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(getAllWorkSlotsQuery);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-                int workSlotId = resultSet.getInt("work_slot_id");
-                String date = resultSet.getString("date");
-                int roleId = resultSet.getInt("role_id");
-                int amount = resultSet.getInt("amount");
-
-//                WorkSlot workSlot = findOrCreateWorkSlot(workSlots, workSlotId, date);
-//                setRoleAmount(workSlot, roleId, amount);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle or log the exception based on your application needs
-        }
-
-        return workSlots;
-    }
-
     private void insertRoleAmount(int workSlotId, int roleId, int amount) {
         try {
             Connection conn = new DBConfig().getConnection();
@@ -191,4 +132,58 @@ public class WorkSlot {
             e.printStackTrace();
         }
     }
+
+    public List<WorkSlot> getAllWorkSlots() {
+        List<WorkSlot> workSlots = new ArrayList<>();
+
+        try {
+            Connection conn = new DBConfig().getConnection();
+            String query = "SELECT * FROM work_slot";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    WorkSlot workSlot = new WorkSlot();
+                    workSlot.setWorkSlotID(resultSet.getInt("work_slot_id"));
+                    workSlot.setDate(resultSet.getString("date"));
+                    workSlot.setChefAmount(getRoleAmount(workSlot.getWorkSlotID(), CHEF));
+                    workSlot.setCashierAmount(getRoleAmount(workSlot.getWorkSlotID(), CASHIER));
+                    workSlot.setStaffAmount(getRoleAmount(workSlot.getWorkSlotID(), STAFF));
+
+                    workSlots.add(workSlot);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return workSlots;
+    }
+
+    private int getRoleAmount(int workSlotId, int roleId) {
+        int amount = 0;
+
+        try {
+            Connection conn = new DBConfig().getConnection();
+            String query = "SELECT amount FROM role_amount WHERE work_slot_id = ? AND role_id = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setInt(1, workSlotId);
+                preparedStatement.setInt(2, roleId);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        amount = resultSet.getInt("amount");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return amount;
+    }
+
+
 }

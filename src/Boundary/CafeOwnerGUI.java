@@ -75,28 +75,24 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Chef's");
         tableComponents.addColumn("Cashier's");
         tableComponents.addColumn("Staff's");
-        tableComponents.addColumn("Action");
 
-        List<WorkSlot> workSlots = fetchWorkSlotsFromDatabase();
+        WorkSlotController workSlotController = new WorkSlotController();
+        List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
 
-        for(WorkSlot workSlot : workSlots) {
+        for (WorkSlot workSlot : workSlotData) {
             Object[] rowData = {
                     workSlot.getDate(),
                     workSlot.getChefAmount(),
                     workSlot.getCashierAmount(),
-                    workSlot.getStaffAmount(),
-                    "Action Button"
+                    workSlot.getStaffAmount()
             };
             tableComponents.addRow(rowData);
         }
 
+
         JScrollPane scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);
         panel.add(scrollPane);
-    }
-
-    private List<WorkSlot> fetchWorkSlotsFromDatabase() {
-        return getAllWorkSlotData.getAllWorkSlots();
     }
 }
 

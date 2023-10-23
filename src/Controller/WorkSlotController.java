@@ -11,14 +11,9 @@ public class WorkSlotController {
         return workSlot;
     }
 
-    public WorkSlot viewWorkSlot(int workSlotID) {
-        WorkSlot viewWorkSlot = new WorkSlot();
-        viewWorkSlot.viewWorkSlot(workSlotID);
-        return viewWorkSlot;
-    }
-
     public List<WorkSlot> getAllWorkSlots() {
-        return WorkSlot.getAllWorkSlots();
+        WorkSlot workSlot = new WorkSlot();
+        return workSlot.getAllWorkSlots();
     }
 }
 
