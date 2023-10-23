@@ -2,6 +2,7 @@ package Boundary;
 
 import Entity.UserAccount;
 import Entity.WorkSlot;
+import Controller.WorkSlotController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,9 +12,11 @@ public class CafeOwnerGUI {
     JPanel panel = new JPanel();
     private JTable workSlotTable;
     private DefaultTableModel tableComponents;
+    private WorkSlotController getAllWorkSlotData;
 
     // Constructor
     public CafeOwnerGUI(UserAccount u) {
+        this.getAllWorkSlotData = new WorkSlotController();
         displayCafeOwnerGUI(u);
     }
 
@@ -67,25 +70,34 @@ public class CafeOwnerGUI {
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
 
+        tableComponents.setRowCount(0);
         tableComponents.addColumn("Date");
         tableComponents.addColumn("Chef's");
         tableComponents.addColumn("Cashier's");
         tableComponents.addColumn("Staff's");
         tableComponents.addColumn("Action");
 
-//        for(WorkSlot workSlot : workSlots) {
-//            Object[] rowData = {
-//                    workSlot.getDate(),
-//                    workSlot.getCashierAmount(),
-//                    workSlot.getCashierAmount(),
-//                    workSlot.getStaffAmount(),
-//                    new JButton("Test")
-//            };
-//            tableComponents.addRow(rowData);
-//        }
+        List<WorkSlot> workSlots = fetchWorkSlotsFromDatabase();
+
+        for(WorkSlot workSlot : workSlots) {
+            Object[] rowData = {
+                    workSlot.getDate(),
+                    workSlot.getChefAmount(),
+                    workSlot.getCashierAmount(),
+                    workSlot.getStaffAmount(),
+                    "Action Button"
+            };
+            tableComponents.addRow(rowData);
+        }
 
         JScrollPane scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);
         panel.add(scrollPane);
     }
+
+    private List<WorkSlot> fetchWorkSlotsFromDatabase() {
+        return getAllWorkSlotData.getAllWorkSlots();
+    }
 }
+
+

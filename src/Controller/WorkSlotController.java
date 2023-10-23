@@ -2,6 +2,8 @@ package Controller;
 
 import Entity.WorkSlot;
 
+import java.util.List;
+
 public class WorkSlotController {
     public WorkSlot createWorkSlot(String date, int chefAmount, int cashierAmount, int staffAmount) {
         WorkSlot workSlot = new WorkSlot(date, chefAmount, cashierAmount, staffAmount);
@@ -13,6 +15,10 @@ public class WorkSlotController {
         WorkSlot viewWorkSlot = new WorkSlot();
         viewWorkSlot.viewWorkSlot(workSlotID);
         return viewWorkSlot;
+    }
+
+    public List<WorkSlot> getAllWorkSlots() {
+        return WorkSlot.getAllWorkSlots();
     }
 }
 

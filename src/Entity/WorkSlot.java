@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.ArrayList;
 
 public class WorkSlot {
     public static final int CHEF = 1;
@@ -141,6 +143,31 @@ public class WorkSlot {
         return workSlot;
     }
 
+    public static List<WorkSlot> getAllWorkSlots() {
+        List<WorkSlot> workSlots = new ArrayList<>();
+
+        String getAllWorkSlotsQuery = "SELECT ws.work_slot_id, ws.date, ra.role_id, ra.amount " +
+                "FROM work_slot ws JOIN role_amount ra ON ws.work_slot_id = ra.work_slot_id";
+
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(getAllWorkSlotsQuery);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int workSlotId = resultSet.getInt("work_slot_id");
+                String date = resultSet.getString("date");
+                int roleId = resultSet.getInt("role_id");
+                int amount = resultSet.getInt("amount");
+
+//                WorkSlot workSlot = findOrCreateWorkSlot(workSlots, workSlotId, date);
+//                setRoleAmount(workSlot, roleId, amount);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception based on your application needs
+        }
+
+        return workSlots;
+    }
 
     private void insertRoleAmount(int workSlotId, int roleId, int amount) {
         try {
