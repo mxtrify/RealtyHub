@@ -16,7 +16,6 @@ public class WorkSlot {
     public static final int CHEF = 1;
     public static final int CASHIER = 2;
     public static final int STAFF = 3;
-    private int workSlotID;
     private String date;
     private int chefAmount;
     private int cashierAmount;
@@ -36,8 +35,6 @@ public class WorkSlot {
         this.staffAmount = staffAmount;
     }
 
-    public int getWorkSlotID() {return workSlotID;}
-
     public String getDate() {
         return date;
     }
@@ -52,10 +49,6 @@ public class WorkSlot {
 
     public int getStaffAmount() {
         return staffAmount;
-    }
-
-    public void setWorkSlotID(int workSlotID) {
-        this.workSlotID = workSlotID;
     }
 
     public void setDate(String date) {
@@ -87,36 +80,25 @@ public class WorkSlot {
 
                 int row = preparedStatement.executeUpdate();
                 if (row > 0) {
-                    try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                        int workSlotId;  // Declare the variable outside the block
-                        if (generatedKeys.next()) {
-                            workSlotId = generatedKeys.getInt(1);
-                        } else {
-                            throw new SQLException("Failed to get work slot ID.");
-                        }
-
-                        // Insert into role_amount table
-                        insertRoleAmount(workSlotId, CHEF, chefAmount);
-                        insertRoleAmount(workSlotId, CASHIER, cashierAmount);
-                        insertRoleAmount(workSlotId, STAFF, staffAmount);
-                    }
+                    // Insert into role_amount table
+                    insertRoleAmount(date, CHEF, chefAmount);
+                    insertRoleAmount(date, CASHIER, cashierAmount);
+                    insertRoleAmount(date, STAFF, staffAmount);
                 }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private void insertRoleAmount(int workSlotId, int roleId, int amount) {
+    private void insertRoleAmount(Date date, int roleId, int amount) {
         try {
             Connection conn = new DBConfig().getConnection();
-            String roleAmountQuery = "INSERT INTO role_amount (work_slot_id, role_id, amount) VALUES (?, ?, ?)";
+            String roleAmountQuery = "INSERT INTO role_amount (date, role_id, amount) VALUES (?, ?, ?)";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(roleAmountQuery)) {
-                preparedStatement.setInt(1, workSlotId);
+                preparedStatement.setDate(1, date);
                 preparedStatement.setInt(2, roleId);
                 preparedStatement.setInt(3, amount);
 
@@ -133,6 +115,7 @@ public class WorkSlot {
         }
     }
 
+
     public List<WorkSlot> getAllWorkSlots() {
         List<WorkSlot> workSlots = new ArrayList<>();
 
@@ -145,11 +128,15 @@ public class WorkSlot {
 
                 while (resultSet.next()) {
                     WorkSlot workSlot = new WorkSlot();
-                    workSlot.setWorkSlotID(resultSet.getInt("work_slot_id"));
-                    workSlot.setDate(resultSet.getString("date"));
-                    workSlot.setChefAmount(getRoleAmount(workSlot.getWorkSlotID(), CHEF));
-                    workSlot.setCashierAmount(getRoleAmount(workSlot.getWorkSlotID(), CASHIER));
-                    workSlot.setStaffAmount(getRoleAmount(workSlot.getWorkSlotID(), STAFF));
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date parsedDate = resultSet.getDate("date");
+                    String dateString = sdf.format(parsedDate);
+                    workSlot.setDate(dateString);
+
+                    workSlot.setChefAmount(getRoleAmount(workSlot.getDate(), CHEF));
+                    workSlot.setCashierAmount(getRoleAmount(workSlot.getDate(), CASHIER));
+                    workSlot.setStaffAmount(getRoleAmount(workSlot.getDate(), STAFF));
 
                     workSlots.add(workSlot);
                 }
@@ -161,15 +148,15 @@ public class WorkSlot {
         return workSlots;
     }
 
-    private int getRoleAmount(int workSlotId, int roleId) {
+    private int getRoleAmount(String date, int roleId) {
         int amount = 0;
 
         try {
             Connection conn = new DBConfig().getConnection();
-            String query = "SELECT amount FROM role_amount WHERE work_slot_id = ? AND role_id = ?";
+            String query = "SELECT amount FROM role_amount WHERE date = ? AND role_id = ?";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-                preparedStatement.setInt(1, workSlotId);
+                preparedStatement.setString(1, date);
                 preparedStatement.setInt(2, roleId);
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
