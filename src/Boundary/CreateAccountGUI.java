@@ -1,12 +1,10 @@
 package Boundary;
 
-import Controller.SystemAdminController;
+import Controller.CreateUserAccountController;
 import Entity.UserAccount;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CreateAccountGUI {
@@ -71,7 +69,7 @@ public class CreateAccountGUI {
         profileLabel.setBounds(100, 350, 235, 50);
         panel.add(profileLabel);
 
-        List<String> profileList = new SystemAdminController().getProfileList();
+        List<String> profileList = new CreateUserAccountController().getProfileList();
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
         JComboBox<String> profileComboBox = new JComboBox<>(profileComboModel);
         profileComboBox.setBounds(200, 350, 235,50);
@@ -82,7 +80,7 @@ public class CreateAccountGUI {
         panel.add(roleLabel);
 
 
-        List<String> roleList = new SystemAdminController().getRoleList();
+        List<String> roleList = new CreateUserAccountController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
         roleComboBox.setBounds(200, 400, 235, 50);
@@ -139,7 +137,7 @@ public class CreateAccountGUI {
             int role = roleComboBox.getSelectedIndex();
             int maxSlot = Integer.parseInt(maxSlotField.getText());
             UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile, role, maxSlot, true);
-            new SystemAdminController().addAccount(newUser);
+            new CreateUserAccountController().addAccount(newUser);
             new SystemAdminGUI(u);
         });
     }

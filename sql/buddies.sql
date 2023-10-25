@@ -32,28 +32,27 @@ CREATE TABLE `user_account` (
 );
 
 CREATE TABLE `work_slot` (
-    `work_slot_id` INT NOT NULL AUTO_INCREMENT,
     `date` DATE NOT NULL,
-    PRIMARY KEY (`work_slot_id`)
+    PRIMARY KEY (`date`)
 );
 
 CREATE TABLE `role_amount` (
-    `work_slot_id` INT NOT NULL,
+    `date` DATE NOT NULL,
     `role_id` INT NOT NULL,
     `amount` INT NOT NULL,
-    PRIMARY KEY (`work_slot_id`, `role_id`),
-    FOREIGN KEY (`work_slot_id`) REFERENCES work_slot(`work_slot_id`),
+    PRIMARY KEY (`date`, `role_id`),
+    FOREIGN KEY (`date`) REFERENCES work_slot(`date`),
     FOREIGN KEY (`role_id`) REFERENCES role(`role_id`)
 );
 
 CREATE TABLE `bid` (
     `bid_id` INT NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(64) NOT NULL,
-    `work_slot_id` INT NOT NULL,
+    `date` DATE NOT NULL,
 	`bid_status` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`bid_id`),
     FOREIGN KEY (`username`) REFERENCES user_account(`username`),
-    FOREIGN KEY (`work_slot_id`) REFERENCES work_slot(`work_slot_id`)
+    FOREIGN KEY (`date`) REFERENCES work_slot(`date`)
 );
 
 -- Initial data
@@ -77,12 +76,12 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('waiter', 'waiter', 'Tom', 'Brooklyn', 'waiter@gmail.com', 5, 4, 1, TRUE)
 ;
 
-INSERT into `work_slot`(`date`) VALUES (CURDATE());
+INSERT into `work_slot`(`date`) VALUES ("2023-12-01");
 
-INSERT into `role_amount`(`work_slot_id`, `role_id`, `amount`) VALUES (1, 1, 3);
-INSERT into `role_amount`(`work_slot_id`, `role_id`, `amount`) VALUES (1, 2, 2);
-INSERT into `role_amount`(`work_slot_id`, `role_id`, `amount`) VALUES (1, 3, 1);
+INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 1, 3);
+INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 2, 2);
+INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 3, 1);
 
-INSERT INTO `bid`(`bid_status`, `username`, `work_slot_id`) VALUES ("Pending", "chef", 1);
-INSERT INTO `bid`(`bid_status`, `username`, `work_slot_id`) VALUES ("Pending", "cashier", 1);
-INSERT INTO `bid`(`bid_status`, `username`, `work_slot_id`) VALUES ("Pending", "waiter", 1);
+INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "chef", "2023-12-01");
+INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "cashier", "2023-12-01");
+INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "waiter", "2023-12-01");

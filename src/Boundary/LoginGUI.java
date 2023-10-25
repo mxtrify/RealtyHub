@@ -8,6 +8,7 @@ import java.awt.*;
 
 public class LoginGUI extends JFrame {
     // Variables
+    private JFrame frame;
     private JButton loginButton;
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -19,7 +20,7 @@ public class LoginGUI extends JFrame {
 
     // Display login function
     public void displayLogin() {
-        JFrame frame = new JFrame("Login");
+        frame = new JFrame("Login");
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
@@ -58,30 +59,32 @@ public class LoginGUI extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
-
         // Action for Login Button
-        loginButton.addActionListener(e -> {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
-            UserAccount userAccount = new LoginController().login(username, password);
+        loginButton.addActionListener(e -> login());
+    }
 
+    // Login handling function
+    public void login() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+        UserAccount userAccount = new LoginController().login(username, password);
 
-            if (userAccount == null) {
-                // Error message for invalid username or password
-                JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                frame.dispose();
-                if(userAccount instanceof SystemAdmin) {
-                    new SystemAdminGUI(userAccount);
-                } else if (userAccount instanceof CafeOwner) {
-                    new CafeOwnerGUI(userAccount);
-                } else if (userAccount instanceof CafeManager) {
-                    new CafeManagerGUI(userAccount);
-                } else if (userAccount instanceof CafeStaff) {
-                    new CafeStaffGUI(userAccount);
-                }
+        if (userAccount == null) {
+            // Error message for invalid username or password
+            JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            frame.dispose();
+            // Login based on the profile
+            if(userAccount instanceof SystemAdmin) {
+                new SystemAdminGUI(userAccount);
+            } else if (userAccount instanceof CafeOwner) {
+                new CafeOwnerGUI(userAccount);
+            } else if (userAccount instanceof CafeManager) {
+                new CafeManagerGUI(userAccount);
+            } else if (userAccount instanceof CafeStaff) {
+                new CafeStaffGUI(userAccount);
             }
-        });
+        }
     }
 
     public static void main(String[] args) {
