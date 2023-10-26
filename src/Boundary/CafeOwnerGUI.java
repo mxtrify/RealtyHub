@@ -69,6 +69,7 @@ public class CafeOwnerGUI {
     }
 
     public void WorkSlotTable() {
+        JFrame frame = new JFrame();
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
 
@@ -100,8 +101,10 @@ public class CafeOwnerGUI {
 
                         boolean deletionSuccess = workSlotController.deleteWorkSlot(dateToDelete);
                         if (deletionSuccess) {
+                            JOptionPane.showMessageDialog(frame, "Delete Success");
                             System.out.println("Row deleted successfully from the database.");
                         } else {
+                            JOptionPane.showMessageDialog(frame, "Delete Failed");
                             System.out.println("Failed to delete row from the database.");
                         }
                     }

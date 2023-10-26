@@ -302,7 +302,6 @@ public class WorkSlot {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return amount;
     }
 
