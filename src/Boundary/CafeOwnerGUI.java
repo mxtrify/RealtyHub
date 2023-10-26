@@ -90,7 +90,7 @@ public class CafeOwnerGUI {
             try {
                 String formattedDate = outputFormat.format(workSlot.getDate());
 
-                // Action for delete button
+                String buttonText = "Delete";
                 JButton deleteButton = new JButton("Delete");
                 deleteButton.addActionListener(e -> {
                     int selectedRow = workSlotTable.getSelectedRow();
@@ -112,7 +112,7 @@ public class CafeOwnerGUI {
                         workSlot.getChefAmount(),
                         workSlot.getCashierAmount(),
                         workSlot.getWaiterAmount(),
-                        deleteButton
+                        buttonText
                 };
                 tableComponents.addRow(rowData);
             } catch(Exception e) {
