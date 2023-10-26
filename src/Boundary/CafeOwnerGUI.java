@@ -75,7 +75,7 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Date");
         tableComponents.addColumn("Chef's");
         tableComponents.addColumn("Cashier's");
-        tableComponents.addColumn("Staff's");
+        tableComponents.addColumn("Waiter's");
 
         WorkSlotController workSlotController = new WorkSlotController();
         List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
@@ -85,14 +85,13 @@ public class CafeOwnerGUI {
 
         for (WorkSlot workSlot : workSlotData) {
             try {
-                java.util.Date parsedDate = inputFormat.parse(workSlot.getDate());
-                String formattedDate = outputFormat.format(parsedDate);
+                String formattedDate = outputFormat.format(workSlot.getDate());
 
                 Object[] rowData = {
                         formattedDate,
                         workSlot.getChefAmount(),
                         workSlot.getCashierAmount(),
-                        workSlot.getStaffAmount()
+                        workSlot.getWaiterAmount()
                 };
                 tableComponents.addRow(rowData);
             } catch(Exception e) {

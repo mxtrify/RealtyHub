@@ -26,12 +26,12 @@ public class LoginGUI extends JFrame {
 
         // Title Label
         JLabel titleLabel = new JLabel("Cafe Staff Management System");
-        titleLabel.setBounds(100,20, 500, 25);
+        titleLabel.setBounds(100, 20, 500, 25);
         panel.add(titleLabel);
 
         // Username Label
         JLabel usernameLabel = new JLabel("Username : ");
-        usernameLabel.setBounds(75,75, 100, 25);
+        usernameLabel.setBounds(75, 75, 100, 25);
         panel.add(usernameLabel);
 
         // Username Field
@@ -75,7 +75,7 @@ public class LoginGUI extends JFrame {
         } else {
             frame.dispose();
             // Login based on the profile
-            if(userAccount instanceof SystemAdmin) {
+            if (userAccount instanceof SystemAdmin) {
                 new SystemAdminGUI(userAccount);
             } else if (userAccount instanceof CafeOwner) {
                 new CafeOwnerGUI(userAccount);
@@ -96,3 +96,5 @@ public class LoginGUI extends JFrame {
         });
     }
 }
+
+
