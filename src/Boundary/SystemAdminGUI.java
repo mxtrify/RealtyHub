@@ -87,13 +87,16 @@ public class SystemAdminGUI {
         // Action for logout button
         logoutButton.addActionListener(e -> logout());
 
+        // Action for search button
         searchButton.addActionListener(e -> searchUserAccount(searchTextField, model));
 
+        // Action for view profile button
         viewProfileButton.addActionListener(e -> {
             frame.dispose();
             new ViewUserProfileGUI(u);
         });
 
+        // Press "ENTER" to search
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -109,6 +112,7 @@ public class SystemAdminGUI {
             new CreateUserAccountGUI(u);
         });
 
+        // Action for profile filter
         profileFilter.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
                 String profileName = (String) profileFilter.getSelectedItem();
@@ -117,11 +121,13 @@ public class SystemAdminGUI {
         });
     }
 
+    // Logout function
     public void logout() {
         frame.dispose();
         new LoginGUI();
     }
 
+    // Function for search user account
     public void searchUserAccount(JTextField searchTextField, DefaultTableModel model) {
         String search = searchTextField.getText();
 
@@ -132,10 +138,12 @@ public class SystemAdminGUI {
         }
     }
 
+    // Function for profile dropdown
     public List<String> getProfileList() {
         return new ViewUserAccountController().getProfileList();
     }
 
+    // Function for get all user account
     public void getAccountList(DefaultTableModel model) {
         new ViewUserAccountController().getAccountList(model);
     }
