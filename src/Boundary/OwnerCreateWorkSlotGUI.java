@@ -17,7 +17,7 @@ public class OwnerCreateWorkSlotGUI {
     private JTextField dateField;
     private JTextField cashierField;
     private JTextField chefField;
-    private JTextField staffField;
+    private JTextField waiterField;
 
     public OwnerCreateWorkSlotGUI(UserAccount u){
         displayCreateWorkSlotGUI(u);
@@ -84,9 +84,9 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(staffLabel);
 
         // Staff Field
-        staffField = new JTextField(20);
-        staffField.setBounds(150, 195, 100, 25);
-        panel.add(staffField);
+        waiterField = new JTextField(20);
+        waiterField.setBounds(150, 195, 100, 25);
+        panel.add(waiterField);
 
         // Create Button
         createButton = new JButton("Create");
@@ -102,15 +102,15 @@ public class OwnerCreateWorkSlotGUI {
         createButton.addActionListener(e -> {
             java.util.Date selectedDateUtil = dateChooser.getDate();
             java.sql.Date selectedDate = new java.sql.Date(selectedDateUtil.getTime());
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String date = sdf.format(selectedDate);
 
             int numOfChef = Integer.parseInt(chefField.getText());
             int numOfCashier = Integer.parseInt(cashierField.getText());
-            int numOfStaff = Integer.parseInt(staffField.getText());
-            WorkSlot workSlot = new WorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfStaff);
+            int numOfWaiter = Integer.parseInt(waiterField.getText());
+            WorkSlot workSlot = new WorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
 
-            if(numOfCashier < 1 || numOfChef < 1 || numOfStaff < 1) {
+            if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
                 JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
             } else {
                 JOptionPane.showMessageDialog(frame, "Successfully created!");

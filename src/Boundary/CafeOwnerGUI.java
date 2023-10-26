@@ -76,6 +76,13 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Chef's");
         tableComponents.addColumn("Cashier's");
         tableComponents.addColumn("Waiter's");
+        tableComponents.addColumn("Delete");
+
+//        CafeManagerGUI.ButtonRenderer buttonRenderer = new CafeManagerGUI.ButtonRenderer();
+
+
+//        workSlotTable.getColumnModel().getColumn(5).setCellRenderer(buttonRenderer);
+//        workSlotTable.getColumnModel().getColumn(5).setCellEditor(buttonEditor);
 
         WorkSlotController workSlotController = new WorkSlotController();
         List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();

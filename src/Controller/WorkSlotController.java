@@ -6,8 +6,12 @@ import java.sql.Date;
 import java.util.List;
 
 public class WorkSlotController {
-    public WorkSlot createWorkSlot(String date, int chefAmount, int cashierAmount, int staffAmount) {
-        return new WorkSlot(Date.valueOf(date), chefAmount, cashierAmount, staffAmount);
+    private WorkSlot workSlot;
+    public WorkSlotController() {
+        this.workSlot = new WorkSlot();
+    }
+    public WorkSlot createWorkSlot(String date, int chefAmount, int cashierAmount, int waiterAmount) {
+        return workSlot.createWorkSlot(date, chefAmount, cashierAmount, waiterAmount);
     }
 
 

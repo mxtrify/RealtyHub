@@ -204,13 +204,14 @@ public class WorkSlot {
         }
     }
 
-    public WorkSlot createWorkSlot(String dateString) {
+    public WorkSlot createWorkSlot(String dateString, int chefAmount, int cashierAmount, int waiterAmount) {
         String workSlotQuery = "INSERT INTO work_slot (date) VALUES (?)";
         try {
             Connection conn = new DBConfig().getConnection();
             try (PreparedStatement preparedStatement = conn.prepareStatement(workSlotQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                java.util.Date parsedDate = sdf.parse(dateString);
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                java.util.Date parsedDate = inputFormat.parse(dateString);
                 java.sql.Date date = new java.sql.Date(parsedDate.getTime());
 
                 preparedStatement.setDate(1, date);
@@ -221,6 +222,8 @@ public class WorkSlot {
                     insertRoleAmount(date, CHEF, chefAmount);
                     insertRoleAmount(date, CASHIER, cashierAmount);
                     insertRoleAmount(date, WAITER, waiterAmount);
+
+                    return new WorkSlot(date, chefAmount, cashierAmount, waiterAmount);
                 }
             }
         } catch (SQLException | ParseException e) {
