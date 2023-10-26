@@ -7,6 +7,9 @@ import Boundary.CafeManagerGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -69,7 +72,6 @@ public class CafeOwnerGUI {
     }
 
     public void WorkSlotTable() {
-        JFrame frame = new JFrame();
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
 
@@ -101,10 +103,8 @@ public class CafeOwnerGUI {
 
                         boolean deletionSuccess = workSlotController.deleteWorkSlot(dateToDelete);
                         if (deletionSuccess) {
-                            JOptionPane.showMessageDialog(frame, "Delete Success");
                             System.out.println("Row deleted successfully from the database.");
                         } else {
-                            JOptionPane.showMessageDialog(frame, "Delete Failed");
                             System.out.println("Failed to delete row from the database.");
                         }
                     }
@@ -123,14 +123,65 @@ public class CafeOwnerGUI {
             }
         }
 
-        workSlotTable.getColumnModel().getColumn(4).setCellRenderer(new CafeManagerGUI.ButtonRenderer());
-        workSlotTable.getColumnModel().getColumn(4).setCellEditor(new CafeManagerGUI.ButtonEditor(workSlotTable));
-
+        workSlotTable.getColumnModel().getColumn(4).setCellRenderer((TableCellRenderer) new DeleteButtonRenderer());
+        workSlotTable.getColumnModel().getColumn(4).setCellEditor(new DeleteButtonEditor(workSlotTable));
 
 
         JScrollPane scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);
         panel.add(scrollPane);
+    }
+
+    static class DeleteButtonRenderer extends JButton implements TableCellRenderer {
+        public DeleteButtonRenderer() {
+            setOpaque(true);
+        }
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+    }
+
+
+    static class DeleteButtonEditor extends AbstractCellEditor implements TableCellEditor {
+        private JButton button;
+        private JTable table;
+
+        public DeleteButtonEditor(JTable table) {
+            this.table = table;
+            button = new JButton("Delete");
+            button.addActionListener(e -> {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    String dateToDelete = table.getValueAt(selectedRow, 0).toString();
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.removeRow(selectedRow);
+
+                    boolean deletionSuccess = deleteWorkSlot(dateToDelete);
+                    if (deletionSuccess) {
+                        System.out.println("Row deleted successfully from the database.");
+                    } else {
+                        System.out.println("Failed to delete row from the database.");
+                    }
+                }
+                stopCellEditing();
+            });
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            return button;
+        }
+
+        public Object getCellEditorValue() {
+            return "Delete";
+        }
+    }
+
+    private static boolean deleteWorkSlot(String date) {
+//        // current controller method is static
+//        WorkSlotController workSlotController = new WorkSlotController();
+        return WorkSlotController.deleteWorkSlot(date);
     }
 }
 
