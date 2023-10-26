@@ -6,6 +6,7 @@ import Entity.UserAccount;
 import java.util.List;
 
 public class CreateUserAccountController {
+    private SystemAdmin UA;
     public List<String> getProfileList() {
         return new SystemAdmin().getProfileByName();
     }

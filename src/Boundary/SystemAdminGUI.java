@@ -1,17 +1,19 @@
 package Boundary;
 
+import Controller.FilterUserAccountController;
 import Controller.SearchUserAccountController;
 import Controller.ViewUserAccountController;
 import Entity.UserAccount;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class SystemAdminGUI {
-    JFrame frame;
+    private JFrame frame;
     // Constructor
     public SystemAdminGUI(UserAccount u) {
         displaySystemAdminGUI(u);
@@ -43,10 +45,10 @@ public class SystemAdminGUI {
 
         // Profile list dropdown
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(getProfileList().toArray(new String[0]));
-        JComboBox profileChoice = new JComboBox(profileComboModel);
-        profileChoice.setBounds(350, 135, 200, 36);
-        profileChoice.setFont(new Font("Helvetica", Font.PLAIN,18));
-        panel.add(profileChoice);
+        JComboBox profileFilter = new JComboBox(profileComboModel);
+        profileFilter.setBounds(350, 135, 200, 36);
+        profileFilter.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(profileFilter);
 
         // View profile button
         JButton viewProfileButton = new JButton("View Profile");
@@ -87,6 +89,11 @@ public class SystemAdminGUI {
 
         searchButton.addActionListener(e -> searchUserAccount(searchTextField, model));
 
+        viewProfileButton.addActionListener(e -> {
+            frame.dispose();
+            new ViewUserProfileGUI(u);
+        });
+
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -99,7 +106,14 @@ public class SystemAdminGUI {
         // Action for create account
         createAccountButton.addActionListener(e -> {
             frame.dispose();
-            new CreateAccountGUI(u);
+            new CreateUserAccountGUI(u);
+        });
+
+        profileFilter.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                String profileName = (String) profileFilter.getSelectedItem();
+                new FilterUserAccountController().FilterUserAccount(profileName, model);
+            }
         });
     }
 
@@ -116,7 +130,6 @@ public class SystemAdminGUI {
         } else {
             new SearchUserAccountController().searchUserAccount(search, model);
         }
-
     }
 
     public List<String> getProfileList() {
@@ -126,4 +139,5 @@ public class SystemAdminGUI {
     public void getAccountList(DefaultTableModel model) {
         new ViewUserAccountController().getAccountList(model);
     }
+
 }
