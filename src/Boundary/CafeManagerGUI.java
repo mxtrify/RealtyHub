@@ -129,7 +129,7 @@ public class CafeManagerGUI {
     }
 
     // Custom button renderer
-    class ButtonRenderer extends JButton implements TableCellRenderer {
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
         }
@@ -141,7 +141,7 @@ public class CafeManagerGUI {
     }
 
     // Custom button editor
-    class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+    static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         private JButton button;
         private JTable table;
 

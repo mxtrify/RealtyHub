@@ -14,6 +14,15 @@ public class WorkSlotController {
         return workSlot.createWorkSlot(date, chefAmount, cashierAmount, waiterAmount);
     }
 
+    public boolean deleteWorkSlot(String date) {
+        try {
+            Date sqlDate = Date.valueOf(date);
+            return workSlot.deleteWorkSlot(sqlDate);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public List<WorkSlot> getAllWorkSlots() {
         WorkSlot workSlot = new WorkSlot();

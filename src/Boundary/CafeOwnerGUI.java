@@ -3,6 +3,7 @@ package Boundary;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import Controller.WorkSlotController;
+import Boundary.CafeManagerGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -71,6 +72,7 @@ public class CafeOwnerGUI {
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
 
+
         tableComponents.setRowCount(0);
         tableComponents.addColumn("Date");
         tableComponents.addColumn("Chef's");
@@ -78,33 +80,49 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Waiter's");
         tableComponents.addColumn("Delete");
 
-//        CafeManagerGUI.ButtonRenderer buttonRenderer = new CafeManagerGUI.ButtonRenderer();
-
-
-//        workSlotTable.getColumnModel().getColumn(5).setCellRenderer(buttonRenderer);
-//        workSlotTable.getColumnModel().getColumn(5).setCellEditor(buttonEditor);
 
         WorkSlotController workSlotController = new WorkSlotController();
         List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyy-MM-dd");
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         for (WorkSlot workSlot : workSlotData) {
             try {
                 String formattedDate = outputFormat.format(workSlot.getDate());
 
+                // Action for delete button
+                JButton deleteButton = new JButton("Delete");
+                deleteButton.addActionListener(e -> {
+                    int selectedRow = workSlotTable.getSelectedRow();
+                    if(selectedRow != -1) {
+                        String dateToDelete = tableComponents.getValueAt(selectedRow, 0).toString();
+                        tableComponents.removeRow(selectedRow);
+
+                        boolean deletionSuccess = workSlotController.deleteWorkSlot(dateToDelete);
+                        if (deletionSuccess) {
+                            System.out.println("Row deleted successfully from the database.");
+                        } else {
+                            System.out.println("Failed to delete row from the database.");
+                        }
+                    }
+                });
+
                 Object[] rowData = {
                         formattedDate,
                         workSlot.getChefAmount(),
                         workSlot.getCashierAmount(),
-                        workSlot.getWaiterAmount()
+                        workSlot.getWaiterAmount(),
+                        deleteButton
                 };
                 tableComponents.addRow(rowData);
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
+
+        workSlotTable.getColumnModel().getColumn(4).setCellRenderer(new CafeManagerGUI.ButtonRenderer());
+        workSlotTable.getColumnModel().getColumn(4).setCellEditor(new CafeManagerGUI.ButtonEditor(workSlotTable));
+
 
 
         JScrollPane scrollPane = new JScrollPane(workSlotTable);

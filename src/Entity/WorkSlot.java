@@ -305,6 +305,31 @@ public class WorkSlot {
 
         return amount;
     }
+
+    public boolean deleteWorkSlot(Date date) {
+        deleteRowAmountTableEntry(date);
+        deleteWorkSlotEntry(date);
+        return true;
+    }
+
+    private void deleteRowAmountTableEntry(Date date) {
+        String delRoleAmountQuery = "DELETE FROM row_amount WHERE date = ?";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(delRoleAmountQuery)) {
+            preparedStatement.setDate(1, date);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void deleteWorkSlotEntry(Date date) {
+        String delWorkSlotQuery = "DELETE FROM work_slot WHERE date = ?";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(delWorkSlotQuery)) {
+            preparedStatement.setDate(1, date);
+            preparedStatement.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
