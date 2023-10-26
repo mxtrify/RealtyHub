@@ -20,17 +20,14 @@ public class SystemAdmin extends UserAccount {
         super(username, password);
     }
 
-    public DefaultTableModel selectAll(DefaultTableModel model) {
+    // Get list of all user account
+    public void selectAll(DefaultTableModel model) {
         String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            model.addColumn("Username");
-            model.addColumn("First Name");
-            model.addColumn("Last Name");
-            model.addColumn("Profile");
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
                 String fName = resultSet.getString("f_name");
@@ -38,13 +35,12 @@ public class SystemAdmin extends UserAccount {
                 String profileName = resultSet.getString("profile_name");
                 model.addRow(new Object[]{username, fName, lName, profileName});
             }
-
-            return model;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    // Get profile name
     public List<String> getProfileByName() {
         String query = "SELECT profile_name FROM profile";
         List<String> profileNameList = new ArrayList<>();
@@ -64,6 +60,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
+    // Get role name
     public List<String> getRoleByName() {
         String query = "SELECT role_name FROM role";
         List<String> roleNameList = new ArrayList<>();
@@ -98,6 +95,26 @@ public class SystemAdmin extends UserAccount {
             preparedStatement.setInt(8, newUser.getMaxSlot());
             preparedStatement.setBoolean(9, true);
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getUserAccountByUsername(String search, DefaultTableModel model) {
+        String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, search);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            model.setRowCount(0);
+            while(resultSet.next()) {
+                String username = resultSet.getString("username");
+                String fName = resultSet.getString("f_name");
+                String lName = resultSet.getString("l_name");
+                String profileName = resultSet.getString("profile_name");
+                model.addRow(new Object[]{username, fName, lName, profileName});
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

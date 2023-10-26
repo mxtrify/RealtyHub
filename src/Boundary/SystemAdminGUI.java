@@ -1,11 +1,13 @@
 package Boundary;
 
+import Controller.SearchUserAccountController;
 import Controller.ViewUserAccountController;
 import Entity.UserAccount;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class SystemAdminGUI {
@@ -60,6 +62,8 @@ public class SystemAdminGUI {
 
         // User account table
         DefaultTableModel model = new DefaultTableModel();
+        String[] columnNames = {"Username", "First Name", "Last Name", "Profile"};
+        model.setColumnIdentifiers(columnNames);
         getAccountList(model);
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -81,6 +85,17 @@ public class SystemAdminGUI {
         // Action for logout button
         logoutButton.addActionListener(e -> logout());
 
+        searchButton.addActionListener(e -> searchUserAccount(searchTextField, model));
+
+        searchTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchUserAccount(searchTextField, model);
+                }
+            }
+        });
+
         // Action for create account
         createAccountButton.addActionListener(e -> {
             frame.dispose();
@@ -91,6 +106,17 @@ public class SystemAdminGUI {
     public void logout() {
         frame.dispose();
         new LoginGUI();
+    }
+
+    public void searchUserAccount(JTextField searchTextField, DefaultTableModel model) {
+        String search = searchTextField.getText();
+
+        if(search.isEmpty()) {
+            getAccountList(model);
+        } else {
+            new SearchUserAccountController().searchUserAccount(search, model);
+        }
+
     }
 
     public List<String> getProfileList() {
