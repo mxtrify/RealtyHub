@@ -7,12 +7,12 @@ import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.util.List;
 
-public class CreateAccountGUI {
-    public CreateAccountGUI() {
+public class CreateUserAccountGUI {
+    public CreateUserAccountGUI() {
 
     }
 
-    public CreateAccountGUI(UserAccount u) {
+    public CreateUserAccountGUI(UserAccount u) {
         displayCreateAccount(u);
     }
 

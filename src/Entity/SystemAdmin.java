@@ -27,7 +27,7 @@ public class SystemAdmin extends UserAccount {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-
+            model.setRowCount(0);
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
                 String fName = resultSet.getString("f_name");
@@ -114,6 +114,61 @@ public class SystemAdmin extends UserAccount {
                 String lName = resultSet.getString("l_name");
                 String profileName = resultSet.getString("profile_name");
                 model.addRow(new Object[]{username, fName, lName, profileName});
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void selectAllProfile(DefaultTableModel model) {
+        String query = "SELECT profile_name, profile_desc FROM profile";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            model.setRowCount(0);
+            while(resultSet.next()) {
+                String profileName = resultSet.getString("profile_name");
+                String profileDesc = resultSet.getString("profile_desc");
+                model.addRow(new Object[]{profileName, profileDesc});
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getProfileName(String search, DefaultTableModel model) {
+        String query = "SELECT profile_name, profile_desc FROM profile WHERE profile_name = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, search);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            model.setRowCount(0);
+            while(resultSet.next()) {
+                String profileName = resultSet.getString("profile_name");
+                String profileDesc = resultSet.getString("profile_desc");
+                model.addRow(new Object[]{profileName, profileDesc});
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void selectByProfileName(String profileName, DefaultTableModel model) {
+        String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            model.setRowCount(0);
+            while(resultSet.next()) {
+                String username = resultSet.getString("username");
+                String fName = resultSet.getString("f_name");
+                String lName = resultSet.getString("l_name");
+                String profile = resultSet.getString("profile_name");
+                model.addRow(new Object[]{username, fName, lName, profile});
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
