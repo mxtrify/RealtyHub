@@ -53,6 +53,12 @@ public class CafeOwnerGUI {
         // Display Table
         WorkSlotTable();
 
+        // Delete Button
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setBounds(600, 200, 100, 25);
+        panel.add(deleteButton);
+        deleteButton.addActionListener(e -> deleteSelectedRow());
+
         frame.add(panel);
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,9 +77,26 @@ public class CafeOwnerGUI {
         });
     }
 
+    private void deleteSelectedRow() {
+        int seletedRow = workSlotTable.getSelectedRow();
+        if(seletedRow != -1) {
+            String dateToDelete = tableComponents.getValueAt(seletedRow, 0).toString();
+            tableComponents.removeRow(seletedRow);
+            WorkSlotController workSlotController = new WorkSlotController();
+            boolean deleteSuccess = workSlotController.deleteWorkSlot(dateToDelete);
+            if(deleteSuccess) {
+                System.out.println("Row Deleted");
+            }
+            else {
+                System.out.println("Error In Deleting");
+            }
+        }
+    }
+
     public void WorkSlotTable() {
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
+        workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
         tableComponents.setRowCount(0);
