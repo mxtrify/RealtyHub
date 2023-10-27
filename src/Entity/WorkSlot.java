@@ -305,6 +305,44 @@ public class WorkSlot {
         return amount;
     }
 
+    public boolean updateWorkSlot(Date oldDate, Date newDate, int roleID, int newAmount, int newWaiterAmount) {
+        return updateWorkSlotTable(oldDate, newDate) && updateRoleAmount(newDate, roleID, newAmount);
+    }
+
+    private boolean updateWorkSlotTable(Date oldDate, Date newDate) {
+        String updateWorkSlotQuery = "UPDATE work_slot SET date = ? WHERE date = ?";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(updateWorkSlotQuery)) {
+            preparedStatement.setDate(1, newDate);
+            preparedStatement.setDate(2, oldDate);
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            return rowsUpdated > 0; // Returns true if at least one row was updated
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean updateRoleAmount(Date date, int roleID, int newAmount) {
+        String updateRoleAmountQuery = "UPDATE role_amount SET amount = ? WHERE date = ? AND role_id = ?";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(updateRoleAmountQuery)) {
+            preparedStatement.setInt(1, newAmount);
+            preparedStatement.setDate(2, date);
+            preparedStatement.setInt(3, roleID);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
     public boolean deleteWorkSlot(Date date) {
         deleteRowAmountTableEntry(date);
         deleteWorkSlotEntry(date);
@@ -312,7 +350,7 @@ public class WorkSlot {
     }
 
     private void deleteRowAmountTableEntry(Date date) {
-        String delRoleAmountQuery = "DELETE FROM row_amount WHERE date = ?";
+        String delRoleAmountQuery = "DELETE FROM role_amount WHERE date = ?";
         try(PreparedStatement preparedStatement = conn.prepareStatement(delRoleAmountQuery)) {
             preparedStatement.setDate(1, date);
             preparedStatement.executeUpdate();

@@ -53,10 +53,6 @@ public class OwnerCreateWorkSlotGUI {
         dateChooser.setBounds(150, 75, 175, 25);
         panel.add(dateChooser);
 
-//        dateField = new JTextField(20);
-//        dateField.setBounds(150, 75, 175, 25);
-//        panel.add(dateField);
-
         // Chef Label
         JLabel chefLabel = new JLabel("Chef:");
         chefLabel.setBounds(75, 115, 100, 25);

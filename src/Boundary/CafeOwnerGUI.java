@@ -3,12 +3,9 @@ package Boundary;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import Controller.WorkSlotController;
-import Boundary.CafeManagerGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -64,6 +61,12 @@ public class CafeOwnerGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
+        // Edit Button
+        JButton editButton = new JButton("Edit");
+        editButton.setBounds(600, 250, 100, 25);
+        panel.add(editButton);
+        editButton.addActionListener(e -> editSelectedRow());
+
         // Action for createWorkSlotButton
         createWorkSlotButton.addActionListener(e -> {
             frame.dispose();
@@ -75,6 +78,74 @@ public class CafeOwnerGUI {
             frame.dispose();
             new LoginGUI();
         });
+    }
+
+    private void editSelectedRow() {
+        int selectedRow = workSlotTable.getSelectedRow();
+
+        if (selectedRow != -1) {
+            // Retrieve data from the selected row
+            String dateToEdit = tableComponents.getValueAt(selectedRow, 0).toString();
+            int chefAmount = (int) tableComponents.getValueAt(selectedRow, 1);
+            int cashierAmount = (int) tableComponents.getValueAt(selectedRow, 2);
+            int waiterAmount = (int) tableComponents.getValueAt(selectedRow, 3);
+
+            JFrame editFrame = new JFrame("Edit Work Slot");
+            JPanel editPanel = new JPanel();
+            editPanel.setLayout(null);
+
+            JLabel dateLabel = new JLabel("Date");
+            JLabel chefLabel = new JLabel("Chef");
+            JLabel cashierLabel = new JLabel("Cashier");
+            JLabel waiterLabel = new JLabel("Waiter");
+
+            dateLabel.setBounds(75, 75, 100, 25);
+            chefLabel.setBounds(75, 115, 100, 25);
+            cashierLabel.setBounds(75, 155, 100, 25);
+            waiterLabel.setBounds(75, 195, 100, 25);
+
+            editPanel.add(dateLabel);
+            editPanel.add(chefLabel);
+            editPanel.add(cashierLabel);
+            editPanel.add(waiterLabel);
+
+            JTextField dateField = new JTextField(dateToEdit);
+            JTextField chefField = new JTextField(String.valueOf(chefAmount));
+            JTextField cashierField = new JTextField(String.valueOf(cashierAmount));
+            JTextField waiterField = new JTextField(String.valueOf(waiterAmount));
+
+            dateField.setBounds(150, 75, 100, 25);
+            chefField.setBounds(150, 115, 100, 25);
+            cashierField.setBounds(150, 155, 100, 25);
+            waiterField.setBounds(150, 195, 100, 25);
+
+            editPanel.add(dateField);
+            editPanel.add(chefField);
+            editPanel.add(cashierField);
+            editPanel.add(waiterField);
+
+            JButton saveButton = new JButton("Save");
+            saveButton.setBounds(600, 400, 100, 25);
+            editPanel.add(saveButton);
+
+            // Action for the save button
+            saveButton.addActionListener(e -> {
+                tableComponents.setValueAt(dateField.getText(), selectedRow, 0);
+                tableComponents.setValueAt(Integer.parseInt(chefField.getText()), selectedRow, 1);
+                tableComponents.setValueAt(Integer.parseInt(cashierField.getText()), selectedRow, 2);
+                tableComponents.setValueAt(Integer.parseInt(waiterField.getText()), selectedRow, 3);
+
+                WorkSlotController workSlotController = new WorkSlotController();
+                workSlotController.updateWorkSlot(dateToEdit, dateField.getText(), Integer.parseInt(chefField.getText()), Integer.parseInt(cashierField.getText()), Integer.parseInt(waiterField.getText()));
+
+                editFrame.dispose();
+            });
+
+            editFrame.add(editPanel);
+            editFrame.setSize(800, 600);
+            editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            editFrame.setVisible(true);
+        }
     }
 
     private void deleteSelectedRow() {
