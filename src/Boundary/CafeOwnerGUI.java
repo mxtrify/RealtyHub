@@ -32,7 +32,7 @@ public class CafeOwnerGUI {
 
         // Title Label
         JLabel titleLabel = new JLabel("Welcome, Cafe Owner");
-        titleLabel.setBounds(100,20, 500, 25);
+        titleLabel.setBounds(100, 20, 500, 25);
         panel.add(titleLabel);
 
         // Logout Button
@@ -81,8 +81,6 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Chef's");
         tableComponents.addColumn("Cashier's");
         tableComponents.addColumn("Waiter's");
-        tableComponents.addColumn("Delete");
-
 
         WorkSlotController workSlotController = new WorkSlotController();
         List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
@@ -93,95 +91,21 @@ public class CafeOwnerGUI {
             try {
                 String formattedDate = outputFormat.format(workSlot.getDate());
 
-                String buttonText = "Delete";
-                JButton deleteButton = new JButton("Delete");
-                deleteButton.addActionListener(e -> {
-                    int selectedRow = workSlotTable.getSelectedRow();
-                    if(selectedRow != -1) {
-                        String dateToDelete = tableComponents.getValueAt(selectedRow, 0).toString();
-                        tableComponents.removeRow(selectedRow);
-
-                        boolean deletionSuccess = workSlotController.deleteWorkSlot(dateToDelete);
-                        if (deletionSuccess) {
-                            System.out.println("Row deleted successfully from the database.");
-                        } else {
-                            System.out.println("Failed to delete row from the database.");
-                        }
-                    }
-                });
-
                 Object[] rowData = {
                         formattedDate,
                         workSlot.getChefAmount(),
                         workSlot.getCashierAmount(),
-                        workSlot.getWaiterAmount(),
-                        buttonText
+                        workSlot.getWaiterAmount()
                 };
                 tableComponents.addRow(rowData);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        workSlotTable.getColumnModel().getColumn(4).setCellRenderer((TableCellRenderer) new DeleteButtonRenderer());
-        workSlotTable.getColumnModel().getColumn(4).setCellEditor(new DeleteButtonEditor(workSlotTable));
-
-
         JScrollPane scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);
         panel.add(scrollPane);
-    }
-
-    static class DeleteButtonRenderer extends JButton implements TableCellRenderer {
-        public DeleteButtonRenderer() {
-            setOpaque(true);
-        }
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText((value == null) ? "" : value.toString());
-            return this;
-        }
-    }
-
-
-    static class DeleteButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        private JButton button;
-        private JTable table;
-
-        public DeleteButtonEditor(JTable table) {
-            this.table = table;
-            button = new JButton("Delete");
-            button.addActionListener(e -> {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    String dateToDelete = table.getValueAt(selectedRow, 0).toString();
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    model.removeRow(selectedRow);
-
-                    boolean deletionSuccess = deleteWorkSlot(dateToDelete);
-                    if (deletionSuccess) {
-                        System.out.println("Row deleted successfully from the database.");
-                    } else {
-                        System.out.println("Failed to delete row from the database.");
-                    }
-                }
-                stopCellEditing();
-            });
-        }
-
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            return button;
-        }
-
-        public Object getCellEditorValue() {
-            return "Delete";
-        }
-    }
-
-    private static boolean deleteWorkSlot(String date) {
-//        // current controller method is static
-//        WorkSlotController workSlotController = new WorkSlotController();
-        return WorkSlotController.deleteWorkSlot(date);
     }
 }
 
