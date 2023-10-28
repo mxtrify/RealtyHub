@@ -344,12 +344,12 @@ public class WorkSlot {
 
 
     public boolean deleteWorkSlot(Date date) {
-        deleteRowAmountTableEntry(date);
+        deleteRoleAmountTableEntry(date);
         deleteWorkSlotEntry(date);
         return true;
     }
 
-    private void deleteRowAmountTableEntry(Date date) {
+    private void deleteRoleAmountTableEntry(Date date) {
         String delRoleAmountQuery = "DELETE FROM role_amount WHERE date = ?";
         try(PreparedStatement preparedStatement = conn.prepareStatement(delRoleAmountQuery)) {
             preparedStatement.setDate(1, date);
