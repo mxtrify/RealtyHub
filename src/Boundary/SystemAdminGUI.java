@@ -52,13 +52,13 @@ public class SystemAdminGUI {
 
         // View profile button
         JButton viewProfileButton = new JButton("View Profile");
-        viewProfileButton.setBounds(585, 135, 135, 36);
+        viewProfileButton.setBounds(580, 135, 135, 36);
         viewProfileButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(viewProfileButton);
 
         // Create account button
         JButton createAccountButton = new JButton("+");
-        createAccountButton.setBounds(720, 135, 36, 36);
+        createAccountButton.setBounds(716, 135, 36, 36);
         createAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(createAccountButton);
 
@@ -70,7 +70,7 @@ public class SystemAdminGUI {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 700, 350);
+        scrollPane.setBounds(50,175, 500, 350);
         frame.add(scrollPane);
 
         // Logout Button

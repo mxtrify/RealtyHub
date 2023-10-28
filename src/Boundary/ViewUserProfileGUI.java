@@ -83,6 +83,11 @@ public class ViewUserProfileGUI {
                 }
             }
         });
+
+        createProfileButton.addActionListener(e -> {
+            frame.dispose();
+            new CreateUserProfileGUI(u);
+        });
     }
 
     public void getProfileList(DefaultTableModel model) {

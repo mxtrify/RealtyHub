@@ -174,4 +174,18 @@ public class SystemAdmin extends UserAccount {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean insertProfile(String profileName, String profileDesc) {
+        String query = "INSERT INTO profile (profile_name, profile_desc) VALUES (?, ?)";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileName);
+            preparedStatement.setString(2, profileDesc);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
