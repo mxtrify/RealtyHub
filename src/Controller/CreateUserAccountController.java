@@ -6,16 +6,20 @@ import Entity.UserAccount;
 import java.util.List;
 
 public class CreateUserAccountController {
-    private SystemAdmin UA;
+    private SystemAdmin systemAdmin;
+
+    public CreateUserAccountController() {
+        this.systemAdmin = new SystemAdmin();
+    }
     public List<String> getProfileList() {
-        return new SystemAdmin().getProfileByName();
+        return systemAdmin.getProfileByName();
     }
 
     public List<String> getRoleList() {
-        return new SystemAdmin().getRoleByName();
+        return systemAdmin.getRoleByName();
     }
 
     public void addAccount(UserAccount newUser) {
-        new SystemAdmin().insertAccount(newUser);
+        systemAdmin.insertAccount(newUser);
     }
 }

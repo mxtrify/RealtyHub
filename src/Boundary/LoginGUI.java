@@ -6,7 +6,7 @@ import Entity.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginGUI extends JFrame {
+public class LoginGUI {
     // Variables
     private JFrame frame;
     private JButton loginButton;
