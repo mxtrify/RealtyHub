@@ -1,5 +1,6 @@
 package Boundary;
 
+import Controller.DeleteUserProfileController;
 import Controller.SearchUserAccountController;
 import Controller.SearchUserProfileController;
 import Controller.ViewUserProfileController;
@@ -42,7 +43,7 @@ public class ViewUserProfileGUI {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 700, 350);
+        scrollPane.setBounds(50,175, 525, 350);
         frame.add(scrollPane);
 
         // Search Field
@@ -62,6 +63,18 @@ public class ViewUserProfileGUI {
         createProfileButton.setBounds(720, 135, 36, 36);
         createProfileButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(createProfileButton);
+
+        // Edit profile button
+        JButton editButton = new JButton("Edit");
+        editButton.setBounds(600, 200, 100, 36);
+        editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(editButton);
+
+        // Delete profile button
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setBounds(600, 250, 100, 36);
+        deleteButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(deleteButton);
 
         frame.add(panel);
         frame.setSize(800, 600);
@@ -87,6 +100,24 @@ public class ViewUserProfileGUI {
         createProfileButton.addActionListener(e -> {
             frame.dispose();
             new CreateUserProfileGUI(u);
+        });
+
+        editButton.addActionListener(e -> {
+
+        });
+
+        deleteButton.addActionListener(e -> {
+            if (table.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(frame, "Please select profile to delete", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
+                if(new DeleteUserProfileController().deleteUserProfile(profileName)) {
+                    JOptionPane.showMessageDialog(frame, "Successfully delete profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                    model.removeRow(table.getSelectedRow());
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to delete profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
     }
 

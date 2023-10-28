@@ -188,4 +188,17 @@ public class SystemAdmin extends UserAccount {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean deleteProfile(String profileName) {
+        String query = "DELETE FROM profile WHERE profile_name = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileName);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
