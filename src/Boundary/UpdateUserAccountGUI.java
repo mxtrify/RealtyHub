@@ -1,6 +1,8 @@
 package Boundary;
 
 import Controller.CreateUserAccountController;
+import Controller.UpdateUserAccountController;
+import Controller.UpdateUserProfileController;
 import Entity.UserAccount;
 
 import javax.swing.*;
@@ -27,6 +29,7 @@ public class UpdateUserAccountGUI {
 
         JTextField usernameField = new JTextField(u.getUsername());
         usernameField.setBounds(200, 100, 235, 50);
+        usernameField.setEnabled(false);
         panel.add(usernameField);
 
         JLabel passwordLabel = new JLabel("Password");
@@ -65,51 +68,52 @@ public class UpdateUserAccountGUI {
         profileLabel.setBounds(100, 350, 235, 50);
         panel.add(profileLabel);
 
-        List<String> profileList = new CreateUserAccountController().getProfileList();
+        // Profile dropdown
+        List<String> profileList = new UpdateUserAccountController().getProfileList();
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
         JComboBox<String> profileComboBox = new JComboBox<>(profileComboModel);
         profileComboBox.setSelectedIndex(u.getProfile()-1);
         profileComboBox.setBounds(200, 350, 235,50);
         panel.add(profileComboBox);
 
+        // Role label
         JLabel roleLabel = new JLabel("Role");
         roleLabel.setBounds(100, 400, 235, 50);
         panel.add(roleLabel);
 
-        List<String> roleList = new CreateUserAccountController().getRoleList();
+        // Role dropdown
+        List<String> roleList = new UpdateUserAccountController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
         roleComboBox.setSelectedIndex(u.getRole()-1);
         roleComboBox.setBounds(200, 400, 235, 50);
+        roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
         panel.add(roleComboBox);
-        roleComboBox.setEnabled(false);
 
-        profileComboBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
-            }
-        });
 
+        // Back button
         JButton backButton = new JButton("Back");
         backButton.setBounds(100, 500, 235, 30);
         panel.add(backButton);
 
-        JButton createButton = new JButton("Create");
-        createButton.setBounds(500, 500, 235, 30);
-        panel.add(createButton);
+        // Save button
+        JButton saveButton = new JButton("Save");
+        saveButton.setBounds(500, 500, 235, 30);
+        panel.add(saveButton);
 
         frame.add(panel);
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
+        profileComboBox.addItemListener(e -> roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3));
+
         backButton.addActionListener(e -> {
             frame.dispose();
             new SystemAdminGUI(u);
         });
 
-        createButton.addActionListener(e -> {
-            frame.dispose();
+        saveButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
             String firstName = firstNameField.getText();
@@ -117,10 +121,17 @@ public class UpdateUserAccountGUI {
             String email = emailField.getText();
             int profile = profileComboBox.getSelectedIndex();
             int role = roleComboBox.getSelectedIndex();
-            int maxSlot = 0;
-            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, maxSlot, true);
-            new CreateUserAccountController().addAccount(newUser);
-            new SystemAdminGUI(u);
+            UserAccount updatedUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, 0, true);
+            if(password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (new UpdateUserAccountController().UpdateUserAccount(updatedUser)) {
+                JOptionPane.showMessageDialog(frame, "User account successfully saved", "Success", JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                new SystemAdminGUI(u);
+            } else {
+                JOptionPane.showMessageDialog(frame, "Failed to save user account", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
         });
     }
 }

@@ -59,7 +59,7 @@ public class UpdateUserProfileGUI {
 
         saveButton.addActionListener(e -> {
             String newProfileDesc = profileDescArea.getText();
-            if(profileDesc.isEmpty()) {
+            if(newProfileDesc.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Description cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (new UpdateUserProfileController().UpdateUserProfile(profileName, newProfileDesc)) {
                 JOptionPane.showMessageDialog(frame, "User profile successfully saved", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -67,6 +67,7 @@ public class UpdateUserProfileGUI {
                 new ViewUserProfileGUI(u);
             } else {
                 JOptionPane.showMessageDialog(frame, "Failed to save user profile", "Error", JOptionPane.ERROR_MESSAGE);
+
             }
         });
     }

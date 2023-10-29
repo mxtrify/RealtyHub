@@ -242,6 +242,31 @@ public class SystemAdmin extends UserAccount {
             throw new RuntimeException(e);
         }
     }
+    public boolean updateUserAccount(UserAccount updatedUser) {
+        String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, max_slot = ?, profile_id = ?, role_id = ? WHERE username = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, updatedUser.getPassword());
+            preparedStatement.setString(2, updatedUser.getFirstName());
+            preparedStatement.setString(3, updatedUser.getLastName());
+            preparedStatement.setString(4, updatedUser.getEmail());
+            preparedStatement.setNull(5, Types.INTEGER); // Assuming getMaxSlot() returns the max_slot value
+            preparedStatement.setInt(6, updatedUser.getProfile()); // Set profile_id
+            preparedStatement.setObject(7, updatedUser.getRole()); // Set role_id
+
+            if (updatedUser.getProfile() != 4) {
+                preparedStatement.setNull(5, Types.INTEGER); // If profile_id is not 4, set max_slot to NULL
+                preparedStatement.setNull(7, Types.INTEGER); // Also set role_id to NULL
+            }
+
+            preparedStatement.setString(8, updatedUser.getUsername());
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public boolean updateUserProfile(String profileName, String newProfileDesc) {
         String query = "UPDATE profile SET profile_desc = ? WHERE profile_name = ?";

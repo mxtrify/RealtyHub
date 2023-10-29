@@ -87,11 +87,7 @@ public class CreateUserAccountGUI {
         panel.add(roleComboBox);
         roleComboBox.setEnabled(false);
 
-        profileComboBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
-            }
-        });
+        profileComboBox.addItemListener(e -> roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3));
 
         JButton backButton = new JButton("Back");
         backButton.setBounds(100, 500, 235, 30);
@@ -120,8 +116,7 @@ public class CreateUserAccountGUI {
             String email = emailField.getText();
             int profile = profileComboBox.getSelectedIndex();
             int role = roleComboBox.getSelectedIndex();
-            int maxSlot = 0;
-            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, maxSlot, true);
+            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, 0, true);
             new CreateUserAccountController().addAccount(newUser);
             new SystemAdminGUI(u);
         });
