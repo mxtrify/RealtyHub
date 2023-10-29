@@ -1,8 +1,6 @@
 package Boundary;
 
-import Controller.FilterUserAccountController;
-import Controller.SearchUserAccountController;
-import Controller.ViewUserAccountController;
+import Controller.*;
 import Entity.UserAccount;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,10 +8,12 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SystemAdminGUI {
     private JFrame frame;
+    private ArrayList<UserAccount> userAccounts;
     // Constructor
     public SystemAdminGUI(UserAccount u) {
         displaySystemAdminGUI(u);
@@ -63,12 +63,16 @@ public class SystemAdminGUI {
         panel.add(createAccountButton);
 
         // User account table
-        DefaultTableModel model = new DefaultTableModel();
         String[] columnNames = {"Username", "First Name", "Last Name", "Profile"};
+        userAccounts = new ViewUserAccountController().getAccountList();
+        DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnNames);
         getAccountList(model);
+
+
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(50,175, 500, 350);
         frame.add(scrollPane);
@@ -78,6 +82,18 @@ public class SystemAdminGUI {
         logoutButton.setBounds(650, 50, 100, 36);
         logoutButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(logoutButton);
+
+        // Edit profile button
+        JButton editButton = new JButton("Edit");
+        editButton.setBounds(600, 200, 100, 36);
+        editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(editButton);
+
+        // Delete profile button
+        JButton suspendButton = new JButton("Suspend");
+        suspendButton.setBounds(600, 250, 100, 36);
+        suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(suspendButton);
 
         frame.add(panel);
         frame.setSize(800, 600);
@@ -119,6 +135,20 @@ public class SystemAdminGUI {
                 new FilterUserAccountController().FilterUserAccount(profileName, model);
             }
         });
+
+        // Action for suspend button
+        suspendButton.addActionListener(e -> {
+            if (table.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(frame, "Please select account to suspend", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String username = model.getValueAt(table.getSelectedRow(),0).toString();
+                if(new SuspendUserAccountController().suspendUserAccount(username)) {
+                    JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     // Logout function
@@ -145,7 +175,14 @@ public class SystemAdminGUI {
 
     // Function for get all user account
     public void getAccountList(DefaultTableModel model) {
-        new ViewUserAccountController().getAccountList(model);
+        model.setRowCount(0);
+        for (UserAccount userAccount : userAccounts) {
+            model.addRow(new Object[]{
+                    userAccount.getUsername(),
+                    userAccount.getFirstName(),
+                    userAccount.getLastName(),
+                    userAccount.getProfileName()
+            });
+        }
     }
-
 }

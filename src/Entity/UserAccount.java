@@ -14,6 +14,7 @@ public class UserAccount {
     private String lastName;
     private String email;
     private int profile;
+    private String profileName;
     private int role;
     private int maxSlot;
     private boolean status;
@@ -33,6 +34,13 @@ public class UserAccount {
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserAccount(String username, String firstName, String lastName, String profileName) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profileName = profileName;
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role, int maxSlot, boolean status) {
@@ -111,6 +119,22 @@ public class UserAccount {
         this.maxSlot = maxSlot;
     }
 
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     // Function for validating login
     public UserAccount validateLogin(String username, String password) {
         String query = "SELECT * FROM user_account WHERE username = ? AND password = ?";
@@ -128,7 +152,7 @@ public class UserAccount {
                 } else if (resultSet.getInt("profile_id") == 3) {
                     return new CafeManager(username, password);
                 } else if (resultSet.getInt("profile_id") == 4) {
-                    return new CafeStaff();
+                    return new CafeStaff(username, password);
                 } else {
                     return null;
                 }

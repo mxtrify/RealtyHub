@@ -71,7 +71,7 @@ public class CreateUserProfileGUI {
             } else if (new CreateUserProfileController().createUserProfile(profileName, profileDesc)) {
                 JOptionPane.showMessageDialog(frame, "User profile created successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 frame.dispose();
-                new SystemAdminGUI(u);
+                new ViewUserProfileGUI(u);
             } else {
                 JOptionPane.showMessageDialog(frame, "Failed to create user profile", "Error", JOptionPane.ERROR_MESSAGE);
             }

@@ -87,24 +87,9 @@ public class CreateUserAccountGUI {
         panel.add(roleComboBox);
         roleComboBox.setEnabled(false);
 
-        JLabel maxSlotLabel = new JLabel("Max Slot");
-        maxSlotLabel.setBounds(100, 450, 235, 50);
-        panel.add(maxSlotLabel);
-
-        JTextField maxSlotField = new JTextField();
-        maxSlotField.setBounds(200, 450, 235, 50);
-        panel.add(maxSlotField);
-        maxSlotField.setEnabled(false);
-
         profileComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                if (profileComboBox.getSelectedIndex() == 3) {
-                    roleComboBox.setEnabled(true);
-                    maxSlotField.setEnabled(true);
-                } else {
-                    roleComboBox.setEnabled(false);
-                    maxSlotField.setEnabled(false);
-                }
+                roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
             }
         });
 
@@ -135,8 +120,8 @@ public class CreateUserAccountGUI {
             String email = emailField.getText();
             int profile = profileComboBox.getSelectedIndex();
             int role = roleComboBox.getSelectedIndex();
-            int maxSlot = Integer.parseInt(maxSlotField.getText());
-            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile, role, maxSlot, true);
+            int maxSlot = 0;
+            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, maxSlot, true);
             new CreateUserAccountController().addAccount(newUser);
             new SystemAdminGUI(u);
         });

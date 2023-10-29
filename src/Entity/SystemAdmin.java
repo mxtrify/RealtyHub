@@ -4,10 +4,7 @@ import Config.DBConfig;
 import com.mysql.cj.protocol.Resultset;
 
 import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,20 +18,22 @@ public class SystemAdmin extends UserAccount {
     }
 
     // Get list of all user account
-    public void selectAll(DefaultTableModel model) {
+    public ArrayList<UserAccount> selectAll() {
+        ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-            model.setRowCount(0);
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
                 String fName = resultSet.getString("f_name");
                 String lName = resultSet.getString("l_name");
                 String profileName = resultSet.getString("profile_name");
-                model.addRow(new Object[]{username, fName, lName, profileName});
+                UserAccount userAccount = new UserAccount(username, fName, lName, profileName);
+                userAccounts.add(userAccount);
             }
+            return userAccounts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -90,9 +89,14 @@ public class SystemAdmin extends UserAccount {
             preparedStatement.setString(3, newUser.getFirstName());
             preparedStatement.setString(4, newUser.getLastName());
             preparedStatement.setString(5, newUser.getEmail());
-            preparedStatement.setInt(6, newUser.getProfile());
-            preparedStatement.setInt(7, newUser.getRole());
-            preparedStatement.setInt(8, newUser.getMaxSlot());
+            preparedStatement.setInt(7, newUser.getProfile());
+            if(newUser.getProfile() == 4) {
+                preparedStatement.setNull(6, Types.INTEGER);
+                preparedStatement.setInt(8, newUser.getRole());
+            } else {
+                preparedStatement.setNull(6, Types.INTEGER);
+                preparedStatement.setNull(8, Types.INTEGER);
+            }
             preparedStatement.setBoolean(9, true);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -101,11 +105,11 @@ public class SystemAdmin extends UserAccount {
     }
 
     public void getUserAccountByUsername(String search, DefaultTableModel model) {
-        String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username = ?";
+        String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, search);
+            preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             model.setRowCount(0);
             while(resultSet.next()) {
@@ -138,11 +142,11 @@ public class SystemAdmin extends UserAccount {
     }
 
     public void getProfileName(String search, DefaultTableModel model) {
-        String query = "SELECT profile_name, profile_desc FROM profile WHERE profile_name = ?";
+        String query = "SELECT profile_name, profile_desc FROM profile WHERE profile_name LIKE ?";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, search);
+            preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             model.setRowCount(0);
             while(resultSet.next()) {
@@ -195,6 +199,19 @@ public class SystemAdmin extends UserAccount {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean suspendUserAccount(String username) {
+        String query = "UPDATE user_account SET status = 0 WHERE username = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {

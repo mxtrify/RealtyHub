@@ -1,13 +1,13 @@
 package Controller;
 
 import Entity.SystemAdmin;
-
-import javax.swing.table.DefaultTableModel;
+import Entity.UserAccount;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewUserAccountController {
-    public void getAccountList(DefaultTableModel model) {
-        new SystemAdmin().selectAll(model);
+    public ArrayList<UserAccount> getAccountList() {
+        return new SystemAdmin().selectAll();
     }
 
     public List<String> getProfileList() {
