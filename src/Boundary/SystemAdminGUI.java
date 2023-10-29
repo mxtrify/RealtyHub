@@ -136,7 +136,19 @@ public class SystemAdminGUI {
             }
         });
 
-        // Action for suspend button
+        // Edit account button
+        editButton.addActionListener(e -> {
+            if (table.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(frame, "Please select account to edit", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String username = model.getValueAt(table.getSelectedRow(),0).toString();
+                UserAccount userAccount = new UpdateUserAccountController().getSelectedAccount(username);
+                frame.dispose();
+                new UpdateUserAccountGUI(userAccount);
+            }
+        });
+
+        // Suspend account button
         suspendButton.addActionListener(e -> {
             if (table.getSelectedRow() == -1) {
                 JOptionPane.showMessageDialog(frame, "Please select account to suspend", "Error", JOptionPane.ERROR_MESSAGE);

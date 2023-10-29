@@ -43,6 +43,15 @@ public class UserAccount {
         this.profileName = profileName;
     }
 
+    public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profile = profile;
+        this.role = role;
+    }
     public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role, int maxSlot, boolean status) {
         this.username = username;
         this.password = password;

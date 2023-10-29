@@ -218,4 +218,42 @@ public class SystemAdmin extends UserAccount {
             throw new RuntimeException(e);
         }
     }
+
+    public UserAccount getSelectedAccount(String username) {
+        String query = "SELECT * FROM user_account WHERE username = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            UserAccount userAccount = new UserAccount();
+            while(resultSet.next()) {
+                String userName = resultSet.getString("username");
+                String password = resultSet.getString("password");
+                String firstName = resultSet.getString("f_name");
+                String lastName = resultSet.getString("l_name");
+                String email = resultSet.getString("email");
+                int profileID = resultSet.getInt("profile_id");
+                int roleID = resultSet.getInt("role_id");
+                userAccount = new UserAccount(userName, password, firstName, lastName, email, profileID, roleID);
+            }
+            return userAccount;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean updateUserProfile(String profileName, String newProfileDesc) {
+        String query = "UPDATE profile SET profile_desc = ? WHERE profile_name = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, newProfileDesc);
+            preparedStatement.setString(2, profileName);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
