@@ -2,7 +2,6 @@ package Entity;
 
 import Config.DBConfig;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +21,7 @@ public class CafeManager extends UserAccount {
         roles.add("-- Select --");
 
         try{
-            Connection conn = new DBConfig().getConnection();
+            conn = new DBConfig().getConnection();
             String query = "SELECT `role_name` from `role`";
 
             // Execute query

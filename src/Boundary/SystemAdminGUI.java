@@ -63,13 +63,11 @@ public class SystemAdminGUI {
         panel.add(createAccountButton);
 
         // User account table
-        String[] columnNames = {"Username", "First Name", "Last Name", "Profile"};
-        userAccounts = new ViewUserAccountController().getAccountList();
+        String[] columnNames = {"Username", "First Name", "Last Name", "Profile", "Status"};
+
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnNames);
         getAccountList(model);
-
-
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -155,6 +153,7 @@ public class SystemAdminGUI {
             } else {
                 String username = model.getValueAt(table.getSelectedRow(),0).toString();
                 if(new SuspendUserAccountController().suspendUserAccount(username)) {
+                    getAccountList(model);
                     JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
@@ -188,12 +187,20 @@ public class SystemAdminGUI {
     // Function for get all user account
     public void getAccountList(DefaultTableModel model) {
         model.setRowCount(0);
+        userAccounts = new ViewUserAccountController().getAccountList();
         for (UserAccount userAccount : userAccounts) {
+            String status;
+            if(userAccount.isStatus()) {
+                status = "Active";
+            } else {
+                status = "Suspended";
+            }
             model.addRow(new Object[]{
                     userAccount.getUsername(),
                     userAccount.getFirstName(),
                     userAccount.getLastName(),
-                    userAccount.getProfileName()
+                    userAccount.getProfileName(),
+                    status
             });
         }
     }

@@ -2,15 +2,12 @@ package Entity;
 
 import Config.DBConfig;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class WorkSlot {
     public static final int CHEF = 1;
@@ -136,73 +133,92 @@ public class WorkSlot {
         }
     }
 
-    public Object[][] getWorkSlotsLeft() {
+    public Object[][] getWS(){
+
+        // Initial data
         Object[][] data = null;
-        int chefLeft = 0;
-        int cashierLeft = 0;
         int waiterLeft = 0;
-        System.out.println(dateToString());
+        int cashierLeft = 0;
+        int chefLeft = 0;
 
-        try {
-            String query = "SELECT COUNT(b.bid_id) as bids " +
-                    "FROM bid b JOIN user_account ua ON b.username = ua.username " +
-                    "JOIN role r ON ua.role_id = r.role_id " +
-                    "WHERE r.role_name = ? AND b.date = ?";
 
+        try{
+            // Check for amount of staff left for each role
+            // By calculating the total amount of staff for each role
+            // subtract by the total approved staff on specific date for specific role
+            // * Return null if no work slot made *
+            String query = "SELECT COUNT(`bid`.`bid_id`) as `bids` FROM `bid` " +
+                    "JOIN `user_account` ON `bid`.`username` = `user_account`.`username` " +
+                    "JOIN `role` ON `user_account`.`role_id` = `role`.`role_id` " +
+                    "WHERE `role`.`role_name` = ? AND `bid`.`date` = ? AND (`bid`.`bid_status` = \"Approved\" OR `bid`.`bid_status` = \"Assigned\")";
+
+            // Get number of chef approved
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Chef");
             preparedStatement.setDate(2, getDate());
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next() && getChefAmount() != 0) {
+            if(resultSet.next() && getChefAmount() >= 1){
+                // Get number of chef left
                 chefLeft = getChefAmount() - resultSet.getInt("bids");
-            } else {
+            }else{
                 return null;
             }
 
+
+            // Get number of cashier approved
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Cashier");
             preparedStatement.setDate(2, getDate());
             resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next() && getCashierAmount() != 0){
+            if (resultSet.next() && getCashierAmount() >= 1){
+                // Get number of cashier left
                 cashierLeft = getCashierAmount() - resultSet.getInt("bids");
-            }
-            else {
+            }else{
                 return null;
             }
 
+
+            // Get number of waiter approved
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Waiter");
             preparedStatement.setDate(2, getDate());
             resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next() && getWaiterAmount() != 0){
+            if (resultSet.next() && getWaiterAmount() >= 1){
+                // Get number of waiter left
                 waiterLeft = getWaiterAmount() - resultSet.getInt("bids");
-            }
-            else {
+            }else {
                 return null;
             }
 
+            // Store in 2D array
             data = new Object[1][5];
             data[0][0] = dateToString();
             data[0][1] = chefLeft;
             data[0][2] = cashierLeft;
             data[0][3] = waiterLeft;
 
-            if(chefLeft == 0 && cashierLeft == 0 && waiterLeft == 0) {
+            // Determine slot availability
+            if(chefLeft == 0 && cashierLeft == 0 && waiterLeft == 0){
                 data[0][4] = "Not Available";
-            }
-            else {
+            }else{
                 data[0][4] = "Available";
             }
 
+            // Close resources
+            preparedStatement.close();
+            resultSet.close();
+
+
+            // Return the data
             return data;
-        } catch (SQLException e) {
+
+        }catch (SQLException e){
             e.printStackTrace();
             return null;
         }
     }
+
+
 
     public WorkSlot createWorkSlot(String dateString, int chefAmount, int cashierAmount, int waiterAmount) {
         String workSlotQuery = "INSERT INTO work_slot (date) VALUES (?)";
@@ -367,6 +383,132 @@ public class WorkSlot {
             e.printStackTrace();
         }
     }
+
+    public Object[][] getAvailStaffs(){
+        Object[][] data = null;
+
+        try {
+            // Get available staff in the selected month and year
+            // Available staff is calculated by
+            // Total approved bids made in the selected month and year
+            // Then, compare whether it's less than the maximum work slot preferred
+            // Also ignore staffs who have accepted at that date (slot)
+            String query = "SELECT " +
+                    "    COALESCE(COUNT(`bid`.`bid_id`), 0) AS `num`, " +
+                    "    CONCAT(`user_account`.`f_name`, ' ' ,`user_account`.`l_name`) AS `name`," +
+                    "    `user_account`.`username` as `username`, " +
+                    "    `role`.`role_name` as `role`, " +
+                    "    `user_account`.`max_slot` as `max` " +
+                    "FROM `user_account` " +
+                    "LEFT JOIN `bid` ON `user_account`.`username` = `bid`.`username`  " +
+                    "    AND YEAR(`bid`.`date`) = ? " +
+                    "    AND MONTH(`bid`.`date`) = ? " +
+                    "    AND (`bid`.`bid_status` = \"Pending\" OR `bid`.`bid_status` = \"Rejected\") " +
+                    "LEFT JOIN `profile` ON `user_account`.`profile_id` = `profile`.`profile_id`  " +
+                    "LEFT JOIN `role` ON `user_account`.`role_id` = `role`.`role_id` " +
+                    "WHERE `profile`.`profile_name` = \"Cafe Staff\" " +
+                    "AND `user_account`.`username` NOT IN ( " +
+                    "    SELECT `username` FROM `bid` " +
+                    "    WHERE YEAR(`date`) = ? " +
+                    "    AND MONTH(`date`) = ? " +
+                    "    AND `bid_status` = \"Approved\" " +
+                    "    AND `date` = ? " +
+                    ") " +
+                    "GROUP BY `user_account`.`username` " +
+                    "HAVING `num` < `max` " +
+                    "ORDER BY `role`.`role_name`; ";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, getDate().getYear() + 1900);
+            preparedStatement.setInt(2, getDate().getMonth() + 1);
+            preparedStatement.setInt(3, getDate().getYear() + 1900);
+            preparedStatement.setInt(4, getDate().getMonth() + 1);
+            preparedStatement.setDate(5, getDate());
+
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Get the ResultSet metadata to determine the number of columns
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int col = metaData.getColumnCount();
+
+
+            // To hold data
+            Vector<Vector<Object>> dataVector = new Vector<>();
+
+            // Collect data
+            while (resultSet.next()){
+                Vector<Object> row = new Vector<>();
+                row.add(resultSet.getString("name"));
+                row.add(resultSet.getString("username"));
+                row.add(resultSet.getString("role"));
+                dataVector.add(row);
+            }
+
+            // Convert into 2D Object array
+            data = new Object[dataVector.size()][col];
+            for (int i = 0; i < dataVector.size(); i++){
+
+                data[i] = dataVector.get(i).toArray();
+
+            }
+
+            // close resources
+            resultSet.close();
+            preparedStatement.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    public boolean assignAvailableStaff(String username){
+        try{
+
+            // Check if he has submitted a bid
+            String query = "SELECT * FROM `bid` WHERE `username` = ? AND `date` = ? AND (`bid_status` = 'Pending' OR `bid_status` = 'Rejected')";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setDate(2, getDate());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                Bid bid = new Bid();
+                bid.setBid_id(resultSet.getInt("bid_id"));
+
+                return bid.approveRejectBid("Approved");
+            }else{
+                // Assign staff
+                query = "INSERT INTO `bid`(`username`, `date`, `bid_status`) " +
+                        "VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, username);
+                preparedStatement.setDate(2, getDate());
+                preparedStatement.setString(3, "Assigned");
+                preparedStatement.execute();
+
+                preparedStatement.close();
+
+                return true;
+
+
+            }
+
+
+
+
+
+
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
 
 

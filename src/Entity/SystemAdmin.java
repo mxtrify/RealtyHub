@@ -20,7 +20,7 @@ public class SystemAdmin extends UserAccount {
     // Get list of all user account
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
+        String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -30,7 +30,8 @@ public class SystemAdmin extends UserAccount {
                 String fName = resultSet.getString("f_name");
                 String lName = resultSet.getString("l_name");
                 String profileName = resultSet.getString("profile_name");
-                UserAccount userAccount = new UserAccount(username, fName, lName, profileName);
+                boolean status = resultSet.getBoolean("status");
+                UserAccount userAccount = new UserAccount(username, fName, lName, profileName, status);
                 userAccounts.add(userAccount);
             }
             return userAccounts;

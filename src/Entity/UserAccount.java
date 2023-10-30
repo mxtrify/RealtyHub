@@ -8,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserAccount {
-    private String username;
+    protected String name;
+    protected Connection conn;
+    protected String username;
     private String password;
     private String firstName;
     private String lastName;
@@ -29,18 +31,46 @@ public class UserAccount {
         this.role = 0;
         this.maxSlot = 0;
         this.status = false;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
+
+
+        try{
+            this.conn = new DBConfig().getConnection();
+
+            // Get user account name from database
+            String query = "SELECT CONCAT(`f_name`, ' ', `l_name`) AS `Name`" +
+                    "FROM `user_account` WHERE `username` = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, this.username);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                this.name = resultSet.getString("Name");
+            }else{
+                this.name = "";
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
-    public UserAccount(String username, String firstName, String lastName, String profileName) {
+    public UserAccount(String username, String firstName, String lastName, String profileName, boolean status) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.profileName = profileName;
+        this.status = status;
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role) {
@@ -173,6 +203,4 @@ public class UserAccount {
             return null;
         }
     }
-
-
 }

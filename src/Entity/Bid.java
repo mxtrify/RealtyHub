@@ -3,30 +3,78 @@ package Entity;
 import Config.DBConfig;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
 
 public class Bid {
     private Connection conn;
     private int bid_id;
-    private String username;
-    private int work_slot_id;
-    private String bid_status;
+    private String name;
+    private String role;
+    private Date date;
 
     public Bid(){
         this.bid_id = 0;
-        this.username = "";
-        this.work_slot_id = 0;
-        this.bid_status = "";
+        this.name = "";
+        this.role = "";
+        this.date = null;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
 
-    public Bid(int bid_id, String username, int work_slot_id, String bid_status){
+
+    public Bid(Date date){
+        this.bid_id = 0;
+        this.name = "";
+        this.role = "";
+        this.date = date;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public Bid(int bid_id, String name, String role, Date date){
         this.bid_id = bid_id;
-        this.username = username;
-        this.work_slot_id = work_slot_id;
-        this.bid_status = bid_status;
+        this.name = name;
+        this.role = role;
+        this.date = date;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
 
-    public Object[][] getBids(String value){
+
+    public int getBidId(){return bid_id;}
+    public String getName(){return name;}
+    public String getRole(){return role;}
+    public Date getDate(){return date;}
+
+    public void setBid_id(int bid_id){this.bid_id = bid_id;}
+    public void setName(String name){this.name = name;}
+    public void setRole(String role){this.role = role;}
+    public void setDate(Date date){this.date = date;}
+
+    public String dateToString(){
+        // Convert date object into string display "01 Oct, 2023"
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
+
+        return dateFormat.format(getDate());
+    }
+
+    public Object[][] getBids(){
         Object[][] data = null;
         try {
             // Connect db
@@ -34,26 +82,17 @@ public class Bid {
 
             String query = "SELECT `bid`.`bid_id` AS `ID`,"+
                     "CONCAT(`user_account`.`f_name`, ' ' ,`user_account`.`l_name`) AS `Name`,"+
-                    "`role`.`role_name` as `Role`,"+
-                    "`work_slot`.`date` as `Date`"+
+                    "`role`.`role_name` as `Role`"+
                     "FROM `user_account`"+
                     "JOIN `role` ON `user_account`.`role_id` = `role`.`role_id`"+
                     "JOIN `bid` ON `user_account`.`username` = `bid`.`username`"+
-                    "JOIN `work_slot` ON `bid`.`work_slot_id` = `work_slot`.`work_slot_id`";
+                    "JOIN `work_slot` ON `bid`.`date` = `work_slot`.`date` "+
+                    "WHERE `work_slot`.`date` = ? AND `bid`.`bid_status` = 'Pending' " +
+                    "ORDER BY `bid`.`bid_id`, `role`.`role_name`";
 
 
-            PreparedStatement preparedStatement;
-            if (!value.equals("-- Select --")){
-                // Show specific row bids;
-                query += "WHERE `role`.`role_name` = ?";
-                query += "ORDER BY `bid`.`bid_id`";
-                preparedStatement = conn.prepareStatement(query);
-                preparedStatement.setString(1, value);
-            }else {
-                // Show all role bids
-                query += "ORDER BY `bid`.`bid_id`";
-                preparedStatement = conn.prepareStatement(query);
-            }
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setDate(1, getDate());
 
 
 
@@ -73,7 +112,6 @@ public class Bid {
                 for (int i = 1; i <= col; i++){
                     row.add(result.getObject(i));
                 }
-                row.add("");
                 dataVector.add(row);
             }
 
@@ -91,5 +129,29 @@ public class Bid {
             e.printStackTrace();
         }
         return data;
+    }
+
+
+
+    public boolean approveRejectBid(String action){
+        try{
+            // Change bid status to 'Rejected'
+            String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, action);
+            preparedStatement.setInt(2, getBidId());
+            preparedStatement.execute();
+
+            // close resources
+            preparedStatement.close();
+            conn.close();
+
+            return true;
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }
