@@ -1,6 +1,8 @@
 package Boundary;
 
 import Controller.SearchUserAccountController;
+import Controller.UpdateWorkSlotController;
+import Controller.DeleteWorkSlotController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import Controller.WorkSlotController;
@@ -196,15 +198,15 @@ public class CafeOwnerGUI {
                     tableComponents.setValueAt(Integer.parseInt(cashierField.getText()), selectedRow, 2);
                     tableComponents.setValueAt(Integer.parseInt(waiterField.getText()), selectedRow, 3);
 
-                    WorkSlotController workSlotController = new WorkSlotController();
+                    UpdateWorkSlotController updateWorkSlotController = new UpdateWorkSlotController();
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     java.util.Date utilDate = dateFormat.parse(dateToEdit);
                     Date sqlDate = new Date(utilDate.getTime());
 
-                    workSlotController.updateRoleAmount(sqlDate, 1, Integer.parseInt(chefField.getText()));
-                    workSlotController.updateRoleAmount(sqlDate, 2, Integer.parseInt(cashierField.getText()));
-                    workSlotController.updateRoleAmount(sqlDate, 3, Integer.parseInt(waiterField.getText()));
+                    updateWorkSlotController.updateRoleAmount(sqlDate, 1, Integer.parseInt(chefField.getText()));
+                    updateWorkSlotController.updateRoleAmount(sqlDate, 2, Integer.parseInt(cashierField.getText()));
+                    updateWorkSlotController.updateRoleAmount(sqlDate, 3, Integer.parseInt(waiterField.getText()));
                     editFrame.dispose();
                 } catch(NumberFormatException | ParseException ex) {
                     ex.printStackTrace();
@@ -235,8 +237,9 @@ public class CafeOwnerGUI {
 
             if(confirmDelete == JOptionPane.YES_OPTION) {
                 tableComponents.removeRow(seletedRow);
-                WorkSlotController workSlotController = new WorkSlotController();
-                boolean deleteSuccess = workSlotController.deleteWorkSlot(dateToDelete);
+                DeleteWorkSlotController deleteWorkSlotController = new DeleteWorkSlotController();
+
+                boolean deleteSuccess = deleteWorkSlotController.deleteWorkSlot(dateToDelete);
                 if(deleteSuccess) {
                     System.out.println("Row Deleted");
                 }
