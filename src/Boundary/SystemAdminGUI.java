@@ -63,22 +63,6 @@ public class SystemAdminGUI {
         createAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(createAccountButton);
 
-        // User account table
-
-        model = new DefaultTableModel() {
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make all cells non-editable
-            }
-        };
-        model.setColumnIdentifiers(columnNames);
-        getAccountList();
-        JTable table = new JTable(model);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 500, 350);
-        frame.add(scrollPane);
-
         // Logout Button
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(650, 50, 100, 36);
@@ -96,6 +80,20 @@ public class SystemAdminGUI {
         suspendButton.setBounds(600, 250, 100, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(suspendButton);
+
+        // User account table
+        model = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+        model.setColumnIdentifiers(columnNames);
+        getAccountList();
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(50,175, 500, 350);
+        frame.add(scrollPane);
 
         // Logout Action Button
         logoutButton.addActionListener(e -> logout());

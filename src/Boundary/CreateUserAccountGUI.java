@@ -7,9 +7,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class CreateUserAccountGUI {
-    public CreateUserAccountGUI() {
-
-    }
 
     public CreateUserAccountGUI(UserAccount u) {
         displayCreateAccount(u);
