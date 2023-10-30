@@ -137,8 +137,7 @@ public class AssignStaffGUI {
 
         // Set Button for assign staff
         JButton as_button = new JButton("Assign");
-        as_button.setFont(new Font("Jost", Font.PLAIN, 15));
-        as_button.setBounds(250, 100, 80, 30);
+        as_button.setBounds(245, 100, 100, 30);
         as_panel.add(as_button);
         // Add available staff panel to frame
         frame.add(as_panel);
@@ -180,55 +179,44 @@ public class AssignStaffGUI {
         bidsPanel.add(bids_scrollPane);
 
         // Get data from table after selecting
-        bids_table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if(!e.getValueIsAdjusting()) {
-                    int selected = bids_table.getSelectedRow();
-                    if (selected != -1) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, yyyy");
+        bids_table.getSelectionModel().addListSelectionListener(e-> {
 
-                        try {
-                            // Create Workslot object
-                            int bid_id = (int) bids_table.getValueAt(selected, 0);
-                            String name = (String) bids_table.getValueAt(selected, 1);
-                            String role = (String) bids_table.getValueAt(selected, 2);
+            if(!e.getValueIsAdjusting()) {
+                int selected = bids_table.getSelectedRow();
+                if (selected != -1) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, yyyy");
 
-                            bid = new Bid(bid_id, name, role, workSlot.getDate());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                    try {
+                        // Create Workslot object
+                        int bid_id = (int) bids_table.getValueAt(selected, 0);
+                        String name = (String) bids_table.getValueAt(selected, 1);
+                        String role = (String) bids_table.getValueAt(selected, 2);
 
-
+                        bid = new Bid(bid_id, name, role, workSlot.getDate());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
+
+
                 }
             }
+
         });
 
 
-        // Button for accepting bid
-        ImageIcon cm = resizeIcon(new ImageIcon("src\\Boundary\\img\\checkmark.png"), 10, 10);
-
-        // If Icon image does not load due to incorrect path
-        // e.g. "folderName\Boundary\img\checkmark.png" instead of "src\Boundary\img\checkmark.png"
-
-        JButton accept = new JButton(cm);
-        accept.setBounds(250, 100, 30, 30);
-        accept.setHorizontalAlignment(SwingConstants.CENTER);
-        bidsPanel.add(accept);
+        // Button for approving bid
+        JButton approve = new JButton("Approve");
+        approve.setBounds(245, 80, 100, 30);
+        approve.setHorizontalAlignment(SwingConstants.CENTER);
+        bidsPanel.add(approve);
 
 
 
 
 
         // Button for rejecting bid
-        ImageIcon cr = resizeIcon(new ImageIcon("cross.png"), 10, 10);
-
-        // If Icon image does not load due to incorrect path
-        // e.g. "folderName\Boundary\img\cross.png" instead of "src\Boundary\img\cross.png"
-
-        JButton reject = new JButton(cr);
-        reject.setBounds(300, 100, 30, 30);
+        JButton reject = new JButton("Reject");
+        reject.setBounds(245, 120, 100, 30);
         reject.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Add Reject button to bids panel
@@ -322,6 +310,8 @@ public class AssignStaffGUI {
 
                         // Show success message
                         JOptionPane.showMessageDialog(frame, "Assigning process completed", "Assign Success", JOptionPane.INFORMATION_MESSAGE);
+                    }else {
+                        JOptionPane.showMessageDialog(frame, result[1], "Warning!", JOptionPane.WARNING_MESSAGE);
                     }
 
 
@@ -332,8 +322,8 @@ public class AssignStaffGUI {
 
         });
 
-        // Implement accept button
-        accept.addActionListener(e->{
+        // Implement approve button
+        approve.addActionListener(e->{
             if(bid == null){
                 // Error message when no bid is selected
                 JOptionPane.showMessageDialog(frame, "Please select a workslot", "Select Workslot", JOptionPane.WARNING_MESSAGE);
@@ -411,7 +401,7 @@ public class AssignStaffGUI {
 
 
                     }else{
-                        JOptionPane.showMessageDialog(frame, (String)result[1], "Warning!", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(frame, result[1], "Warning!", JOptionPane.WARNING_MESSAGE);
                     }
 
                 }
@@ -456,24 +446,6 @@ public class AssignStaffGUI {
                 }
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
-    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image image = icon.getImage();
-        Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(resizedImage);
-        return resizedIcon;
-    }
 }

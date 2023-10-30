@@ -36,7 +36,7 @@ public class CafeManager extends UserAccount {
             // Close resources
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+
         }catch (SQLException e){
             e.printStackTrace();
         }
