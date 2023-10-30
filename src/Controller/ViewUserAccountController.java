@@ -10,7 +10,7 @@ public class ViewUserAccountController {
         return new SystemAdmin().selectAll();
     }
 
-    public List<String> getProfileList() {
+    public ArrayList<String> getProfileList() {
         return new SystemAdmin().getProfileByName();
     }
 }

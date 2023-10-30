@@ -3,7 +3,7 @@ package Controller;
 import Entity.SystemAdmin;
 import Entity.UserAccount;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class UpdateUserAccountController {
     private SystemAdmin systemAdmin;
@@ -16,11 +16,11 @@ public class UpdateUserAccountController {
         return systemAdmin.getSelectedAccount(username);
     }
 
-    public List<String> getProfileList() {
+    public ArrayList<String> getProfileList() {
         return systemAdmin.getProfileByName();
     }
 
-    public List<String> getRoleList() {
+    public ArrayList<String> getRoleList() {
         return systemAdmin.getRoleByName();
     }
 

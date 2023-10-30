@@ -9,7 +9,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SystemAdminGUI {
     private JFrame frame;
@@ -180,7 +179,7 @@ public class SystemAdminGUI {
     }
 
     // Function for profile dropdown
-    public List<String> getProfileList() {
+    public ArrayList<String> getProfileList() {
         return new ViewUserAccountController().getProfileList();
     }
 

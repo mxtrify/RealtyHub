@@ -41,9 +41,9 @@ public class SystemAdmin extends UserAccount {
     }
 
     // Get profile name
-    public List<String> getProfileByName() {
+    public ArrayList<String> getProfileByName() {
         String query = "SELECT profile_name FROM profile";
-        List<String> profileNameList = new ArrayList<>();
+        ArrayList<String> profileNameList = new ArrayList<>();
 
         try {
             Connection conn = new DBConfig().getConnection();
@@ -61,9 +61,9 @@ public class SystemAdmin extends UserAccount {
     }
 
     // Get role name
-    public List<String> getRoleByName() {
+    public ArrayList<String> getRoleByName() {
         String query = "SELECT role_name FROM role";
-        List<String> roleNameList = new ArrayList<>();
+        ArrayList<String> roleNameList = new ArrayList<>();
 
         try {
             Connection conn = new DBConfig().getConnection();
@@ -80,7 +80,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    public void insertAccount(UserAccount newUser) {
+    public boolean insertAccount(UserAccount newUser) {
         String query = "INSERT INTO user_account VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = new DBConfig().getConnection();
@@ -99,7 +99,8 @@ public class SystemAdmin extends UserAccount {
                 preparedStatement.setNull(8, Types.INTEGER);
             }
             preparedStatement.setBoolean(9, true);
-            preparedStatement.executeUpdate();
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

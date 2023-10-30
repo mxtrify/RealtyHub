@@ -3,7 +3,7 @@ package Controller;
 import Entity.SystemAdmin;
 import Entity.UserAccount;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class CreateUserAccountController {
     private SystemAdmin systemAdmin;
@@ -11,15 +11,15 @@ public class CreateUserAccountController {
     public CreateUserAccountController() {
         this.systemAdmin = new SystemAdmin();
     }
-    public List<String> getProfileList() {
+    public ArrayList<String> getProfileList() {
         return systemAdmin.getProfileByName();
     }
 
-    public List<String> getRoleList() {
+    public ArrayList<String> getRoleList() {
         return systemAdmin.getRoleByName();
     }
 
-    public void addAccount(UserAccount newUser) {
-        systemAdmin.insertAccount(newUser);
+    public boolean addAccount(UserAccount newUser) {
+        return systemAdmin.insertAccount(newUser);
     }
 }

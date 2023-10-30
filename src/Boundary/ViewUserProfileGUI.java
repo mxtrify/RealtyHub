@@ -1,7 +1,6 @@
 package Boundary;
 
 import Controller.DeleteUserProfileController;
-import Controller.SearchUserAccountController;
 import Controller.SearchUserProfileController;
 import Controller.ViewUserProfileController;
 import Entity.UserAccount;
@@ -106,6 +105,7 @@ public class ViewUserProfileGUI {
             if (table.getSelectedRow() == -1) {
                 JOptionPane.showMessageDialog(frame, "Please select profile to edit", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
+                frame.dispose();
                 String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
                 String profileDesc = model.getValueAt(table.getSelectedRow(),1).toString();
                 new UpdateUserProfileGUI(u, profileName, profileDesc);

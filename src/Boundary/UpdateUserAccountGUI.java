@@ -1,13 +1,10 @@
 package Boundary;
 
-import Controller.CreateUserAccountController;
 import Controller.UpdateUserAccountController;
-import Controller.UpdateUserProfileController;
 import Entity.UserAccount;
 
 import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.util.List;
+import java.util.ArrayList;
 
 public class UpdateUserAccountGUI {
     public UpdateUserAccountGUI(UserAccount u) {
@@ -69,7 +66,7 @@ public class UpdateUserAccountGUI {
         panel.add(profileLabel);
 
         // Profile dropdown
-        List<String> profileList = new UpdateUserAccountController().getProfileList();
+        ArrayList<String> profileList = new UpdateUserAccountController().getProfileList();
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
         JComboBox<String> profileComboBox = new JComboBox<>(profileComboModel);
         profileComboBox.setSelectedIndex(u.getProfile()-1);
@@ -82,14 +79,13 @@ public class UpdateUserAccountGUI {
         panel.add(roleLabel);
 
         // Role dropdown
-        List<String> roleList = new UpdateUserAccountController().getRoleList();
+        ArrayList<String> roleList = new UpdateUserAccountController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
         roleComboBox.setSelectedIndex(u.getRole()-1);
         roleComboBox.setBounds(200, 400, 235, 50);
         roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
         panel.add(roleComboBox);
-
 
         // Back button
         JButton backButton = new JButton("Back");
@@ -130,7 +126,6 @@ public class UpdateUserAccountGUI {
                 new SystemAdminGUI(u);
             } else {
                 JOptionPane.showMessageDialog(frame, "Failed to save user account", "Error", JOptionPane.ERROR_MESSAGE);
-
             }
         });
     }

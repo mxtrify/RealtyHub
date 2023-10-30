@@ -4,8 +4,7 @@ import Controller.CreateUserAccountController;
 import Entity.UserAccount;
 
 import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.util.List;
+import java.util.ArrayList;
 
 public class CreateUserAccountGUI {
     public CreateUserAccountGUI() {
@@ -69,7 +68,7 @@ public class CreateUserAccountGUI {
         profileLabel.setBounds(100, 350, 235, 50);
         panel.add(profileLabel);
 
-        List<String> profileList = new CreateUserAccountController().getProfileList();
+        ArrayList<String> profileList = new CreateUserAccountController().getProfileList();
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
         JComboBox<String> profileComboBox = new JComboBox<>(profileComboModel);
         profileComboBox.setBounds(200, 350, 235,50);
@@ -80,7 +79,7 @@ public class CreateUserAccountGUI {
         panel.add(roleLabel);
 
 
-        List<String> roleList = new CreateUserAccountController().getRoleList();
+        ArrayList<String> roleList = new CreateUserAccountController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
         roleComboBox.setBounds(200, 400, 235, 50);
@@ -108,7 +107,6 @@ public class CreateUserAccountGUI {
         });
 
         createButton.addActionListener(e -> {
-            frame.dispose();
             String username = usernameField.getText();
             String password = passwordField.getText();
             String firstName = firstNameField.getText();
@@ -117,8 +115,15 @@ public class CreateUserAccountGUI {
             int profile = profileComboBox.getSelectedIndex();
             int role = roleComboBox.getSelectedIndex();
             UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, 0, true);
-            new CreateUserAccountController().addAccount(newUser);
-            new SystemAdminGUI(u);
+            if(username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (new CreateUserAccountController().addAccount(newUser)) {
+                JOptionPane.showMessageDialog(frame, "User account created successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                new SystemAdminGUI(u);
+            } else {
+                JOptionPane.showMessageDialog(frame, "Failed to create user account", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 }
