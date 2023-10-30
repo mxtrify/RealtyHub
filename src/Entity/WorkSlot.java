@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class WorkSlot {
-    public static final int CHEF = 1;
+    public static final int CHEF = 3;
     public static final int CASHIER = 2;
-    public static final int WAITER = 3;
+    public static final int WAITER = 1;
     private Connection conn;
     private Date date;
     private int chefAmount;
@@ -131,6 +131,48 @@ public class WorkSlot {
         } catch(SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Object[][] getAllWS(){
+        Object[][] data = null;
+        Vector<Vector<Object>> allDataVector = new Vector<>();
+        try{
+            // Select all workslots
+            String query = "SELECT `date` FROM `work_slot` ORDER BY `date`";
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                // Get work slots data for each date
+                WorkSlot ws_row = new WorkSlot(resultSet.getDate("date"));
+
+
+                Vector<Object> row = new Vector<>();
+
+                // Fetch data for each date
+                for(int i = 0; i < 5; i ++){
+                    // Temporary use "data" variable
+                    data = ws_row.getWS();
+                    row.add(data[0][i]);
+                }
+
+                // Store each workslot data to vector
+                allDataVector.add(row);
+
+            }
+
+            // Convert Vector<Vector<Object>> to Object[][]
+            data = new Object[allDataVector.size()][];
+            for (int i = 0; i < allDataVector.size(); i++){
+                data[i] = allDataVector.get(i).toArray();
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return data;
+
     }
 
     public Object[][] getWS(){
@@ -399,7 +441,7 @@ public class WorkSlot {
                     "    SELECT `username` FROM `bid` " +
                     "    WHERE YEAR(`date`) = ? " +
                     "    AND MONTH(`date`) = ? " +
-                    "    AND `bid_status` = \"Approved\" " +
+                    "    AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") " +
                     "    AND `date` = ? " +
                     ") " +
                     "GROUP BY `user_account`.`username` " +
