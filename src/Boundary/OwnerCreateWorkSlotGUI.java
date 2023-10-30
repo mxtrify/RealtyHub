@@ -9,7 +9,6 @@ import java.awt.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-// Need to extend JFrame?
 public class OwnerCreateWorkSlotGUI {
     private JButton backButton;
     private JButton createButton;
@@ -32,14 +31,6 @@ public class OwnerCreateWorkSlotGUI {
         JLabel titleLabel = new JLabel("Create Work Slot");
         titleLabel.setBounds(100, 10, 500, 25);
         panel.add(titleLabel);
-
-        // Search Bar
-//        JLabel searchLabel = new JLabel("Search:");
-//        searchLabel.setBounds(75, 35, 100, 25);
-//        panel.add(searchLabel);
-//        searchField = new JTextField(25);
-//        searchField.setBounds(150, 35, 100, 25);
-//        panel.add(searchField);
 
         // Date Label
         JLabel dateLabel = new JLabel("Date:");
@@ -85,12 +76,12 @@ public class OwnerCreateWorkSlotGUI {
 
         // Create Button
         createButton = new JButton("Create");
-        createButton.setBounds(300, 220, 100, 25);
+        createButton.setBounds(300, 300, 100, 25);
         panel.add(createButton);
 
         // Back Button
         backButton = new JButton("Back");
-        backButton.setBounds(20, 220, 100, 25);
+        backButton.setBounds(20, 300, 100, 25);
         panel.add(backButton);
 
         // Action for create button
@@ -123,7 +114,7 @@ public class OwnerCreateWorkSlotGUI {
         });
 
         frame.add(panel);
-        frame.setSize(800, 600);
+        frame.setSize(500, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

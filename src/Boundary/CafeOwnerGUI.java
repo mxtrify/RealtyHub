@@ -36,12 +36,12 @@ public class CafeOwnerGUI {
 
         // Title Label
         JLabel titleLabel = new JLabel("Welcome, Cafe Owner");
-        titleLabel.setBounds(100, 20, 500, 25);
+        titleLabel.setBounds(50, 50, 500, 25);
         panel.add(titleLabel);
 
         // Logout Button
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(650, 50, 100, 25);
+        logoutButton.setBounds(650, 20, 100, 25);
         panel.add(logoutButton);
 
 
@@ -58,13 +58,13 @@ public class CafeOwnerGUI {
 
         // Clear Search
         JButton clearSearchButton = new JButton("Clear");
-        clearSearchButton.setBounds(350, 100, 120, 25);
+        clearSearchButton.setBounds(350, 100, 100, 25);
         panel.add(clearSearchButton);
 
 
         // Create workSlot button
-        JButton createWorkSlotButton = new JButton("Create Slot");
-        createWorkSlotButton.setBounds(600, 150, 100, 25);
+        JButton createWorkSlotButton = new JButton("+");
+        createWorkSlotButton.setBounds(650, 100, 50, 25);
         panel.add(createWorkSlotButton);
 
         // Display Table
@@ -72,7 +72,7 @@ public class CafeOwnerGUI {
 
         // Delete Button
         JButton deleteButton = new JButton("Delete");
-        deleteButton.setBounds(600, 200, 100, 25);
+        deleteButton.setBounds(600, 250, 100, 25);
         panel.add(deleteButton);
         deleteButton.addActionListener(e -> deleteSelectedRow());
 
@@ -83,7 +83,7 @@ public class CafeOwnerGUI {
 
         // Edit Button
         JButton editButton = new JButton("Edit");
-        editButton.setBounds(600, 250, 100, 25);
+        editButton.setBounds(600, 200, 100, 25);
         panel.add(editButton);
         editButton.addActionListener(e -> editSelectedRow());
 
@@ -143,9 +143,14 @@ public class CafeOwnerGUI {
             int cashierAmount = (int) tableComponents.getValueAt(selectedRow, 2);
             int waiterAmount = (int) tableComponents.getValueAt(selectedRow, 3);
 
+            // Frame
             JFrame editFrame = new JFrame("Edit Work Slot");
             JPanel editPanel = new JPanel();
             editPanel.setLayout(null);
+
+            JLabel titleLabel = new JLabel("Edit Work Slot");
+            titleLabel.setBounds(75, 50, 500, 25);
+            editPanel.add(titleLabel);
 
             JLabel chefLabel = new JLabel("Chef");
             JLabel cashierLabel = new JLabel("Cashier");
@@ -172,8 +177,17 @@ public class CafeOwnerGUI {
             editPanel.add(waiterField);
 
             JButton saveButton = new JButton("Save");
-            saveButton.setBounds(600, 400, 100, 25);
+            saveButton.setBounds(350, 300, 100, 25);
             editPanel.add(saveButton);
+
+            JButton backButton = new JButton("Back");
+            backButton.setBounds(50, 300, 100, 25);
+            editPanel.add(backButton);
+
+            // Action for back button
+            backButton.addActionListener(e -> {
+                    editFrame.dispose();
+            });
 
             // Action for the save button
             saveButton.addActionListener(e -> {
@@ -198,7 +212,7 @@ public class CafeOwnerGUI {
             });
 
             editFrame.add(editPanel);
-            editFrame.setSize(800, 600);
+            editFrame.setSize(500, 400);
             editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             editFrame.setVisible(true);
         }
@@ -210,14 +224,25 @@ public class CafeOwnerGUI {
         int seletedRow = workSlotTable.getSelectedRow();
         if(seletedRow != -1) {
             String dateToDelete = tableComponents.getValueAt(seletedRow, 0).toString();
-            tableComponents.removeRow(seletedRow);
-            WorkSlotController workSlotController = new WorkSlotController();
-            boolean deleteSuccess = workSlotController.deleteWorkSlot(dateToDelete);
-            if(deleteSuccess) {
-                System.out.println("Row Deleted");
-            }
-            else {
-                System.out.println("Error In Deleting");
+            JFrame deleteFrame = new JFrame();
+
+            int confirmDelete = JOptionPane.showConfirmDialog(
+                    deleteFrame,
+                    "Confirm Delete?",
+              "Delete Confirmation",
+              JOptionPane.YES_NO_OPTION
+            );
+
+            if(confirmDelete == JOptionPane.YES_OPTION) {
+                tableComponents.removeRow(seletedRow);
+                WorkSlotController workSlotController = new WorkSlotController();
+                boolean deleteSuccess = workSlotController.deleteWorkSlot(dateToDelete);
+                if(deleteSuccess) {
+                    System.out.println("Row Deleted");
+                }
+                else {
+                    System.out.println("Error In Deleting");
+                }
             }
         }
     }
