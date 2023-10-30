@@ -174,6 +174,10 @@ public class UserAccount {
         this.status = status;
     }
 
+    public String getName() {
+        return name;
+    }
+
     // Function for validating login
     public UserAccount validateLogin(String username, String password) {
         String query = "SELECT * FROM user_account WHERE username = ? AND password = ?";

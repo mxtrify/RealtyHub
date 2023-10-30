@@ -33,7 +33,7 @@ public class CafeManagerGUI {
         displayCafeManagerGUI((CafeManager) u);
     }
 
-    // Display cafe manager GUI
+    // Display Cafe Manager GUI
     public void displayCafeManagerGUI(CafeManager u) {
         JFrame frame = new JFrame("Cafe Manager");
         frame.setLayout(null);

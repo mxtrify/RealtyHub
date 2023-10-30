@@ -1,12 +1,10 @@
 package Entity;
 
 import Config.DBConfig;
-import com.mysql.cj.protocol.Resultset;
 
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SystemAdmin extends UserAccount {
     public SystemAdmin() {
@@ -161,21 +159,24 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    public void selectByProfileName(String profileName, DefaultTableModel model) {
-        String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
+    public ArrayList<UserAccount> selectByProfileName(String profileName) {
+        ArrayList<UserAccount> userAccounts = new ArrayList<>();
+        String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             ResultSet resultSet = preparedStatement.executeQuery();
-            model.setRowCount(0);
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
                 String fName = resultSet.getString("f_name");
                 String lName = resultSet.getString("l_name");
                 String profile = resultSet.getString("profile_name");
-                model.addRow(new Object[]{username, fName, lName, profile});
+                boolean status = resultSet.getBoolean("status");
+                UserAccount userAccount = new UserAccount(username, fName, lName, profile, status);
+                userAccounts.add(userAccount);
             }
+            return userAccounts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

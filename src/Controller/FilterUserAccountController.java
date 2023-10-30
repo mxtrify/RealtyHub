@@ -1,8 +1,9 @@
 package Controller;
 
 import Entity.SystemAdmin;
+import Entity.UserAccount;
 
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
 public class FilterUserAccountController {
     private SystemAdmin systemAdmin;
@@ -10,7 +11,7 @@ public class FilterUserAccountController {
     public FilterUserAccountController() {
         this.systemAdmin = new SystemAdmin();
     }
-    public void FilterUserAccount(String profileName, DefaultTableModel model) {
-        systemAdmin.selectByProfileName(profileName, model);
+    public ArrayList<UserAccount> FilterUserAccount(String profileName) {
+        return systemAdmin.selectByProfileName(profileName);
     }
 }
