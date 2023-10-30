@@ -1,14 +1,19 @@
 package Boundary;
 
+import Controller.SearchUserAccountController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import Controller.WorkSlotController;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.sql.Date;
 
@@ -39,14 +44,27 @@ public class CafeOwnerGUI {
         logoutButton.setBounds(650, 50, 100, 25);
         panel.add(logoutButton);
 
-        // Search bar
-        JTextField searchField = new JTextField();
-        searchField.setBounds(100, 100, 150, 25);
-        panel.add(searchField);
+
+        // Search Button
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(250, 100, 100, 25);
+        panel.add(searchButton);
+
+        // Search Bar
+        JDateChooser searchDate = new JDateChooser();
+        searchDate.setDateFormatString("dd/MM/yyyy");
+        searchDate.setBounds(50,100, 150,25);
+        frame.add(searchDate);
+
+        // Clear Search
+        JButton clearSearchButton = new JButton("Clear");
+        clearSearchButton.setBounds(350, 100, 120, 25);
+        panel.add(clearSearchButton);
+
 
         // Create workSlot button
         JButton createWorkSlotButton = new JButton("Create Slot");
-        createWorkSlotButton.setBounds(300, 100, 100, 25);
+        createWorkSlotButton.setBounds(600, 150, 100, 25);
         panel.add(createWorkSlotButton);
 
         // Display Table
@@ -69,6 +87,25 @@ public class CafeOwnerGUI {
         panel.add(editButton);
         editButton.addActionListener(e -> editSelectedRow());
 
+        // Action for searchButton
+        searchButton.addActionListener(e -> {
+            try {
+                Date selectedDate = new Date(searchDate.getDate().getTime());
+                filterTableByDate(selectedDate);
+                System.out.println(selectedDate);
+
+
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        // Action for clear search
+        clearSearchButton.addActionListener(e -> {
+            searchDate.setDate(null);
+            filterTableByDate(null);
+        });
+
         // Action for createWorkSlotButton
         createWorkSlotButton.addActionListener(e -> {
             frame.dispose();
@@ -81,6 +118,20 @@ public class CafeOwnerGUI {
             new LoginGUI();
         });
     }
+
+    private void filterTableByDate(Date selectedDate) {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(workSlotTable.getModel());
+        workSlotTable.setRowSorter(sorter);
+
+        if (selectedDate != null) {
+            String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
+            RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
+            sorter.setRowFilter(rowFilter);
+        } else {
+            sorter.setRowFilter(null);
+        }
+    }
+
 
     private void editSelectedRow() {
         int selectedRow = workSlotTable.getSelectedRow();
@@ -96,32 +147,26 @@ public class CafeOwnerGUI {
             JPanel editPanel = new JPanel();
             editPanel.setLayout(null);
 
-            JLabel dateLabel = new JLabel("Date");
             JLabel chefLabel = new JLabel("Chef");
             JLabel cashierLabel = new JLabel("Cashier");
             JLabel waiterLabel = new JLabel("Waiter");
 
-            dateLabel.setBounds(75, 75, 100, 25);
             chefLabel.setBounds(75, 115, 100, 25);
             cashierLabel.setBounds(75, 155, 100, 25);
             waiterLabel.setBounds(75, 195, 100, 25);
 
-            editPanel.add(dateLabel);
             editPanel.add(chefLabel);
             editPanel.add(cashierLabel);
             editPanel.add(waiterLabel);
 
-            JTextField dateField = new JTextField(dateToEdit);
             JTextField chefField = new JTextField(String.valueOf(chefAmount));
             JTextField cashierField = new JTextField(String.valueOf(cashierAmount));
             JTextField waiterField = new JTextField(String.valueOf(waiterAmount));
 
-            dateField.setBounds(150, 75, 100, 25);
             chefField.setBounds(150, 115, 100, 25);
             cashierField.setBounds(150, 155, 100, 25);
             waiterField.setBounds(150, 195, 100, 25);
 
-            editPanel.add(dateField);
             editPanel.add(chefField);
             editPanel.add(cashierField);
             editPanel.add(waiterField);
@@ -133,7 +178,6 @@ public class CafeOwnerGUI {
             // Action for the save button
             saveButton.addActionListener(e -> {
                 try{
-                    tableComponents.setValueAt(dateField.getText(), selectedRow, 0);
                     tableComponents.setValueAt(Integer.parseInt(chefField.getText()), selectedRow, 1);
                     tableComponents.setValueAt(Integer.parseInt(cashierField.getText()), selectedRow, 2);
                     tableComponents.setValueAt(Integer.parseInt(waiterField.getText()), selectedRow, 3);
@@ -159,6 +203,8 @@ public class CafeOwnerGUI {
             editFrame.setVisible(true);
         }
     }
+
+
 
     private void deleteSelectedRow() {
         int seletedRow = workSlotTable.getSelectedRow();

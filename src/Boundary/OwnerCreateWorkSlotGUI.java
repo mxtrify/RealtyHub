@@ -14,7 +14,6 @@ public class OwnerCreateWorkSlotGUI {
     private JButton backButton;
     private JButton createButton;
     private JTextField searchField;
-    private JTextField dateField;
     private JTextField cashierField;
     private JTextField chefField;
     private JTextField waiterField;
@@ -35,12 +34,12 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(titleLabel);
 
         // Search Bar
-        JLabel searchLabel = new JLabel("Search:");
-        searchLabel.setBounds(75, 35, 100, 25);
-        panel.add(searchLabel);
-        searchField = new JTextField(25);
-        searchField.setBounds(150, 35, 100, 25);
-        panel.add(searchField);
+//        JLabel searchLabel = new JLabel("Search:");
+//        searchLabel.setBounds(75, 35, 100, 25);
+//        panel.add(searchLabel);
+//        searchField = new JTextField(25);
+//        searchField.setBounds(150, 35, 100, 25);
+//        panel.add(searchField);
 
         // Date Label
         JLabel dateLabel = new JLabel("Date:");
