@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserAccount {
-    protected String name;
     protected Connection conn;
+    protected String name;
     protected String username;
     private String password;
     private String firstName;
