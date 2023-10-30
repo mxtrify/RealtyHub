@@ -183,7 +183,6 @@ public class WorkSlot {
         int cashierLeft = 0;
         int chefLeft = 0;
 
-
         try{
             // Check for amount of staff left for each role
             // By calculating the total amount of staff for each role
