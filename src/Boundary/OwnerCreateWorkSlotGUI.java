@@ -1,20 +1,20 @@
 package Boundary;
 
 import Controller.WorkSlotController;
+import Controller.CreateWorkSlotController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-// Need to extend JFrame?
 public class OwnerCreateWorkSlotGUI {
     private JButton backButton;
     private JButton createButton;
     private JTextField searchField;
-    private JTextField dateField;
     private JTextField cashierField;
     private JTextField chefField;
     private JTextField waiterField;
@@ -33,14 +33,6 @@ public class OwnerCreateWorkSlotGUI {
         JLabel titleLabel = new JLabel("Create Work Slot");
         titleLabel.setBounds(100, 10, 500, 25);
         panel.add(titleLabel);
-
-        // Search Bar
-        JLabel searchLabel = new JLabel("Search:");
-        searchLabel.setBounds(75, 35, 100, 25);
-        panel.add(searchLabel);
-        searchField = new JTextField(25);
-        searchField.setBounds(150, 35, 100, 25);
-        panel.add(searchField);
 
         // Date Label
         JLabel dateLabel = new JLabel("Date:");
@@ -86,12 +78,12 @@ public class OwnerCreateWorkSlotGUI {
 
         // Create Button
         createButton = new JButton("Create");
-        createButton.setBounds(300, 220, 100, 25);
+        createButton.setBounds(300, 300, 100, 25);
         panel.add(createButton);
 
         // Back Button
         backButton = new JButton("Back");
-        backButton.setBounds(20, 220, 100, 25);
+        backButton.setBounds(20, 300, 100, 25);
         panel.add(backButton);
 
         // Action for create button
@@ -101,10 +93,16 @@ public class OwnerCreateWorkSlotGUI {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String date = sdf.format(selectedDate);
 
+            // Error message if there is already an existing workslot
+            if (workSlotAlreadyExists(selectedDate)) {
+                JOptionPane.showMessageDialog(frame, "Work slot already exists for the selected date", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             int numOfChef = Integer.parseInt(chefField.getText());
             int numOfCashier = Integer.parseInt(cashierField.getText());
             int numOfWaiter = Integer.parseInt(waiterField.getText());
-            WorkSlot workSlot = new WorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
+            WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
 
             if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
                 JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
@@ -124,8 +122,14 @@ public class OwnerCreateWorkSlotGUI {
         });
 
         frame.add(panel);
-        frame.setSize(800, 600);
+        frame.setSize(500, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private boolean workSlotAlreadyExists(Date selectedDate){
+        WorkSlotController workSlotController = new WorkSlotController();
+        List<WorkSlot> workSlots = workSlotController.getWorkSlotsByDate(selectedDate);
+        return !workSlots.isEmpty();
     }
 }
