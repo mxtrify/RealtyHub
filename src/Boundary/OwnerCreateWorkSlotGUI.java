@@ -5,6 +5,7 @@ import Controller.CreateWorkSlotController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Date;
@@ -93,10 +94,10 @@ public class OwnerCreateWorkSlotGUI {
             String date = sdf.format(selectedDate);
 
             // Error message if there is already an existing workslot
-//            if (workSlotAlreadyExists(selectedDate)) {
-//                JOptionPane.showMessageDialog(frame, "Work slot already exists for the selected date", "Error", JOptionPane.ERROR_MESSAGE);
-//                return;
-//            }
+            if (workSlotAlreadyExists(selectedDate)) {
+                JOptionPane.showMessageDialog(frame, "Work slot already exists for the selected date", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             int numOfChef = Integer.parseInt(chefField.getText());
             int numOfCashier = Integer.parseInt(cashierField.getText());
@@ -124,5 +125,11 @@ public class OwnerCreateWorkSlotGUI {
         frame.setSize(500, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private boolean workSlotAlreadyExists(Date selectedDate){
+        WorkSlotController workSlotController = new WorkSlotController();
+        List<WorkSlot> workSlots = workSlotController.getWorkSlotsByDate(selectedDate);
+        return !workSlots.isEmpty();
     }
 }
