@@ -1,50 +1,48 @@
 package Controller;
 
-import Entity.Bid;
 import Entity.WorkSlot;
 
-import javax.swing.*;
-
-public class acceptBidController {
-    public Object[] processApprove(Bid bid, WorkSlot workSlot){
-
+public class AssignAvailStaffController {
+    public Object[] assignAvailStaff(String name, String username, String role, WorkSlot workSlot){
         // index 0 = boolean
         // index 1 = error message (If there is an issue)
         // index 2 = updated workslot (slot left)
         Object[] returnVal = new Object[2];
 
         // Check availability
-        if(bid.getRole().equals("Chef") && workSlot.getChefAmount() == 0){
+        if(role.equals("Chef") && workSlot.getChefAmount() == 0){
             // Chef is full
             returnVal[0] = false;
             returnVal[1] = "Chef slot is full";
 
-        }else if(bid.getRole().equals("Cashier") && workSlot.getCashierAmount() == 0){
+        }else if(role.equals("Cashier") && workSlot.getCashierAmount() == 0){
             // Cashier is full
             returnVal[0] = false;
             returnVal[1] = "Cashier slot is full";
 
-        }else if(bid.getRole().equals("Waiter") && workSlot.getWaiterAmount() == 0){
+        }else if(role.equals("Waiter") && workSlot.getWaiterAmount() == 0){
             // Waiter is full
             returnVal[0] = false;
             returnVal[1] = "Waiter slot is full";
 
         }else{
-            // Process bid approval
-            returnVal[0] = new Bid(bid.getBidId(), bid.getName(), bid.getRole(), bid.getDate()).approveRejectBid("Approved");
+            // Process assign staff
+            returnVal[0] = workSlot.assignAvailableStaff(username);
+
+
 
             if(returnVal[0].equals(false)){
-                // Issue on processing bid approval
-                returnVal[1] = "Issue found when approving Bid ID : " + bid.getBidId();
+                // Issue on assigning staff
+                returnVal[1] = String.format("Issue while assigning %s (Role: %s) to %s", name, role, workSlot.getDate());
 
             }else{
-                // Bid approval success
+                // Assign staff success
                 // Reduce amount of staff's slot left
-                if(bid.getRole().equals("Chef") ){
+                if(role.equals("Chef") ){
                     workSlot.setChefAmount( workSlot.getChefAmount()-1 );
-                }else if(bid.getRole().equals("Cashier")){
+                }else if(role.equals("Cashier")){
                     workSlot.setCashierAmount( workSlot.getCashierAmount()-1 );
-                }else if(bid.getRole().equals("Waiter")){
+                }else if(role.equals("Waiter")){
                     workSlot.setWaiterAmount( workSlot.getWaiterAmount()-1 );
                 }
 

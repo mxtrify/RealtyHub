@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 
-public class assignStaffGUI {
+public class AssignStaffGUI {
     // ~~ For Available Staff Table data ~~
     private Object[][] as_data;
     private DefaultTableModel as_model;
@@ -37,7 +37,7 @@ public class assignStaffGUI {
     private JLabel waiterAmt;
 
 
-    public assignStaffGUI (CafeManager u, WorkSlot workSlot){
+    public AssignStaffGUI(CafeManager u, WorkSlot workSlot){
         displayAssignStaff(u, workSlot);
     }
 
@@ -117,7 +117,7 @@ public class assignStaffGUI {
         String[] as_col = {"Name", "Username", "Role"};
 
         // Fetch available staffs from database
-        as_data = new viewAvailStaffController().getAvailableStaffs(workSlot.getDate());
+        as_data = new ViewAvailStaffController().getAvailableStaffs(workSlot.getDate());
         as_model = new DefaultTableModel(as_data, as_col){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -162,7 +162,7 @@ public class assignStaffGUI {
         // Set the table and it's data
         String[] bid_col = {"Bid ID","Staff Name", "Role Name"};
         // Fetch data from database
-        bids_data = new viewBidDataController().viewBidData(workSlot.getDate());
+        bids_data = new ViewBidDataController().viewBidData(workSlot.getDate());
         bids_model = new DefaultTableModel(bids_data, bid_col){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -255,7 +255,7 @@ public class assignStaffGUI {
                 int confirm = JOptionPane.showConfirmDialog(frame, String.format("Are you sure you want to assign %s (Role: %s) to %s?", name, role, workSlot.dateToString()), "Assign Staff", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION) {
-                    Object[] result = new assignAvailStaffController().assignAvailStaff(name, username, role, workSlot);
+                    Object[] result = new AssignAvailStaffController().assignAvailStaff(name, username, role, workSlot);
                     boolean isSuccess = (boolean)result[0];
 
                     if(isSuccess){
@@ -302,7 +302,7 @@ public class assignStaffGUI {
                         frame.revalidate();
 
 
-                        bids_data = new viewBidDataController().viewBidData(workSlot.getDate());
+                        bids_data = new ViewBidDataController().viewBidData(workSlot.getDate());
                         bids_model.setDataVector(bids_data, bid_col);
 
                         bids_table.setModel(bids_model);
@@ -342,7 +342,7 @@ public class assignStaffGUI {
 
                 if(confirm == JOptionPane.YES_OPTION){
 
-                    Object[] result = new acceptBidController().processApprove(bid, workSlot);
+                    Object[] result = new AcceptBidController().processApprove(bid, workSlot);
                     boolean isSuccess = (boolean)result[0];
 
                     if(isSuccess){
@@ -389,7 +389,7 @@ public class assignStaffGUI {
                             frame.repaint();
                             frame.revalidate();
 
-                            as_data = new viewAvailStaffController().getAvailableStaffs(workSlot.getDate());
+                            as_data = new ViewAvailStaffController().getAvailableStaffs(workSlot.getDate());
                             as_model.setDataVector(as_data, as_col);
 
                             as_table.setModel(as_model);

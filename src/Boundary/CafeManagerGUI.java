@@ -1,6 +1,6 @@
 package Boundary;
 
-import Controller.viewAvailWSController;
+import Controller.ViewAvailWSController;
 import Entity.CafeManager;
 import Entity.UserAccount;
 import Entity.WorkSlot;
@@ -69,7 +69,7 @@ public class CafeManagerGUI {
                     frame.dispose();
 
                     // Switch to assign staff frame
-                    new assignStaffGUI(u, workSlot);
+                    new AssignStaffGUI(u, workSlot);
 
 
                 }
@@ -93,7 +93,7 @@ public class CafeManagerGUI {
         frame.add(searchButton);
 
         // Table
-        data = new viewAvailWSController().getWorkSlot(new java.sql.Date(current.getTime().getTime()));
+        data = new ViewAvailWSController().getWorkSlot(new java.sql.Date(current.getTime().getTime()));
         String[] columnNames = {"Date", "Chef", "Cashier", "Waiter", "Status"};
 
         // Generate table model
@@ -168,7 +168,7 @@ public class CafeManagerGUI {
                 java.sql.Date selectedDate = new java.sql.Date(date_search.getDate().getTime());
 
                 // Get data from database
-                data = new viewAvailWSController().getWorkSlot(selectedDate);
+                data = new ViewAvailWSController().getWorkSlot(selectedDate);
 
                 // Set data into model
                 model.setDataVector(data, columnNames);
