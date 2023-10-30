@@ -7,8 +7,10 @@ import Controller.WorkSlotController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.sql.Date;
 
 public class CafeOwnerGUI {
     JPanel panel = new JPanel();
@@ -130,15 +132,25 @@ public class CafeOwnerGUI {
 
             // Action for the save button
             saveButton.addActionListener(e -> {
-                tableComponents.setValueAt(dateField.getText(), selectedRow, 0);
-                tableComponents.setValueAt(Integer.parseInt(chefField.getText()), selectedRow, 1);
-                tableComponents.setValueAt(Integer.parseInt(cashierField.getText()), selectedRow, 2);
-                tableComponents.setValueAt(Integer.parseInt(waiterField.getText()), selectedRow, 3);
+                try{
+                    tableComponents.setValueAt(dateField.getText(), selectedRow, 0);
+                    tableComponents.setValueAt(Integer.parseInt(chefField.getText()), selectedRow, 1);
+                    tableComponents.setValueAt(Integer.parseInt(cashierField.getText()), selectedRow, 2);
+                    tableComponents.setValueAt(Integer.parseInt(waiterField.getText()), selectedRow, 3);
 
-                WorkSlotController workSlotController = new WorkSlotController();
-                workSlotController.updateWorkSlot(dateToEdit, dateField.getText(), Integer.parseInt(chefField.getText()), Integer.parseInt(cashierField.getText()), Integer.parseInt(waiterField.getText()));
+                    WorkSlotController workSlotController = new WorkSlotController();
 
-                editFrame.dispose();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    java.util.Date utilDate = dateFormat.parse(dateToEdit);
+                    Date sqlDate = new Date(utilDate.getTime());
+
+                    workSlotController.updateRoleAmount(sqlDate, 1, Integer.parseInt(chefField.getText()));
+                    workSlotController.updateRoleAmount(sqlDate, 2, Integer.parseInt(cashierField.getText()));
+                    workSlotController.updateRoleAmount(sqlDate, 3, Integer.parseInt(waiterField.getText()));
+                    editFrame.dispose();
+                } catch(NumberFormatException | ParseException ex) {
+                    ex.printStackTrace();
+                }
             });
 
             editFrame.add(editPanel);

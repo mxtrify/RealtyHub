@@ -321,26 +321,8 @@ public class WorkSlot {
         return amount;
     }
 
-    public boolean updateWorkSlot(Date oldDate, Date newDate, int roleID, int newAmount, int newWaiterAmount) {
-        return updateWorkSlotTable(oldDate, newDate) && updateRoleAmount(newDate, roleID, newAmount);
-    }
 
-    private boolean updateWorkSlotTable(Date oldDate, Date newDate) {
-        String updateWorkSlotQuery = "UPDATE work_slot SET date = ? WHERE date = ?";
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement(updateWorkSlotQuery)) {
-            preparedStatement.setDate(1, newDate);
-            preparedStatement.setDate(2, oldDate);
-            int rowsUpdated = preparedStatement.executeUpdate();
-
-            return rowsUpdated > 0; // Returns true if at least one row was updated
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean updateRoleAmount(Date date, int roleID, int newAmount) {
+    public boolean updateRoleAmount(Date date, int roleID, int newAmount) {
         String updateRoleAmountQuery = "UPDATE role_amount SET amount = ? WHERE date = ? AND role_id = ?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(updateRoleAmountQuery)) {
@@ -349,6 +331,12 @@ public class WorkSlot {
             preparedStatement.setInt(3, roleID);
 
             int rowsUpdated = preparedStatement.executeUpdate();
+            System.out.println(newAmount);
+            System.out.println(date);
+            System.out.println(roleID);
+
+            System.out.println("Rows updated: " + rowsUpdated);
+            System.out.println("SQL Query: " + updateRoleAmountQuery);
 
             return rowsUpdated > 0;
         } catch (SQLException e) {
