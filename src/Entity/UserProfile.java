@@ -113,7 +113,18 @@ public class UserProfile {
     }
 
     // Delete (Suspend)
-
+    public boolean suspendUserProfile(String profileName) {
+        String query = "UPDATE profile SET profile_status = 0 WHERE profile_name = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileName);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     // Search
     public void getProfileName(String search, DefaultTableModel model) {

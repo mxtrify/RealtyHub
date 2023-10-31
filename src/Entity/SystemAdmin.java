@@ -15,7 +15,7 @@ public class SystemAdmin extends UserAccount {
         super(username, password);
     }
 
-    // Get list of all user account
+    // View
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
@@ -38,7 +38,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    // Get profile name
+    // Profile dropdown
     public ArrayList<String> getProfileByName() {
         String query = "SELECT profile_name FROM profile";
         ArrayList<String> profileNameList = new ArrayList<>();
@@ -58,7 +58,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    // Get role name
+    // Role dropdown
     public ArrayList<String> getRoleByName() {
         String query = "SELECT role_name FROM role";
         ArrayList<String> roleNameList = new ArrayList<>();
@@ -78,6 +78,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
+    // Create
     public boolean insertAccount(UserAccount newUser) {
         String query = "INSERT INTO user_account VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -104,6 +105,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
+    // Search
     public void getUserAccountByUsername(String search, DefaultTableModel model) {
         String query = "SELECT username, f_name, l_name, profile_name FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
         try {
@@ -124,10 +126,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-
-
-
-
+    // Filter
     public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
@@ -151,21 +150,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-
-
-    public boolean deleteProfile(String profileName) {
-        String query = "DELETE FROM profile WHERE profile_name = ?";
-        try {
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, profileName);
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    // Suspend
     public boolean suspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 0 WHERE username = ?";
         try {
@@ -202,6 +187,8 @@ public class SystemAdmin extends UserAccount {
             throw new RuntimeException(e);
         }
     }
+
+    // Update
     public boolean updateUserAccount(UserAccount updatedUser) {
         String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, max_slot = ?, profile_id = ?, role_id = ? WHERE username = ?";
         try {
