@@ -505,7 +505,7 @@ public class WorkSlot {
                 Bid bid = new Bid();
                 bid.setBid_id(resultSet.getInt("bid_id"));
 
-                return bid.approveRejectBid("Approved");
+                return bid.approveBid();
             }else{
                 // Assign staff
                 query = "INSERT INTO `bid`(`username`, `date`, `bid_status`) " +

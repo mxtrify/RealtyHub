@@ -71,9 +71,10 @@ public class ViewUserProfileGUI {
 
         // Delete profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(600, 250, 100, 36);
+        suspendButton.setBounds(590, 250, 120, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(suspendButton);
+        suspendButton.setEnabled(false);
 
         frame.add(panel);
         frame.setSize(800, 600);
@@ -112,19 +113,41 @@ public class ViewUserProfileGUI {
             }
         });
 
-        suspendButton.addActionListener(e -> {
-            if (table.getSelectedRow() == -1) {
-                JOptionPane.showMessageDialog(frame, "Please select profile to delete", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
-                if(new SuspendUserProfileController().deleteUserProfile(profileName)) {
-                    getProfileList();
-                    JOptionPane.showMessageDialog(frame, "Successfully delete profile", "Success", JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to delete profile", "Failed", JOptionPane.ERROR_MESSAGE);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (table.getSelectedRow() != -1) {
+                    suspendButton.setEnabled(true);
+                    String status = model.getValueAt(table.getSelectedRow(), 2).toString();
+
+                    if (status.equals("Active")) {
+                        String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
+                        if(new SuspendUserProfileController().deleteUserProfile(profileName)) {
+                            getProfileList();
+                            JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                        }
+                        suspendButton.setText("Suspend");
+                    } else {
+                        suspendButton.setText("Unsuspend");
+                    }
                 }
             }
         });
+
+//        suspendButton.addActionListener(e -> {
+//            if (table.getSelectedRow() == -1) {
+//                JOptionPane.showMessageDialog(frame, "Please select profile to delete", "Error", JOptionPane.ERROR_MESSAGE);
+//            } else {
+//                String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
+//                if(new SuspendUserProfileController().deleteUserProfile(profileName)) {
+//                    getProfileList();
+//                    JOptionPane.showMessageDialog(frame, "Successfully delete profile", "Success", JOptionPane.PLAIN_MESSAGE);
+//                } else {
+//                    JOptionPane.showMessageDialog(frame, "Failed to delete profile", "Failed", JOptionPane.ERROR_MESSAGE);
+//                }
+//            }
+//        });
     }
 
     public void getProfileList() {

@@ -3,7 +3,7 @@ package Controller;
 import Entity.Bid;
 import Entity.WorkSlot;
 
-public class AcceptBidController {
+public class ApproveBidController {
     public Object[] processApprove(Bid bid, WorkSlot workSlot){
 
         // index 0 = boolean
@@ -29,7 +29,7 @@ public class AcceptBidController {
 
         }else{
             // Process bid approval
-            returnVal[0] = new Bid(bid.getBidId(), bid.getName(), bid.getRole(), bid.getDate()).approveRejectBid("Approved");
+            returnVal[0] = new Bid(bid.getBidId(), bid.getName(), bid.getRole(), bid.getDate()).approveBid();
 
             if(returnVal[0].equals(false)){
                 // Issue on processing bid approval

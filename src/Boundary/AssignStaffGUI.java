@@ -6,8 +6,6 @@ import Entity.CafeManager;
 import Entity.WorkSlot;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -332,7 +330,7 @@ public class AssignStaffGUI {
 
                 if(confirm == JOptionPane.YES_OPTION){
 
-                    Object[] result = new AcceptBidController().processApprove(bid, workSlot);
+                    Object[] result = new ApproveBidController().processApprove(bid, workSlot);
                     boolean isSuccess = (boolean)result[0];
 
                     if(isSuccess){
