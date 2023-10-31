@@ -2,6 +2,7 @@ package Boundary;
 
 import Controller.SuspendUserProfileController;
 import Controller.SearchUserProfileController;
+import Controller.UnsuspendUserProfileController;
 import Controller.ViewUserProfileController;
 import Entity.UserAccount;
 import Entity.UserProfile;
@@ -11,6 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ViewUserProfileGUI {
@@ -40,7 +43,11 @@ public class ViewUserProfileGUI {
         panel.add(viewUserAccountButton);
 
         // Profile table
-        model = new DefaultTableModel();
+        model = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
         model.setColumnIdentifiers(columnNames);
         getProfileList();
         JTable table = new JTable(model);
@@ -119,18 +126,10 @@ public class ViewUserProfileGUI {
 
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                if (table.getSelectedRow() != -1) {
+                if (table.getSelectedRow() != -1 ) {
                     suspendButton.setEnabled(true);
                     String status = model.getValueAt(table.getSelectedRow(), 2).toString();
-
                     if (status.equals("Active")) {
-                        String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
-                        if(new SuspendUserProfileController().deleteUserProfile(profileName)) {
-                            getProfileList();
-                            JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
-                        }
                         suspendButton.setText("Suspend");
                     } else {
                         suspendButton.setText("Unsuspend");
@@ -138,6 +137,27 @@ public class ViewUserProfileGUI {
                 }
             }
         });
+
+        suspendButton.addActionListener(e -> {
+            String status = model.getValueAt(table.getSelectedRow(), 2).toString();
+            String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
+            if(status.equals("Active")) {
+                if(new SuspendUserProfileController().suspendUserProfile(profileName)) {
+                    getProfileList();
+                    JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if(new UnsuspendUserProfileController().unsuspendUserProfile(profileName)) {
+                    getProfileList();
+                    JOptionPane.showMessageDialog(frame, "Successfully unsuspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to unsuspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
     }
 
     public void getProfileList() {

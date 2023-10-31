@@ -8,7 +8,7 @@ public class SuspendUserProfileController {
     public SuspendUserProfileController() {
         this.userProfile = new UserProfile();
     }
-    public boolean deleteUserProfile(String profileName) {
+    public boolean suspendUserProfile(String profileName) {
         return userProfile.suspendUserProfile(profileName);
     }
 }

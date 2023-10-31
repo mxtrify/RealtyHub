@@ -77,7 +77,7 @@ public class SystemAdminGUI {
 
         // Delete profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(600, 250, 100, 36);
+        suspendButton.setBounds(590, 250, 120, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         suspendButton.setEnabled(false);
         panel.add(suspendButton);
@@ -146,17 +146,36 @@ public class SystemAdminGUI {
             }
         });
 
-        // Suspend account button
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (table.getSelectedRow() != -1 ) {
+                    suspendButton.setEnabled(true);
+                    String status = model.getValueAt(table.getSelectedRow(), 4).toString();
+                    if (status.equals("Active")) {
+                        suspendButton.setText("Suspend");
+                    } else {
+                        suspendButton.setText("Unsuspend");
+                    }
+                }
+            }
+        });
+
         suspendButton.addActionListener(e -> {
-            if (table.getSelectedRow() == -1) {
-                JOptionPane.showMessageDialog(frame, "Please select account to suspend", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                String username = model.getValueAt(table.getSelectedRow(),0).toString();
+            String status = model.getValueAt(table.getSelectedRow(), 4).toString();
+            String username = model.getValueAt(table.getSelectedRow(),0).toString();
+            if(status.equals("Active")) {
                 if(new SuspendUserAccountController().suspendUserAccount(username)) {
                     getAccountList();
                     JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if(new UnsuspendUserAccountController().unsuspendUserAccount(username)) {
+                    getAccountList();
+                    JOptionPane.showMessageDialog(frame, "Successfully unsuspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to unsuspend account", "Failed", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

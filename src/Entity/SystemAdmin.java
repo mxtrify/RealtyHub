@@ -215,5 +215,17 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
+    public boolean unsuspendUserAccount(String username) {
+        String query = "UPDATE user_account SET status = 1 WHERE username = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

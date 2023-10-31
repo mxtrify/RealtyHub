@@ -112,9 +112,23 @@ public class UserProfile {
         }
     }
 
-    // Delete (Suspend)
+    // Suspend
     public boolean suspendUserProfile(String profileName) {
         String query = "UPDATE profile SET profile_status = 0 WHERE profile_name = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileName);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Unsuspend
+    public boolean unsuspendUserProfile(String profileName) {
+        String query = "UPDATE profile SET profile_status = 1 WHERE profile_name = ?";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
