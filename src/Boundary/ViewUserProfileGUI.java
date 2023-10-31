@@ -20,6 +20,10 @@ public class ViewUserProfileGUI {
     private String[] columnNames = {"Profile Name", "Description", "Status"};
 
     public ViewUserProfileGUI(UserAccount u) {
+        displayViewUserProfile(u);
+    }
+
+    public void displayViewUserProfile(UserAccount u) {
         frame = new JFrame("User Profile");
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -134,20 +138,6 @@ public class ViewUserProfileGUI {
                 }
             }
         });
-
-//        suspendButton.addActionListener(e -> {
-//            if (table.getSelectedRow() == -1) {
-//                JOptionPane.showMessageDialog(frame, "Please select profile to delete", "Error", JOptionPane.ERROR_MESSAGE);
-//            } else {
-//                String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
-//                if(new SuspendUserProfileController().deleteUserProfile(profileName)) {
-//                    getProfileList();
-//                    JOptionPane.showMessageDialog(frame, "Successfully delete profile", "Success", JOptionPane.PLAIN_MESSAGE);
-//                } else {
-//                    JOptionPane.showMessageDialog(frame, "Failed to delete profile", "Failed", JOptionPane.ERROR_MESSAGE);
-//                }
-//            }
-//        });
     }
 
     public void getProfileList() {
