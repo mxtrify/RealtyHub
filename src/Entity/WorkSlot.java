@@ -148,7 +148,6 @@ public class WorkSlot {
 
 
                 Vector<Object> row = new Vector<>();
-
                 // Fetch data for each date
                 for(int i = 0; i < 5; i ++){
                     // Temporary use "data" variable
@@ -248,7 +247,6 @@ public class WorkSlot {
             // Close resources
             preparedStatement.close();
             resultSet.close();
-
 
             // Return the data
             return data;

@@ -20,6 +20,7 @@ public class UserAccount {
     private int role;
     private int maxSlot;
     private boolean status;
+    private UserProfile userProfile;
 
     public UserAccount() {
         this.username = "";

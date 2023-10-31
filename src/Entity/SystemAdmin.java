@@ -124,40 +124,9 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    public void selectAllProfile(DefaultTableModel model) {
-        String query = "SELECT profile_name, profile_desc FROM profile";
-        try {
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            model.setRowCount(0);
-            while(resultSet.next()) {
-                String profileName = resultSet.getString("profile_name");
-                String profileDesc = resultSet.getString("profile_desc");
-                model.addRow(new Object[]{profileName, profileDesc});
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    public void getProfileName(String search, DefaultTableModel model) {
-        String query = "SELECT profile_name, profile_desc FROM profile WHERE profile_name LIKE ?";
-        try {
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, search + "%");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            model.setRowCount(0);
-            while(resultSet.next()) {
-                String profileName = resultSet.getString("profile_name");
-                String profileDesc = resultSet.getString("profile_desc");
-                model.addRow(new Object[]{profileName, profileDesc});
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
+
 
     public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
@@ -182,19 +151,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    public boolean insertProfile(String profileName, String profileDesc) {
-        String query = "INSERT INTO profile (profile_name, profile_desc) VALUES (?, ?)";
-        try {
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, profileName);
-            preparedStatement.setString(2, profileDesc);
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     public boolean deleteProfile(String profileName) {
         String query = "DELETE FROM profile WHERE profile_name = ?";
@@ -271,17 +228,5 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    public boolean updateUserProfile(String profileName, String newProfileDesc) {
-        String query = "UPDATE profile SET profile_desc = ? WHERE profile_name = ?";
-        try {
-            Connection conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, newProfileDesc);
-            preparedStatement.setString(2, profileName);
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 }

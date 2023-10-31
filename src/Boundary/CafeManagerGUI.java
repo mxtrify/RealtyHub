@@ -205,7 +205,8 @@ public class CafeManagerGUI {
         frame.add(clearFilter);
         // Implement clear filter
         clearFilter.addActionListener(e->{
-
+            // Clear date chooser
+            date_search.setDate(null);
             // Remove old table
             frame.remove(scrollPane);
             // Clear selected workslot (back to unselected)

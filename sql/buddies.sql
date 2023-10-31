@@ -6,6 +6,7 @@ CREATE TABLE `profile` (
     `profile_id` INT NOT NULL AUTO_INCREMENT ,
     `profile_name` VARCHAR(64) NOT NULL ,
     `profile_desc` VARCHAR(256) NOT NULL ,
+    `profile_status` BOOLEAN NOT NULL,
     PRIMARY KEY (`profile_id`)
 );
 
@@ -61,11 +62,11 @@ INSERT INTO `role` (role_name, role_desc) VALUES
     ('Cashier', 'Do transaction'),
     ('Chef', 'Cook food');
 
-INSERT INTO `profile`(profile_name, profile_desc) VALUES
-    ('System Admin', 'Make user account'),
-    ('Cafe Owner', 'Make work slot'),
-    ('Cafe Manager', 'Manage bids'),
-    ('Cafe Staff', 'Make bids');
+INSERT INTO `profile`(profile_name, profile_desc, profile_status) VALUES
+    ('System Admin', 'Make user account', TRUE),
+    ('Cafe Owner', 'Make work slot', TRUE),
+    ('Cafe Manager', 'Manage bids', TRUE),
+    ('Cafe Staff', 'Make bids', TRUE);
 
 INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, profile_id, role_id, status) VALUES
     ('admin', 'admin', 'Fadmin', 'Ladmin', 'admin@gmail.com', NULL, 1, NULL, TRUE),

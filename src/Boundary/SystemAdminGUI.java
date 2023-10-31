@@ -34,20 +34,20 @@ public class SystemAdminGUI {
 
         // Search Field
         JTextField searchTextField = new JTextField();
-        searchTextField.setBounds(50, 135, 200, 36);
+        searchTextField.setBounds(50, 135, 180, 36);
         searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
 
         // Search Button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(250, 135, 100, 36);
+        searchButton.setBounds(230, 135, 90, 36);
         searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchButton);
 
         // Profile list dropdown
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(getProfileList().toArray(new String[0]));
         JComboBox profileFilter = new JComboBox(profileComboModel);
-        profileFilter.setBounds(350, 135, 200, 36);
+        profileFilter.setBounds(380, 135, 180, 36);
         profileFilter.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(profileFilter);
 
@@ -79,7 +79,13 @@ public class SystemAdminGUI {
         JButton suspendButton = new JButton("Suspend");
         suspendButton.setBounds(600, 250, 100, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        suspendButton.setEnabled(false);
         panel.add(suspendButton);
+
+        JButton clearButton = new JButton("Clear");
+        clearButton.setBounds(320, 135, 60, 36);
+        clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(clearButton);
 
         // User account table
         model = new DefaultTableModel() {
@@ -92,7 +98,7 @@ public class SystemAdminGUI {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 500, 350);
+        scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
 
         // Logout Action Button
@@ -105,6 +111,11 @@ public class SystemAdminGUI {
         viewProfileButton.addActionListener(e -> {
             frame.dispose();
             new ViewUserProfileGUI(u);
+        });
+
+        clearButton.addActionListener(e -> {
+            searchTextField.setText("");
+            searchUserAccount(searchTextField, model);
         });
 
         // Press "ENTER" to search

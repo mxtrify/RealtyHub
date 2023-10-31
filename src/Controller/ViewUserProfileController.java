@@ -1,11 +1,17 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserProfile;
 
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+
 
 public class ViewUserProfileController {
-    public void getProfileList(DefaultTableModel model) {
-        new SystemAdmin().selectAllProfile(model);
+    private UserProfile userProfile;
+
+    public ViewUserProfileController() {
+        this.userProfile = new UserProfile();
+    }
+    public ArrayList<UserProfile> getProfileList() {
+        return userProfile.selectAllProfile();
     }
 }

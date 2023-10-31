@@ -4,19 +4,20 @@ import Controller.DeleteUserProfileController;
 import Controller.SearchUserProfileController;
 import Controller.ViewUserProfileController;
 import Entity.UserAccount;
+import Entity.UserProfile;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class ViewUserProfileGUI {
     private JFrame frame;
-
-    public ViewUserProfileGUI() {
-
-    }
+    private DefaultTableModel model;
+    private ArrayList<UserProfile> userProfiles;
+    private String[] columnNames = {"Profile Name", "Description", "Status"};
 
     public ViewUserProfileGUI(UserAccount u) {
         frame = new JFrame("User Profile");
@@ -35,10 +36,9 @@ public class ViewUserProfileGUI {
         panel.add(viewUserAccountButton);
 
         // Profile table
-        DefaultTableModel model = new DefaultTableModel();
-        String[] columnNames = {"Profile Name", "Description"};
+        model = new DefaultTableModel();
         model.setColumnIdentifiers(columnNames);
-        getProfileList(model);
+        getProfileList();
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -127,15 +127,29 @@ public class ViewUserProfileGUI {
         });
     }
 
-    public void getProfileList(DefaultTableModel model) {
-        new ViewUserProfileController().getProfileList(model);
+    public void getProfileList() {
+        model.setRowCount(0);
+        userProfiles = new ViewUserProfileController().getProfileList();
+        for (UserProfile userProfile : userProfiles) {
+            String status;
+            if(userProfile.isProfileStatus()) {
+                status = "Active";
+            } else {
+                status = "Suspended";
+            }
+            model.addRow(new Object[]{
+                    userProfile.getProfileName(),
+                    userProfile.getProfileDesc(),
+                    status
+            });
+        }
     }
 
     public void searchUserProfile(JTextField searchField, DefaultTableModel model) {
         String search = searchField.getText();
 
         if(search.isEmpty()) {
-            getProfileList(model);
+            getProfileList();
         } else {
             new SearchUserProfileController().SearchUserProfile(search, model);
         }
