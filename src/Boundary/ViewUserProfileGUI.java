@@ -87,6 +87,12 @@ public class ViewUserProfileGUI {
         panel.add(suspendButton);
         suspendButton.setEnabled(false);
 
+        // Clear button
+        JButton clearButton = new JButton("Clear");
+        clearButton.setBounds(350, 135, 60, 36);
+        clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(clearButton);
+
         frame.add(panel);
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,6 +101,11 @@ public class ViewUserProfileGUI {
         viewUserAccountButton.addActionListener(e -> {
             frame.dispose();
             new SystemAdminGUI(u);
+        });
+
+        clearButton.addActionListener(e -> {
+            searchTextField.setText("");
+            searchUserProfile(searchTextField, model);
         });
 
         searchButton.addActionListener(e -> searchUserProfile(searchTextField, model));

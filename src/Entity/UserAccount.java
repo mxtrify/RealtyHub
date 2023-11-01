@@ -179,6 +179,14 @@ public class UserAccount {
         return name;
     }
 
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
     // Function for validating login
     public UserAccount validateLogin(String username, String password) {
         String query = "SELECT * FROM user_account WHERE username = ? AND password = ?";
