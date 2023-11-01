@@ -14,6 +14,12 @@ public class SystemAdmin extends UserAccount {
     public SystemAdmin(String username, String password) {
         super(username, password);
     }
+    public SystemAdmin(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
+        super(username, password, firstName, lastName, email, userProfile);
+    }
+    public SystemAdmin(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status) {
+        super(username, password, firstName, lastName, email, userProfile, status);
+    }
 
     // View
     public ArrayList<UserAccount> selectAll() {
@@ -29,7 +35,8 @@ public class SystemAdmin extends UserAccount {
                 String lName = resultSet.getString("l_name");
                 String profileName = resultSet.getString("profile_name");
                 boolean status = resultSet.getBoolean("status");
-                UserAccount userAccount = new UserAccount(username, fName, lName, profileName, status);
+                UserProfile userProfile = new UserProfile(profileName);
+                UserAccount userAccount = new UserAccount(username, fName, lName, userProfile, status);
                 userAccounts.add(userAccount);
             }
             return userAccounts;
@@ -80,7 +87,7 @@ public class SystemAdmin extends UserAccount {
 
     // Create
     public boolean insertAccount(UserAccount newUser) {
-        String query = "INSERT INTO user_account VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -89,15 +96,14 @@ public class SystemAdmin extends UserAccount {
             preparedStatement.setString(3, newUser.getFirstName());
             preparedStatement.setString(4, newUser.getLastName());
             preparedStatement.setString(5, newUser.getEmail());
-            preparedStatement.setInt(7, newUser.getProfile());
-            if(newUser.getProfile() == 4) {
-                preparedStatement.setNull(6, Types.INTEGER);
-                preparedStatement.setInt(8, newUser.getRole());
+            preparedStatement.setInt(6, newUser.getUserProfile().getProfileID());
+            if(newUser.getUserProfile().getProfileID() == 4) {
+                CafeStaff cafeStaff = (CafeStaff) newUser;
+                preparedStatement.setInt(7, cafeStaff.getRole_id());
             } else {
-                preparedStatement.setNull(6, Types.INTEGER);
-                preparedStatement.setNull(8, Types.INTEGER);
+                preparedStatement.setNull(7, Types.INTEGER);
             }
-            preparedStatement.setBoolean(9, true);
+            preparedStatement.setBoolean(8, true);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -141,7 +147,8 @@ public class SystemAdmin extends UserAccount {
                 String lName = resultSet.getString("l_name");
                 String profile = resultSet.getString("profile_name");
                 boolean status = resultSet.getBoolean("status");
-                UserAccount userAccount = new UserAccount(username, fName, lName, profile, status);
+                UserProfile userProfile = new UserProfile(profileName);
+                UserAccount userAccount = new UserAccount(username, fName, lName, userProfile, status);
                 userAccounts.add(userAccount);
             }
             return userAccounts;
@@ -171,7 +178,7 @@ public class SystemAdmin extends UserAccount {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
-            UserAccount userAccount = new UserAccount();
+            UserAccount userAccount = null;
             while(resultSet.next()) {
                 String userName = resultSet.getString("username");
                 String password = resultSet.getString("password");
@@ -180,7 +187,17 @@ public class SystemAdmin extends UserAccount {
                 String email = resultSet.getString("email");
                 int profileID = resultSet.getInt("profile_id");
                 int roleID = resultSet.getInt("role_id");
-                userAccount = new UserAccount(userName, password, firstName, lastName, email, profileID, roleID);
+                if(profileID == 1) {
+                    userAccount = new SystemAdmin(username, password, firstName, lastName, email, new UserProfile(profileID));
+                } else if(profileID == 2) {
+                    userAccount = new CafeOwner(username, password, firstName, lastName, email, new UserProfile(profileID));
+                } else if(profileID == 3) {
+                    userAccount = new CafeManager(username, password, firstName, lastName, email, new UserProfile(profileID));
+                } else if(profileID == 4) {
+                    userAccount = new CafeStaff(username, password, firstName, lastName, email, new UserProfile(profileID), roleID, 0);
+                } else {
+                    userAccount = new UserAccount();
+                }
             }
             return userAccount;
         } catch (SQLException e) {
@@ -199,14 +216,15 @@ public class SystemAdmin extends UserAccount {
             preparedStatement.setString(3, updatedUser.getLastName());
             preparedStatement.setString(4, updatedUser.getEmail());
             preparedStatement.setNull(5, Types.INTEGER); // Assuming getMaxSlot() returns the max_slot value
-            preparedStatement.setInt(6, updatedUser.getProfile()); // Set profile_id
-            preparedStatement.setObject(7, updatedUser.getRole()); // Set role_id
-
-            if (updatedUser.getProfile() != 4) {
+            preparedStatement.setInt(6, updatedUser.getUserProfile().getProfileID()); // Set profile_id
+            if(updatedUser.getUserProfile().getProfileID() == 4) {
+                CafeStaff cafeStaff = (CafeStaff) updatedUser;
+                preparedStatement.setInt(7, cafeStaff.getRole_id());
+            }
+            if (updatedUser.getUserProfile().getProfileID() != 4) {
                 preparedStatement.setNull(5, Types.INTEGER); // If profile_id is not 4, set max_slot to NULL
                 preparedStatement.setNull(7, Types.INTEGER); // Also set role_id to NULL
             }
-
             preparedStatement.setString(8, updatedUser.getUsername());
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;

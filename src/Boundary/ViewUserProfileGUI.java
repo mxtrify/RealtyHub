@@ -12,8 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ViewUserProfileGUI {
@@ -156,6 +154,7 @@ public class ViewUserProfileGUI {
                 if(new SuspendUserProfileController().suspendUserProfile(profileName)) {
                     getProfileList();
                     JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
                 }
@@ -163,6 +162,7 @@ public class ViewUserProfileGUI {
                 if(new UnsuspendUserProfileController().unsuspendUserProfile(profileName)) {
                     getProfileList();
                     JOptionPane.showMessageDialog(frame, "Successfully unsuspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Failed to unsuspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
                 }

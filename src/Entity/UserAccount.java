@@ -9,18 +9,14 @@ import java.sql.SQLException;
 
 public class UserAccount {
     protected Connection conn;
-    protected String name;
+
     protected String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private int profile;
-    private String profileName;
-    private int role;
-    private int maxSlot;
-    private boolean status;
-    private UserProfile userProfile;
+    protected String password;
+    protected String firstName;
+    protected String lastName;
+    protected String email;
+    protected UserProfile userProfile;
+    protected boolean status;
 
     public UserAccount() {
         this.username = "";
@@ -28,9 +24,7 @@ public class UserAccount {
         this.firstName = "";
         this.lastName = "";
         this.email = "";
-        this.profile = 0;
-        this.role = 0;
-        this.maxSlot = 0;
+        this.userProfile = new UserProfile();
         this.status = false;
 
         try{
@@ -43,57 +37,36 @@ public class UserAccount {
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
-
-
-        try{
-            this.conn = new DBConfig().getConnection();
-
-            // Get user account name from database
-            String query = "SELECT CONCAT(`f_name`, ' ', `l_name`) AS `Name`" +
-                    "FROM `user_account` WHERE `username` = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, this.username);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-                this.name = resultSet.getString("Name");
-            }else{
-                this.name = "";
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
-    public UserAccount(String username, String firstName, String lastName, String profileName, boolean status) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.profileName = profileName;
-        this.status = status;
-    }
-
-    public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role) {
+    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.profile = profile;
-        this.role = role;
+        this.userProfile = userProfile;
     }
-    public UserAccount(String username, String password, String firstName, String lastName, String email, int profile, int role, int maxSlot, boolean status) {
+
+    public UserAccount(String username, String firstName, String lastName, UserProfile userProfile, boolean status) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userProfile = userProfile;
+        this.status = status;
+    }
+
+    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.profile = profile;
-        this.role = role;
-        this.maxSlot = maxSlot;
+        this.userProfile = userProfile;
         this.status = status;
     }
+
+
 
     public String getUsername() {
         return username;
@@ -115,16 +88,12 @@ public class UserAccount {
         return email;
     }
 
-    public int getProfile() {
-        return profile;
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 
-    public int getRole() {
-        return role;
-    }
-
-    public int getMaxSlot() {
-        return maxSlot;
+    public boolean isStatus() {
+        return status;
     }
 
     public void setUsername(String username) {
@@ -147,44 +116,12 @@ public class UserAccount {
         this.email = email;
     }
 
-    public void setProfile(int profile) {
-        this.profile = profile;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
-    }
-
-    public void setMaxSlot(int maxSlot) {
-        this.maxSlot = maxSlot;
-    }
-
-    public String getProfileName() {
-        return profileName;
-    }
-
-    public void setProfileName(String profileName) {
-        this.profileName = profileName;
-    }
-
-    public boolean isStatus() {
-        return status;
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
     }
 
     // Function for validating login

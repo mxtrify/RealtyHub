@@ -27,7 +27,7 @@ public class SystemAdminGUI {
         panel.setLayout(null);
 
         // Display welcome message for the logged-in user
-        JLabel titleLabel = new JLabel("Welcome, " + u.getName());
+        JLabel titleLabel = new JLabel("Welcome, " + u.getUsername());
         titleLabel.setBounds(50,75, 500, 36);
         titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         panel.add(titleLabel);
@@ -167,6 +167,7 @@ public class SystemAdminGUI {
                 if(new SuspendUserAccountController().suspendUserAccount(username)) {
                     getAccountList();
                     JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
                 }
@@ -174,6 +175,7 @@ public class SystemAdminGUI {
                 if(new UnsuspendUserAccountController().unsuspendUserAccount(username)) {
                     getAccountList();
                     JOptionPane.showMessageDialog(frame, "Successfully unsuspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Failed to unsuspend account", "Failed", JOptionPane.ERROR_MESSAGE);
                 }
@@ -218,7 +220,7 @@ public class SystemAdminGUI {
                     userAccount.getUsername(),
                     userAccount.getFirstName(),
                     userAccount.getLastName(),
-                    userAccount.getProfileName(),
+                    userAccount.getUserProfile().getProfileName(),
                     status
             });
         }
@@ -238,7 +240,7 @@ public class SystemAdminGUI {
                     userAccount.getUsername(),
                     userAccount.getFirstName(),
                     userAccount.getLastName(),
-                    userAccount.getProfileName(),
+                    userAccount.getUserProfile().getProfileName(),
                     status
             });
         }

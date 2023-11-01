@@ -1,7 +1,7 @@
 package Boundary;
 
 import Controller.UpdateUserAccountController;
-import Entity.UserAccount;
+import Entity.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class UpdateUserAccountGUI {
         ArrayList<String> profileList = new UpdateUserAccountController().getProfileList();
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
         JComboBox<String> profileComboBox = new JComboBox<>(profileComboModel);
-        profileComboBox.setSelectedIndex(u.getProfile()-1);
+        profileComboBox.setSelectedIndex(u.getUserProfile().getProfileID()-1);
         profileComboBox.setBounds(200, 350, 235,50);
         panel.add(profileComboBox);
 
@@ -82,7 +82,10 @@ public class UpdateUserAccountGUI {
         ArrayList<String> roleList = new UpdateUserAccountController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
-        roleComboBox.setSelectedIndex(u.getRole()-1);
+        if(u.getUserProfile().getProfileID() == 4) {
+            CafeStaff cafeStaff = (CafeStaff) u;
+            roleComboBox.setSelectedIndex(cafeStaff.getRole_id()-1);
+        }
         roleComboBox.setBounds(200, 400, 235, 50);
         roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
         panel.add(roleComboBox);
@@ -115,9 +118,20 @@ public class UpdateUserAccountGUI {
             String firstName = firstNameField.getText();
             String lastName = lastNameField.getText();
             String email = emailField.getText();
-            int profile = profileComboBox.getSelectedIndex();
-            int role = roleComboBox.getSelectedIndex();
-            UserAccount updatedUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, 0, true);
+            int profile = profileComboBox.getSelectedIndex() + 1;
+            int role = roleComboBox.getSelectedIndex() + 1;
+            UserAccount updatedUser;
+            if(profile == 1) {
+                updatedUser = new SystemAdmin(username, password, firstName, lastName, email, new UserProfile(profile));
+            } else if(profile == 2) {
+                updatedUser = new CafeOwner(username, password, firstName, lastName, email, new UserProfile(profile));
+            } else if(profile == 3) {
+                updatedUser = new CafeManager(username, password, firstName, lastName, email, new UserProfile(profile));
+            } else if(profile == 4) {
+                updatedUser = new CafeStaff(username, password, firstName, lastName, email, new UserProfile(profile), role, 0);
+            } else {
+                updatedUser = new UserAccount();
+            }
             if(password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (new UpdateUserAccountController().UpdateUserAccount(updatedUser)) {

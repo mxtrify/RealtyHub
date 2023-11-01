@@ -20,6 +20,13 @@ public class UserProfile {
         this.profileStatus = false;
     }
 
+    public UserProfile(int profileID) {
+        this.profileID = profileID;
+    }
+
+    public UserProfile(String profileName) {
+        this.profileName = profileName;
+    }
     public UserProfile(int profileID, String profileName, String profileDesc, boolean status) {
         this.profileID = profileID;
         this.profileName = profileName;
