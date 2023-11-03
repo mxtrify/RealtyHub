@@ -85,7 +85,7 @@ public class SystemAdmin extends UserAccount {
         }
     }
 
-    // Create
+    // Create Account
     public boolean insertAccount(UserAccount newUser) {
         String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {

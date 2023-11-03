@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class CreateUserAccountGUI {
+    private CreateUserAccountController createUserAccountController;
 
     public CreateUserAccountGUI(UserAccount u) {
         displayCreateAccount(u);
@@ -112,6 +113,7 @@ public class CreateUserAccountGUI {
             int profile = profileComboBox.getSelectedIndex() + 1;
             int role = roleComboBox.getSelectedIndex() + 1;
             UserAccount newUser;
+            CreateUserAccountController createUserAccountController;
             if(profile == 1) {
                 newUser = new SystemAdmin(username, password, firstName, lastName, email, new UserProfile(profile), true);
             } else if(profile == 2) {
