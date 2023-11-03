@@ -2,7 +2,6 @@ package Entity;
 
 import Config.DBConfig;
 
-import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.ArrayList;
 
