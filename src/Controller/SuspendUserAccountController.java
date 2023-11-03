@@ -1,15 +1,15 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserAccount;
 
 public class SuspendUserAccountController {
-    private SystemAdmin systemAdmin;
+    private UserAccount userAccount;
 
     public SuspendUserAccountController() {
-        this.systemAdmin = new SystemAdmin();
+        this.userAccount = new UserAccount();
     }
 
     public boolean suspendUserAccount(String username) {
-        return systemAdmin.suspendUserAccount(username);
+        return userAccount.suspendUserAccount(username);
     }
 }

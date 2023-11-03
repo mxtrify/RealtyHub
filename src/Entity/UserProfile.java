@@ -27,6 +27,13 @@ public class UserProfile {
     public UserProfile(String profileName) {
         this.profileName = profileName;
     }
+
+    public UserProfile(String profileName, String profileDesc, boolean status) {
+        this.profileName = profileName;
+        this.profileDesc = profileDesc;
+        this.profileStatus = status;
+    }
+
     public UserProfile(int profileID, String profileName, String profileDesc, boolean status) {
         this.profileID = profileID;
         this.profileName = profileName;
@@ -148,19 +155,22 @@ public class UserProfile {
     }
 
     // Search
-    public void getProfileName(String search, DefaultTableModel model) {
-        String query = "SELECT profile_name, profile_desc FROM profile WHERE profile_name LIKE ?";
+    public ArrayList<UserProfile> getProfileName(String search) {
+        ArrayList<UserProfile> userProfiles = new ArrayList<>();
+        String query = "SELECT profile_name, profile_desc, profile_status FROM profile WHERE profile_name LIKE ?";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
-            model.setRowCount(0);
             while(resultSet.next()) {
                 String profileName = resultSet.getString("profile_name");
                 String profileDesc = resultSet.getString("profile_desc");
-                model.addRow(new Object[]{profileName, profileDesc});
+                boolean profileStatus = resultSet.getBoolean("profile_status");
+                UserProfile userProfile = new UserProfile(profileName, profileDesc, profileStatus);
+                userProfiles.add(userProfile);
             }
+            return userProfiles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

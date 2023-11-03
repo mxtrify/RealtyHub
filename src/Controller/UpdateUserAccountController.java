@@ -1,30 +1,29 @@
 package Controller;
 
-import Entity.SystemAdmin;
 import Entity.UserAccount;
 
 import java.util.ArrayList;
 
 public class UpdateUserAccountController {
-    private SystemAdmin systemAdmin;
+    private UserAccount userAccount;
 
     public UpdateUserAccountController() {
-        this.systemAdmin = new SystemAdmin();
+        this.userAccount = new UserAccount();
     }
 
     public UserAccount getSelectedAccount(String username) {
-        return systemAdmin.getSelectedAccount(username);
+        return userAccount.getSelectedAccount(username);
     }
 
     public ArrayList<String> getProfileList() {
-        return systemAdmin.getProfileByName();
+        return userAccount.getProfileByName();
     }
 
     public ArrayList<String> getRoleList() {
-        return systemAdmin.getRoleByName();
+        return userAccount.getRoleByName();
     }
 
     public boolean UpdateUserAccount(UserAccount updatedUser) {
-        return systemAdmin.updateUserAccount(updatedUser);
+        return userAccount.updateUserAccount(updatedUser);
     }
 }

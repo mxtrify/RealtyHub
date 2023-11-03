@@ -1,19 +1,14 @@
 package Boundary;
 
 import Controller.ViewAvailWSController;
-import Entity.CafeManager;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 import java.awt.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,11 +25,11 @@ public class CafeManagerGUI {
     private String status;
     // Constructor
     public CafeManagerGUI(UserAccount u) {
-        displayCafeManagerGUI((CafeManager) u);
+        displayCafeManagerGUI(u);
     }
 
     // Display Cafe Manager GUI
-    public void displayCafeManagerGUI(CafeManager u) {
+    public void displayCafeManagerGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Manager");
         frame.setLayout(null);
 

@@ -113,15 +113,14 @@ public class CreateUserAccountGUI {
             int profile = profileComboBox.getSelectedIndex() + 1;
             int role = roleComboBox.getSelectedIndex() + 1;
             UserAccount newUser;
-            CreateUserAccountController createUserAccountController;
             if(profile == 1) {
-                newUser = new SystemAdmin(username, password, firstName, lastName, email, new UserProfile(profile), true);
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
             } else if(profile == 2) {
-                newUser = new CafeOwner(username, password, firstName, lastName, email, new UserProfile(profile), true);
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
             } else if(profile == 3) {
-                newUser = new CafeManager(username, password, firstName, lastName, email, new UserProfile(profile), true);
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
             } else if(profile == 4) {
-                newUser = new CafeStaff(username, password, firstName, lastName, email, new UserProfile(profile), true, role, 0);
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true, role, 0);
             } else {
                 newUser = new UserAccount();
             }

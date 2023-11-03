@@ -1,11 +1,16 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserAccount;
 
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
 public class SearchUserAccountController {
-    public void searchUserAccount(String search, DefaultTableModel model) {
-        new SystemAdmin().getUserAccountByUsername(search, model);
+    private UserAccount userAccount;
+
+    public SearchUserAccountController() {
+        this.userAccount = new UserAccount();
+    }
+    public ArrayList<UserAccount> searchUserAccount(String search) {
+        return userAccount.getUserAccountByUsername(search);
     }
 }

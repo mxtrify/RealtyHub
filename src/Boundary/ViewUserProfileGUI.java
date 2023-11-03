@@ -1,9 +1,6 @@
 package Boundary;
 
-import Controller.SuspendUserProfileController;
-import Controller.SearchUserProfileController;
-import Controller.UnsuspendUserProfileController;
-import Controller.ViewUserProfileController;
+import Controller.*;
 import Entity.UserAccount;
 import Entity.UserProfile;
 
@@ -195,7 +192,21 @@ public class ViewUserProfileGUI {
         if(search.isEmpty()) {
             getProfileList();
         } else {
-            new SearchUserProfileController().SearchUserProfile(search, model);
+            model.setRowCount(0);
+            userProfiles = new SearchUserProfileController().SearchUserProfile(search);
+            for (UserProfile userProfile : userProfiles) {
+                String status;
+                if(userProfile.isProfileStatus()) {
+                    status = "Active";
+                } else {
+                    status = "Suspended";
+                }
+                model.addRow(new Object[]{
+                        userProfile.getProfileName(),
+                        userProfile.getProfileDesc(),
+                        status
+                });
+            }
         }
     }
 }

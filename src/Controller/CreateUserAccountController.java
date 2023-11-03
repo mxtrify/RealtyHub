@@ -1,25 +1,24 @@
 package Controller;
 
-import Entity.SystemAdmin;
 import Entity.UserAccount;
 
 import java.util.ArrayList;
 
 public class CreateUserAccountController {
-    private SystemAdmin systemAdmin;
+    private UserAccount userAccount;
 
     public CreateUserAccountController() {
-        this.systemAdmin = new SystemAdmin();
+        this.userAccount = new UserAccount();
     }
     public ArrayList<String> getProfileList() {
-        return systemAdmin.getProfileByName();
+        return userAccount.getProfileByName();
     }
 
     public ArrayList<String> getRoleList() {
-        return systemAdmin.getRoleByName();
+        return userAccount.getRoleByName();
     }
 
     public boolean addAccount(UserAccount newUser) {
-        return systemAdmin.insertAccount(newUser);
+        return userAccount.insertAccount(newUser);
     }
 }

@@ -1,16 +1,19 @@
 package Controller;
 
-import Entity.SystemAdmin;
 import Entity.UserAccount;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ViewUserAccountController {
+    private UserAccount userAccount;
+
+    public ViewUserAccountController() {
+        this.userAccount = new UserAccount();
+    }
     public ArrayList<UserAccount> getAccountList() {
-        return new SystemAdmin().selectAll();
+        return userAccount.selectAll();
     }
 
     public ArrayList<String> getProfileList() {
-        return new SystemAdmin().getProfileByName();
+        return userAccount.getProfileByName();
     }
 }

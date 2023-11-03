@@ -2,7 +2,8 @@ package Controller;
 
 import Entity.UserProfile;
 
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+
 
 public class SearchUserProfileController {
     private UserProfile userProfile;
@@ -10,7 +11,7 @@ public class SearchUserProfileController {
     public SearchUserProfileController() {
         this.userProfile = new UserProfile();
     }
-    public void SearchUserProfile(String search, DefaultTableModel model) {
-        userProfile.getProfileName(search, model);
+    public ArrayList<UserProfile> SearchUserProfile(String search) {
+        return userProfile.getProfileName(search);
     }
 }

@@ -2,7 +2,7 @@ package Boundary;
 
 import Controller.*;
 import Entity.Bid;
-import Entity.CafeManager;
+import Entity.UserAccount;
 import Entity.WorkSlot;
 
 import javax.swing.*;
@@ -35,12 +35,12 @@ public class AssignStaffGUI {
     private JLabel waiterAmt;
 
 
-    public AssignStaffGUI(CafeManager u, WorkSlot workSlot){
+    public AssignStaffGUI(UserAccount u, WorkSlot workSlot){
         displayAssignStaff(u, workSlot);
     }
 
 
-    public void displayAssignStaff(CafeManager u, WorkSlot workSlot){
+    public void displayAssignStaff(UserAccount u, WorkSlot workSlot){
 
         // Set frame
         JFrame frame = new JFrame("Assign Staff");

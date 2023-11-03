@@ -198,7 +198,23 @@ public class SystemAdminGUI {
         if(search.isEmpty()) {
             getAccountList();
         } else {
-            new SearchUserAccountController().searchUserAccount(search, model);
+            model.setRowCount(0);
+            userAccounts = new SearchUserAccountController().searchUserAccount(search);
+            for (UserAccount userAccount : userAccounts) {
+                String status;
+                if(userAccount.isStatus()) {
+                    status = "Active";
+                } else {
+                    status = "Suspended";
+                }
+                model.addRow(new Object[]{
+                        userAccount.getUsername(),
+                        userAccount.getFirstName(),
+                        userAccount.getLastName(),
+                        userAccount.getUserProfile().getProfileName(),
+                        status
+                });
+            }
         }
     }
 

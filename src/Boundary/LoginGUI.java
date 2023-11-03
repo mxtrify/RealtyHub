@@ -5,8 +5,6 @@ import Entity.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class LoginGUI {
     // Variables
@@ -74,13 +72,13 @@ public class LoginGUI {
         } else {
             frame.dispose();
             // Login based on the profile
-            if (userAccount instanceof SystemAdmin) {
+            if (userAccount.getUserProfile().getProfileName().equals("System Admin")) {
                 new SystemAdminGUI(userAccount);
-            } else if (userAccount instanceof CafeOwner) {
+            } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Owner")) {
                 new CafeOwnerGUI(userAccount);
-            } else if (userAccount instanceof CafeManager) {
+            } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Manager")) {
                 new CafeManagerGUI(userAccount);
-            } else if (userAccount instanceof CafeStaff) {
+            } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Staff")) {
                 new CafeStaffGUI(userAccount);
             }
         }

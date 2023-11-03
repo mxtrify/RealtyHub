@@ -83,8 +83,7 @@ public class UpdateUserAccountGUI {
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);
         if(u.getUserProfile().getProfileID() == 4) {
-            CafeStaff cafeStaff = (CafeStaff) u;
-            roleComboBox.setSelectedIndex(cafeStaff.getRole_id()-1);
+            roleComboBox.setSelectedIndex(u.getRole_id()-1);
         }
         roleComboBox.setBounds(200, 400, 235, 50);
         roleComboBox.setEnabled(profileComboBox.getSelectedIndex() == 3);
@@ -122,13 +121,13 @@ public class UpdateUserAccountGUI {
             int role = roleComboBox.getSelectedIndex() + 1;
             UserAccount updatedUser;
             if(profile == 1) {
-                updatedUser = new SystemAdmin(username, password, firstName, lastName, email, new UserProfile(profile));
+                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile));
             } else if(profile == 2) {
-                updatedUser = new CafeOwner(username, password, firstName, lastName, email, new UserProfile(profile));
+                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile));
             } else if(profile == 3) {
-                updatedUser = new CafeManager(username, password, firstName, lastName, email, new UserProfile(profile));
+                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile));
             } else if(profile == 4) {
-                updatedUser = new CafeStaff(username, password, firstName, lastName, email, new UserProfile(profile), role, 0);
+                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), role, 0);
             } else {
                 updatedUser = new UserAccount();
             }
