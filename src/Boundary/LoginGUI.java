@@ -5,6 +5,8 @@ import Entity.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class LoginGUI {
     // Variables
@@ -58,6 +60,8 @@ public class LoginGUI {
 
         // Action for Login Button
         loginButton.addActionListener(e -> login(usernameField.getText(), passwordField.getText()));
+
+        passwordField.addActionListener(e -> login(usernameField.getText(), passwordField.getText()));
     }
 
     // Login handling function
