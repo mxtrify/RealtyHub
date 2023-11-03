@@ -5,13 +5,12 @@ import Entity.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class LoginGUI {
     // Variables
     private JFrame frame;
-    private JButton loginButton;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
 
     // Constructor
     public LoginGUI() {
@@ -35,7 +34,7 @@ public class LoginGUI {
         panel.add(usernameLabel);
 
         // Username Field
-        usernameField = new JTextField(20);
+        JTextField usernameField = new JTextField(20);
         usernameField.setBounds(150, 75, 175, 25);
         panel.add(usernameField);
 
@@ -45,12 +44,12 @@ public class LoginGUI {
         panel.add(passwordLabel);
 
         // Password Field
-        passwordField = new JPasswordField(20);
+        JTextField passwordField = new JPasswordField(20);
         passwordField.setBounds(150, 115, 175, 25);
         panel.add(passwordField);
 
         // Login Button
-        loginButton = new JButton("Login");
+        JButton loginButton = new JButton("Login");
         loginButton.setBounds(150, 175, 100, 25);
         panel.add(loginButton);
 
@@ -60,13 +59,13 @@ public class LoginGUI {
         frame.setVisible(true);
 
         // Action for Login Button
-        loginButton.addActionListener(e -> login());
+        loginButton.addActionListener(e -> login(usernameField.getText(), passwordField.getText()));
+
+        passwordField.addActionListener(e -> login(usernameField.getText(), passwordField.getText()));
     }
 
     // Login handling function
-    public void login() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
+    public void login(String username, String password) {
         UserAccount userAccount = new LoginController().login(username, password);
 
         if (userAccount == null) {

@@ -6,25 +6,27 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class SystemAdminGUI {
     private JFrame frame;
+    private DefaultTableModel model;
+    private final String[] columnNames = {"Username", "First Name", "Last Name", "Profile", "Status"};
     private ArrayList<UserAccount> userAccounts;
+
     // Constructor
     public SystemAdminGUI(UserAccount u) {
         displaySystemAdminGUI(u);
     }
 
-    // Display system admin GUI
+    // Display System Admin GUI
     public void displaySystemAdminGUI(UserAccount u) {
+        // Initialize frame and panel
         frame = new JFrame("System Admin");
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        // Title Label
+        // Display welcome message for the logged-in user
         JLabel titleLabel = new JLabel("Welcome, " + u.getUsername());
         titleLabel.setBounds(50,75, 500, 36);
         titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
@@ -32,20 +34,20 @@ public class SystemAdminGUI {
 
         // Search Field
         JTextField searchTextField = new JTextField();
-        searchTextField.setBounds(50, 135, 200, 36);
+        searchTextField.setBounds(50, 135, 180, 36);
         searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
 
         // Search Button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(250, 135, 100, 36);
+        searchButton.setBounds(230, 135, 90, 36);
         searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchButton);
 
         // Profile list dropdown
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(getProfileList().toArray(new String[0]));
         JComboBox profileFilter = new JComboBox(profileComboModel);
-        profileFilter.setBounds(350, 135, 200, 36);
+        profileFilter.setBounds(380, 135, 180, 36);
         profileFilter.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(profileFilter);
 
@@ -61,19 +63,6 @@ public class SystemAdminGUI {
         createAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(createAccountButton);
 
-        // User account table
-        String[] columnNames = {"Username", "First Name", "Last Name", "Profile", "Status"};
-
-        DefaultTableModel model = new DefaultTableModel();
-        model.setColumnIdentifiers(columnNames);
-        getAccountList(model);
-        JTable table = new JTable(model);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 500, 350);
-        frame.add(scrollPane);
-
         // Logout Button
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(650, 50, 100, 36);
@@ -88,38 +77,51 @@ public class SystemAdminGUI {
 
         // Delete profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(600, 250, 100, 36);
+        suspendButton.setBounds(590, 250, 120, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        suspendButton.setEnabled(false);
         panel.add(suspendButton);
 
-        frame.add(panel);
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        JButton clearButton = new JButton("Clear");
+        clearButton.setBounds(320, 135, 60, 36);
+        clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(clearButton);
 
-        // Action for logout button
+        // User account table
+        model = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+        model.setColumnIdentifiers(columnNames);
+        getAccountList();
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(50,175, 510, 350);
+        frame.add(scrollPane);
+
+        // Logout Action Button
         logoutButton.addActionListener(e -> logout());
 
-        // Action for search button
+        // Search action button
         searchButton.addActionListener(e -> searchUserAccount(searchTextField, model));
 
-        // Action for view profile button
+        // View profile action
         viewProfileButton.addActionListener(e -> {
             frame.dispose();
             new ViewUserProfileGUI(u);
         });
 
-        // Press "ENTER" to search
-        searchTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchUserAccount(searchTextField, model);
-                }
-            }
+        clearButton.addActionListener(e -> {
+            searchTextField.setText("");
+            searchUserAccount(searchTextField, model);
         });
 
-        // Action for create account
+        // Press "ENTER" to search
+        searchTextField.addActionListener(e -> searchUserAccount(searchTextField, model));
+
+        // Create account action button
         createAccountButton.addActionListener(e -> {
             frame.dispose();
             new CreateUserAccountGUI(u);
@@ -128,8 +130,7 @@ public class SystemAdminGUI {
         // Action for profile filter
         profileFilter.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                String profileName = (String) profileFilter.getSelectedItem();
-                new FilterUserAccountController().FilterUserAccount(profileName, model);
+                profileFilter(model, (String) profileFilter.getSelectedItem());
             }
         });
 
@@ -145,46 +146,67 @@ public class SystemAdminGUI {
             }
         });
 
-        // Suspend account button
-        suspendButton.addActionListener(e -> {
-            if (table.getSelectedRow() == -1) {
-                JOptionPane.showMessageDialog(frame, "Please select account to suspend", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                String username = model.getValueAt(table.getSelectedRow(),0).toString();
-                if(new SuspendUserAccountController().suspendUserAccount(username)) {
-                    getAccountList(model);
-                    JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (table.getSelectedRow() != -1 ) {
+                    suspendButton.setEnabled(true);
+                    String status = model.getValueAt(table.getSelectedRow(), 4).toString();
+                    if (status.equals("Active")) {
+                        suspendButton.setText("Suspend");
+                    } else {
+                        suspendButton.setText("Unsuspend");
+                    }
                 }
             }
         });
+
+        suspendButton.addActionListener(e -> {
+            String status = model.getValueAt(table.getSelectedRow(), 4).toString();
+            String username = model.getValueAt(table.getSelectedRow(),0).toString();
+            if(status.equals("Active")) {
+                if(new SuspendUserAccountController().suspendUserAccount(username)) {
+                    getAccountList();
+                    JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if(new UnsuspendUserAccountController().unsuspendUserAccount(username)) {
+                    getAccountList();
+                    JOptionPane.showMessageDialog(frame, "Successfully unsuspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to unsuspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        frame.add(panel);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
-    // Logout function
     public void logout() {
         frame.dispose();
         new LoginGUI();
     }
-
-    // Function for search user account
     public void searchUserAccount(JTextField searchTextField, DefaultTableModel model) {
         String search = searchTextField.getText();
 
         if(search.isEmpty()) {
-            getAccountList(model);
+            getAccountList();
         } else {
             new SearchUserAccountController().searchUserAccount(search, model);
         }
     }
 
-    // Function for profile dropdown
     public ArrayList<String> getProfileList() {
         return new ViewUserAccountController().getProfileList();
     }
 
-    // Function for get all user account
-    public void getAccountList(DefaultTableModel model) {
+    public void getAccountList() {
         model.setRowCount(0);
         userAccounts = new ViewUserAccountController().getAccountList();
         for (UserAccount userAccount : userAccounts) {
@@ -198,7 +220,27 @@ public class SystemAdminGUI {
                     userAccount.getUsername(),
                     userAccount.getFirstName(),
                     userAccount.getLastName(),
-                    userAccount.getProfileName(),
+                    userAccount.getUserProfile().getProfileName(),
+                    status
+            });
+        }
+    }
+
+    public void profileFilter(DefaultTableModel model, String profileName) {
+        model.setRowCount(0);
+        userAccounts = new FilterUserAccountController().FilterUserAccount(profileName);
+        for (UserAccount userAccount : userAccounts) {
+            String status;
+            if(userAccount.isStatus()) {
+                status = "Active";
+            } else {
+                status = "Suspended";
+            }
+            model.addRow(new Object[]{
+                    userAccount.getUsername(),
+                    userAccount.getFirstName(),
+                    userAccount.getLastName(),
+                    userAccount.getUserProfile().getProfileName(),
                     status
             });
         }

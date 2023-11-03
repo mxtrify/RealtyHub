@@ -133,13 +133,35 @@ public class Bid {
 
 
 
-    public boolean approveRejectBid(String action){
+    public boolean approveBid(){
         try{
             // Change bid status to 'Rejected'
             String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
 
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, action);
+            preparedStatement.setString(1, "Approved");
+            preparedStatement.setInt(2, getBidId());
+            preparedStatement.execute();
+
+            // close resources
+            preparedStatement.close();
+            conn.close();
+
+            return true;
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean rejectBid(){
+        try{
+            // Change bid status to 'Rejected'
+            String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, "Rejected");
             preparedStatement.setInt(2, getBidId());
             preparedStatement.execute();
 

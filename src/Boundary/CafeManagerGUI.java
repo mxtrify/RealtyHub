@@ -33,7 +33,7 @@ public class CafeManagerGUI {
         displayCafeManagerGUI((CafeManager) u);
     }
 
-    // Display cafe manager GUI
+    // Display Cafe Manager GUI
     public void displayCafeManagerGUI(CafeManager u) {
         JFrame frame = new JFrame("Cafe Manager");
         frame.setLayout(null);
@@ -205,7 +205,8 @@ public class CafeManagerGUI {
         frame.add(clearFilter);
         // Implement clear filter
         clearFilter.addActionListener(e->{
-
+            // Clear date chooser
+            date_search.setDate(null);
             // Remove old table
             frame.remove(scrollPane);
             // Clear selected workslot (back to unselected)
