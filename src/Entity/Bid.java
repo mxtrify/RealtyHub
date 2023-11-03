@@ -154,4 +154,51 @@ public class Bid {
             return false;
         }
     }
+
+
+    public boolean assignAvailableStaff(String username){
+        try{
+
+            // Check if he has submitted a bid
+            String query = "SELECT * FROM `bid` WHERE `username` = ? AND `date` = ? AND (`bid_status` = 'Pending' OR `bid_status` = 'Rejected')";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setDate(2, date);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                Bid bid = new Bid();
+                bid.setBid_id(resultSet.getInt("bid_id"));
+
+                return bid.approveRejectBid("Approved");
+            }else{
+                // Assign staff
+                query = "INSERT INTO `bid`(`username`, `date`, `bid_status`) " +
+                        "VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, username);
+                preparedStatement.setDate(2, getDate());
+                preparedStatement.setString(3, "Assigned");
+                preparedStatement.execute();
+
+                preparedStatement.close();
+
+                return true;
+
+
+            }
+
+
+
+
+
+
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
