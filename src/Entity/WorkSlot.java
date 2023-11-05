@@ -138,7 +138,7 @@ public class WorkSlot {
         Vector<Vector<Object>> allDataVector = new Vector<>();
         try{
             // Select all workslots
-            String query = "SELECT `date` FROM `work_slot` ORDER BY `date`";
+            String query = "SELECT `date` FROM `work_slot` WHERE `date` >= CURRENT_DATE ORDER BY `date`";
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 

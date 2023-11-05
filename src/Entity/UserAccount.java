@@ -101,6 +101,7 @@ public class UserAccount {
         return username;
     }
 
+
     public String getPassword() {
         return password;
     }
@@ -112,6 +113,7 @@ public class UserAccount {
     public String getLastName() {
         return lastName;
     }
+    public String getFullName() {return String.format("%s %s", getFirstName(), getLastName());}
 
     public String getEmail() {
         return email;
