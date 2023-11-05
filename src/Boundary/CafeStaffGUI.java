@@ -1,5 +1,6 @@
 package Boundary;
 
+import Controller.SetMaxSlotController;
 import Controller.WorkSlotController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
@@ -16,7 +17,26 @@ public class CafeStaffGUI {
 
     // Constructor
     public CafeStaffGUI(UserAccount u) {
+        askMaxSlot(u);
         displayCafeStaffGUI(u);
+    }
+
+    public void askMaxSlot(UserAccount u) {
+        while (u.getMax_slot() < 0) {
+            String input = JOptionPane.showInputDialog(null, "Please input max slot (must be greater than 0):");
+            try {
+                int newMaxSlot = Integer.parseInt(input);
+                if (newMaxSlot > 0) {
+                    u.setMax_slot(newMaxSlot);
+                    new SetMaxSlotController().setMaxSlot(u);;
+                    break; // Exit the loop when a valid input is provided
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter a value greater than 0.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid number.");
+            }
+        }
     }
 
     // Display cafe staff GUI
@@ -29,6 +49,11 @@ public class CafeStaffGUI {
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 
+        // Max Slot label
+        JLabel maxSlotLabel = new JLabel("My Slot : " + u.getMax_slot() );
+        maxSlotLabel.setBounds(500,20, 500, 25);
+        panel.add(maxSlotLabel);
+
         // Schedule button
         JButton scheduleButton = new JButton("Schedule");
         scheduleButton.setBounds(600, 100, 100, 25);
@@ -36,7 +61,7 @@ public class CafeStaffGUI {
 
         // Bid button
         JButton bidStatusButton = new JButton("Bid Status");
-        bidStatusButton.setBounds(600, 100, 100, 25);
+        bidStatusButton.setBounds(600, 150, 100, 25);
         panel.add(bidStatusButton);
 
 

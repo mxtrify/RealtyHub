@@ -47,6 +47,13 @@ public class UserAccount {
         this.userProfile = userProfile;
     }
 
+    public UserAccount(String username, String password, UserProfile userProfile, int max_slot) {
+        this.username = username;
+        this.password = password;
+        this.userProfile = userProfile;
+        this.max_slot = max_slot;
+    }
+
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
         this.username = username;
         this.password = password;
@@ -181,7 +188,7 @@ public class UserAccount {
 
     // Login Validation
     public UserAccount validateLogin(String username, String password) {
-        String query = "SELECT username, password, profile_name FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
+        String query = "SELECT username, password, profile_name, max_slot FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
         try{
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -191,6 +198,12 @@ public class UserAccount {
 
             if(resultSet.next()) {
                 String profileName = resultSet.getString("profile_name");
+                int maxSlot;
+                if (resultSet.wasNull()) {
+                    maxSlot = -1; // Assign some default value if max_slot is NULL
+                } else {
+                    maxSlot = resultSet.getInt("max_slot");
+                }
                 UserProfile userProfile = new UserProfile(profileName);
                 if(resultSet.getString("profile_name").equals("System Admin")) {
                     return new UserAccount(username, password, userProfile);
@@ -199,7 +212,7 @@ public class UserAccount {
                 } else if (resultSet.getString("profile_name").equals("Cafe Manager")) {
                     return new UserAccount(username, password, userProfile);
                 } else if (resultSet.getString("profile_name").equals("Cafe Staff")) {
-                    return new UserAccount(username, password, userProfile);
+                    return new UserAccount(username, password, userProfile, maxSlot);
                 } else {
                     return null;
                 }
@@ -435,6 +448,19 @@ public class UserAccount {
                 roleNameList.add(roleName);
             }
             return roleNameList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setMaxSlot(UserAccount u) {
+        String query = "UPDATE user_account SET max_slot = ? WHERE username = ?";
+        try {
+            Connection conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, u.getMax_slot());
+            preparedStatement.setString(2, u.getUsername());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

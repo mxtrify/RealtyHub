@@ -93,10 +93,13 @@ public class SystemAdminGUI {
                 return false; // Make all cells non-editable
             }
         };
+
         model.setColumnIdentifiers(columnNames);
         getAccountList();
+
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
