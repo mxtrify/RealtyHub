@@ -257,6 +257,10 @@ public class MyScheduleGUI {
 
         });
 
+        back.addActionListener(e -> {
+            frame.dispose();
+            new CafeStaffGUI(userAccount);
+        });
 
 
 

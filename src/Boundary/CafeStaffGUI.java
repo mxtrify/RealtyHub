@@ -29,6 +29,17 @@ public class CafeStaffGUI {
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 
+        // Schedule button
+        JButton scheduleButton = new JButton("Schedule");
+        scheduleButton.setBounds(600, 100, 100, 25);
+        panel.add(scheduleButton);
+
+        // Bid button
+        JButton bidStatusButton = new JButton("Bid Status");
+        bidStatusButton.setBounds(600, 100, 100, 25);
+        panel.add(bidStatusButton);
+
+
         // Logout button
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(650, 20, 100, 25);
@@ -41,6 +52,18 @@ public class CafeStaffGUI {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        // Action for schedule button
+        scheduleButton.addActionListener(e -> {
+            frame.dispose();
+            new MyScheduleGUI(u);
+        });
+
+        // Action for bid status button
+        bidStatusButton.addActionListener(e -> {
+            frame.dispose();
+            new BidStatusGUI(u);
+        });
 
         // Action for logout button
         logoutButton.addActionListener(e -> {
