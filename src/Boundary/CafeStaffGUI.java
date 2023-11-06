@@ -2,6 +2,7 @@ package Boundary;
 
 import Controller.SetMaxSlotController;
 import Controller.WorkSlotController;
+import Controller.MakeBidController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
@@ -11,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -108,7 +110,7 @@ public class CafeStaffGUI {
 
         // Action for Bid Button
         bid.addActionListener(e -> {
-            // Call controller
+            bidSelectedRow(u);
         });
 
         // Action for Search Button
@@ -195,6 +197,27 @@ public class CafeStaffGUI {
             sorter.setRowFilter(rowFilter);
         } else {
             sorter.setRowFilter(null);
+        }
+    }
+
+    private void bidSelectedRow(UserAccount u) {
+        int selectedRow = workSlotTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String dateString = (String) tableComponents.getValueAt(selectedRow, 0);
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                java.util.Date parsedDate = dateFormat.parse(dateString);
+                Date selectedDate = new Date(parsedDate.getTime());
+
+                MakeBidController bidController = new MakeBidController();
+                if (bidController.makeBid(u.getUsername(), selectedDate)) {
+                    DisplayWorkSlotTable();
+                }
+            } catch (IllegalArgumentException | ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to place a bid.");
         }
     }
 }

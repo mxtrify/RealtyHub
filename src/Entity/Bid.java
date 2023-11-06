@@ -2,6 +2,7 @@ package Entity;
 
 import Config.DBConfig;
 
+import javax.swing.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -164,6 +165,41 @@ public class Bid {
             e.printStackTrace();
         }
         return data;
+    }
+
+    public boolean makeBid(String username, Date date) {
+        try {
+            // Check if Staff has already made a bid
+            String checkQuery = "SELECT * FROM bid WHERE username = ? AND date = ?";
+            PreparedStatement checkStatement = conn.prepareStatement(checkQuery);
+            checkStatement.setString(1, username);
+            checkStatement.setDate(2, date);
+
+            ResultSet checkResult = checkStatement.executeQuery();
+            if (checkResult.next()) {
+                JOptionPane.showMessageDialog(null, "You have already submitted a bid for this date.");
+                return false;
+            }
+
+            // If staff haven't made a bid, make new bid
+            String insertQuery = "INSERT INTO bid (username, date, bid_status) VALUES (?, ?, 'Pending')";
+            PreparedStatement insertStatement = conn.prepareStatement(insertQuery);
+            insertStatement.setString(1, username);
+            insertStatement.setDate(2, date);
+
+            int rowsAffected = insertStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Bid submitted successfully!");
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to submit bid. Please try again.");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
