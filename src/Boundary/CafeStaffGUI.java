@@ -108,8 +108,7 @@ public class CafeStaffGUI {
 
         // Action for Bid Button
         bid.addActionListener(e -> {
-//            frame.dispose();
-//            new BidGUI(u);
+            // Call controller
         });
 
         // Action for Search Button
