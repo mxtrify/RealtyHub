@@ -65,10 +65,15 @@ public class CafeStaffGUI {
         scheduleButton.setBounds(600, 100, 100, 25);
         panel.add(scheduleButton);
 
-        // Bid button
+        // Bid Status button
         JButton bidStatusButton = new JButton("Bid Status");
         bidStatusButton.setBounds(600, 150, 100, 25);
         panel.add(bidStatusButton);
+
+        // Bid Button
+        JButton bid = new JButton("Bid");
+        bid.setBounds(600,200, 100, 25);
+        panel.add(bid);
 
         // Search Button
         JButton searchButton = new JButton("Search");
@@ -100,6 +105,12 @@ public class CafeStaffGUI {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        // Action for Bid Button
+        bid.addActionListener(e -> {
+//            frame.dispose();
+//            new BidGUI(u);
+        });
 
         // Action for Search Button
         searchButton.addActionListener(e -> {
