@@ -4,14 +4,20 @@ import Controller.SetMaxSlotController;
 import Controller.WorkSlotController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class CafeStaffGUI {
     JPanel panel = new JPanel();
+    private Calendar current;
     private JTable workSlotTable;
     private DefaultTableModel tableComponents;
 
@@ -64,6 +70,23 @@ public class CafeStaffGUI {
         bidStatusButton.setBounds(600, 150, 100, 25);
         panel.add(bidStatusButton);
 
+        // Search Button
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(250, 100, 100, 25);
+        panel.add(searchButton);
+
+        // Search Bar
+        JDateChooser searchDate = new JDateChooser();
+        searchDate.setDateFormatString("dd/MM/yyyy");
+        current = Calendar.getInstance();
+        searchDate.setMinSelectableDate(current.getTime());
+        searchDate.setBounds(50,100, 150,25);
+        panel.add(searchDate);
+
+        // Clear search
+        JButton clearSearchButton = new JButton("Clear");
+        clearSearchButton.setBounds(350, 100, 100, 25);
+        panel.add(clearSearchButton);
 
         // Logout button
         JButton logoutButton = new JButton("Logout");
@@ -77,6 +100,23 @@ public class CafeStaffGUI {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        // Action for Search Button
+        searchButton.addActionListener(e -> {
+            try {
+                Date selectedDate = new Date(searchDate.getDate().getTime());
+                filterTableByDate(selectedDate);
+                System.out.println(selectedDate);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        // Action for Clear Search
+        clearSearchButton.addActionListener(e -> {
+            searchDate.setDate(null);
+            filterTableByDate(null);
+        });
 
         // Action for schedule button
         scheduleButton.addActionListener(e -> {
@@ -133,5 +173,18 @@ public class CafeStaffGUI {
         JScrollPane scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);
         panel.add(scrollPane);
+    }
+
+    private void filterTableByDate(Date selectedDate) {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(workSlotTable.getModel());
+        workSlotTable.setRowSorter(sorter);
+
+        if (selectedDate != null) {
+            String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
+            RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
+            sorter.setRowFilter(rowFilter);
+        } else {
+            sorter.setRowFilter(null);
+        }
     }
 }

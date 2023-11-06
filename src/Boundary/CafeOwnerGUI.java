@@ -11,13 +11,16 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.sql.Date;
 
 public class CafeOwnerGUI {
     JPanel panel = new JPanel();
+    private Calendar current;
     private JTable workSlotTable;
     private DefaultTableModel tableComponents;
     private WorkSlotController getAllWorkSlotData;
@@ -52,6 +55,8 @@ public class CafeOwnerGUI {
         // Search Bar
         JDateChooser searchDate = new JDateChooser();
         searchDate.setDateFormatString("dd/MM/yyyy");
+        current = Calendar.getInstance();
+        searchDate.setMinSelectableDate(current.getTime());
         searchDate.setBounds(50,100, 150,25);
         frame.add(searchDate);
 

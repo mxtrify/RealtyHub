@@ -5,12 +5,15 @@ import Controller.CreateWorkSlotController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
+
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.*;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 public class OwnerCreateWorkSlotGUI {
+    private Calendar current;
     private JButton backButton;
     private JButton createButton;
     private JTextField searchField;
@@ -41,6 +44,8 @@ public class OwnerCreateWorkSlotGUI {
         // Date Field
         JDateChooser dateChooser = new JDateChooser();
         dateChooser.setDateFormatString("dd/MM/yyyy");
+        current = Calendar.getInstance();
+        dateChooser.setMinSelectableDate(current.getTime());
         dateChooser.setBounds(150, 75, 175, 25);
         panel.add(dateChooser);
 
