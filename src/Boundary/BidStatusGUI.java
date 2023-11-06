@@ -1,12 +1,19 @@
 package Boundary;
 
+import Controller.CancelBidController;
+import Controller.ViewBidStatusController;
+import Entity.Bid;
 import Entity.UserAccount;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BidStatusGUI {
     private JFrame frame;
@@ -35,8 +42,8 @@ public class BidStatusGUI {
 
         // DateChooser
         JDateChooser dateChooser = new JDateChooser();
-        Calendar currentDate = Calendar.getInstance();
-        dateChooser.setMinSelectableDate(currentDate.getTime());
+        AtomicReference<Calendar> currentDate = new AtomicReference<>(Calendar.getInstance());
+        dateChooser.setMinSelectableDate(currentDate.get().getTime());
         dateChooser.setBounds(50,135, 175,36);
         frame.add(dateChooser);
 
@@ -51,6 +58,13 @@ public class BidStatusGUI {
         clearButton.setBounds(320, 135, 60, 36);
         clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearButton);
+
+        // Cancel Button
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(600, 250, 120, 36);
+        cancelButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        cancelButton.setEnabled(false);
+        panel.add(cancelButton);
 
         // Dropdown filter
         String[] options = {"Pending", "Accepted", "Rejected"};
@@ -67,7 +81,7 @@ public class BidStatusGUI {
         };
 
         model.setColumnIdentifiers(columnNames);
-
+        getBidStatus(userAccount);
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -84,10 +98,55 @@ public class BidStatusGUI {
             frame.dispose();
             new CafeStaffGUI(userAccount);
         });
+
+        clearButton.addActionListener(e -> {
+            dateChooser.setDate(null);
+            currentDate.set(Calendar.getInstance());
+            getBidStatus(userAccount);
+        });
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (table.getSelectedRow() != -1 ) {
+                    String bidStatus = model.getValueAt(table.getSelectedRow(), 1).toString();
+                    if (bidStatus.equals("Pending")) {
+                        cancelButton.setEnabled(true);
+                        cancelButton.setText("Cancel");
+                    } else {
+                        cancelButton.setEnabled(false);
+                        cancelButton.setText("Can't cancel");
+                    }
+                }
+            }
+        });
+
+        cancelButton.addActionListener(e -> {
+            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
+                java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+                CancelBidController cancelBidController = new CancelBidController();
+                if(cancelBidController.cancelBid(date)) {
+                    JOptionPane.showMessageDialog(frame, "Successfully cancel bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to cancel bid", "Failed", JOptionPane.PLAIN_MESSAGE);
+                }
+                getBidStatus(userAccount);
+            } catch (ParseException d) {
+                d.printStackTrace();
+            }
+        });
     }
 
-    public void getBidStatus() {
+    public void getBidStatus(UserAccount userAccount) {
         model.setRowCount(0);
-
+        ArrayList<Bid> bids = new ViewBidStatusController().viewBidStatus(userAccount.getUsername());
+        for (Bid bid : bids) {
+            model.addRow(new Object[]{
+                    bid.getDate(),
+                    bid.getBidStatus()
+            });
+        }
     }
 }

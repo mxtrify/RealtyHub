@@ -4,6 +4,7 @@ import Config.DBConfig;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Bid {
@@ -12,12 +13,14 @@ public class Bid {
     private String name;
     private String role;
     private Date date;
+    private String bidStatus;
 
     public Bid(){
         this.bid_id = 0;
         this.name = "";
         this.role = "";
         this.date = null;
+        this.bidStatus = "";
 
         try{
             this.conn = new DBConfig().getConnection();
@@ -55,6 +58,20 @@ public class Bid {
         }
 
     }
+    public Bid(Date date, String bidStatus){
+        this.bid_id = 0;
+        this.name = "";
+        this.role = "";
+        this.date = date;
+        this.bidStatus = bidStatus;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
 
     public Bid(int bid_id, String name, String role, Date date){
         this.bid_id = bid_id;
@@ -76,10 +93,18 @@ public class Bid {
     public String getRole(){return role;}
     public Date getDate(){return date;}
 
+    public String getBidStatus() {
+        return bidStatus;
+    }
+
     public void setBid_id(int bid_id){this.bid_id = bid_id;}
     public void setName(String name){this.name = name;}
     public void setRole(String role){this.role = role;}
     public void setDate(Date date){this.date = date;}
+
+    public void setBidStatus(String bidStatus) {
+        this.bidStatus = bidStatus;
+    }
 
     public String dateToString(){
         // Convert date object into string display "01 Oct, 2023"
@@ -397,4 +422,36 @@ public class Bid {
         return data;
     }
 
+    public ArrayList<Bid> getAllBidStatus(String username) {
+        ArrayList<Bid> bids = new ArrayList<>();
+        String query = "SELECT date, bid_status FROM bid WHERE username = ? ORDER BY CASE bid_status " +
+                "WHEN 'Pending' THEN 1 WHEN 'Approved' THEN 2 ELSE 3 END";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                Date date = resultSet.getDate("date");
+                String bidStatus = resultSet.getString("bid_status");
+                Bid bid = new Bid(date, bidStatus);
+                bids.add(bid);
+            }
+            return bids;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean cancelBid(Date date) {
+        String query = "DELETE FROM bid WHERE date = ?";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setDate(1, date);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
