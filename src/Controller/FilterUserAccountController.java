@@ -1,16 +1,16 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserAccount;
 
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 
 public class FilterUserAccountController {
-    private SystemAdmin systemAdmin;
+    private UserAccount userAccount;
 
     public FilterUserAccountController() {
-        this.systemAdmin = new SystemAdmin();
+        this.userAccount = new UserAccount();
     }
-    public void FilterUserAccount(String profileName, DefaultTableModel model) {
-        systemAdmin.selectByProfileName(profileName, model);
+    public ArrayList<UserAccount> FilterUserAccount(String profileName) {
+        return userAccount.selectByProfileName(profileName);
     }
 }

@@ -1,11 +1,17 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserProfile;
 
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+
 
 public class SearchUserProfileController {
-    public void SearchUserProfile(String search, DefaultTableModel model) {
-        new SystemAdmin().getProfileName(search, model);
+    private UserProfile userProfile;
+
+    public SearchUserProfileController() {
+        this.userProfile = new UserProfile();
+    }
+    public ArrayList<UserProfile> SearchUserProfile(String search) {
+        return userProfile.getProfileName(search);
     }
 }

@@ -1,15 +1,15 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserProfile;
 
 public class UpdateUserProfileController {
-    private SystemAdmin systemAdmin;
+    private UserProfile userProfile;
 
     public UpdateUserProfileController() {
-        this.systemAdmin = new SystemAdmin();
+        this.userProfile = new UserProfile();
     }
 
     public boolean UpdateUserProfile(String profileName, String newProfileDesc) {
-        return systemAdmin.updateUserProfile(profileName, newProfileDesc);
+        return userProfile.updateUserProfile(profileName, newProfileDesc);
     }
 }

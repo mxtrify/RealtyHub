@@ -9,10 +9,6 @@ import java.awt.*;
 public class CreateUserProfileGUI {
     private JFrame frame;
 
-    public CreateUserProfileGUI() {
-
-    }
-
     public CreateUserProfileGUI(UserAccount u) {
         displayCreateUserProfile(u);
     }

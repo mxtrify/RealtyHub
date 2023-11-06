@@ -1,24 +1,27 @@
 package Boundary;
 
-import Controller.DeleteUserProfileController;
-import Controller.SearchUserProfileController;
-import Controller.ViewUserProfileController;
+import Controller.*;
 import Entity.UserAccount;
+import Entity.UserProfile;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class ViewUserProfileGUI {
     private JFrame frame;
-
-    public ViewUserProfileGUI() {
-
-    }
+    private DefaultTableModel model;
+    private ArrayList<UserProfile> userProfiles;
+    private String[] columnNames = {"Profile Name", "Description", "Status"};
 
     public ViewUserProfileGUI(UserAccount u) {
+        displayViewUserProfile(u);
+    }
+
+    public void displayViewUserProfile(UserAccount u) {
         frame = new JFrame("User Profile");
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -29,16 +32,19 @@ public class ViewUserProfileGUI {
         panel.add(titleLabel);
 
         // View profile button
-        JButton viewUserAccountButton = new JButton("Account List");
+        JButton viewUserAccountButton = new JButton("View Account");
         viewUserAccountButton.setBounds(585, 135, 135, 36);
         viewUserAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(viewUserAccountButton);
 
         // Profile table
-        DefaultTableModel model = new DefaultTableModel();
-        String[] columnNames = {"Profile Name", "Description"};
+        model = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
         model.setColumnIdentifiers(columnNames);
-        getProfileList(model);
+        getProfileList();
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -70,10 +76,17 @@ public class ViewUserProfileGUI {
         panel.add(editButton);
 
         // Delete profile button
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.setBounds(600, 250, 100, 36);
-        deleteButton.setFont(new Font("Helvetica", Font.PLAIN,18));
-        panel.add(deleteButton);
+        JButton suspendButton = new JButton("Suspend");
+        suspendButton.setBounds(590, 250, 120, 36);
+        suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(suspendButton);
+        suspendButton.setEnabled(false);
+
+        // Clear button
+        JButton clearButton = new JButton("Clear");
+        clearButton.setBounds(350, 135, 60, 36);
+        clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        panel.add(clearButton);
 
         frame.add(panel);
         frame.setSize(800, 600);
@@ -83,6 +96,11 @@ public class ViewUserProfileGUI {
         viewUserAccountButton.addActionListener(e -> {
             frame.dispose();
             new SystemAdminGUI(u);
+        });
+
+        clearButton.addActionListener(e -> {
+            searchTextField.setText("");
+            searchUserProfile(searchTextField, model);
         });
 
         searchButton.addActionListener(e -> searchUserProfile(searchTextField, model));
@@ -112,32 +130,83 @@ public class ViewUserProfileGUI {
             }
         });
 
-        deleteButton.addActionListener(e -> {
-            if (table.getSelectedRow() == -1) {
-                JOptionPane.showMessageDialog(frame, "Please select profile to delete", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
-                if(new DeleteUserProfileController().deleteUserProfile(profileName)) {
-                    JOptionPane.showMessageDialog(frame, "Successfully delete profile", "Success", JOptionPane.PLAIN_MESSAGE);
-                    model.removeRow(table.getSelectedRow());
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to delete profile", "Failed", JOptionPane.ERROR_MESSAGE);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (table.getSelectedRow() != -1 ) {
+                    suspendButton.setEnabled(true);
+                    String status = model.getValueAt(table.getSelectedRow(), 2).toString();
+                    if (status.equals("Active")) {
+                        suspendButton.setText("Suspend");
+                    } else {
+                        suspendButton.setText("Unsuspend");
+                    }
                 }
             }
         });
+
+        suspendButton.addActionListener(e -> {
+            String status = model.getValueAt(table.getSelectedRow(), 2).toString();
+            String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
+            if(status.equals("Active")) {
+                if(new SuspendUserProfileController().suspendUserProfile(profileName)) {
+                    getProfileList();
+                    JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if(new UnsuspendUserProfileController().unsuspendUserProfile(profileName)) {
+                    getProfileList();
+                    JOptionPane.showMessageDialog(frame, "Successfully unsuspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                    suspendButton.setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to unsuspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
     }
 
-    public void getProfileList(DefaultTableModel model) {
-        new ViewUserProfileController().getProfileList(model);
+    public void getProfileList() {
+        model.setRowCount(0);
+        userProfiles = new ViewUserProfileController().getProfileList();
+        for (UserProfile userProfile : userProfiles) {
+            String status;
+            if(userProfile.isProfileStatus()) {
+                status = "Active";
+            } else {
+                status = "Suspended";
+            }
+            model.addRow(new Object[]{
+                    userProfile.getProfileName(),
+                    userProfile.getProfileDesc(),
+                    status
+            });
+        }
     }
 
     public void searchUserProfile(JTextField searchField, DefaultTableModel model) {
         String search = searchField.getText();
 
         if(search.isEmpty()) {
-            getProfileList(model);
+            getProfileList();
         } else {
-            new SearchUserProfileController().SearchUserProfile(search, model);
+            model.setRowCount(0);
+            userProfiles = new SearchUserProfileController().SearchUserProfile(search);
+            for (UserProfile userProfile : userProfiles) {
+                String status;
+                if(userProfile.isProfileStatus()) {
+                    status = "Active";
+                } else {
+                    status = "Suspended";
+                }
+                model.addRow(new Object[]{
+                        userProfile.getProfileName(),
+                        userProfile.getProfileDesc(),
+                        status
+                });
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
 package Controller;
 
+import Entity.Bid;
 import Entity.WorkSlot;
+
+import java.sql.Date;
 
 public class AssignAvailStaffController {
     public Object[] assignAvailStaff(String name, String username, String role, WorkSlot workSlot){
@@ -27,8 +30,8 @@ public class AssignAvailStaffController {
 
         }else{
             // Process assign staff
-            returnVal[0] = workSlot.assignAvailableStaff(username);
-
+            Date ws = new WorkSlot(workSlot.getDate()).getDate();
+            returnVal[0] = new Bid(ws).assignAvailableStaff(username);
 
 
             if(returnVal[0].equals(false)){

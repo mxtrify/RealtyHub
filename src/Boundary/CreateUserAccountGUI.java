@@ -1,15 +1,12 @@
 package Boundary;
 
 import Controller.CreateUserAccountController;
-import Entity.UserAccount;
+import Entity.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
 public class CreateUserAccountGUI {
-    public CreateUserAccountGUI() {
-
-    }
 
     public CreateUserAccountGUI(UserAccount u) {
         displayCreateAccount(u);
@@ -112,9 +109,20 @@ public class CreateUserAccountGUI {
             String firstName = firstNameField.getText();
             String lastName = lastNameField.getText();
             String email = emailField.getText();
-            int profile = profileComboBox.getSelectedIndex();
-            int role = roleComboBox.getSelectedIndex();
-            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, profile+1, role+1, 0, true);
+            int profile = profileComboBox.getSelectedIndex() + 1;
+            int role = roleComboBox.getSelectedIndex() + 1;
+            UserAccount newUser;
+            if(profile == 1) {
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
+            } else if(profile == 2) {
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
+            } else if(profile == 3) {
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
+            } else if(profile == 4) {
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true, role, 0);
+            } else {
+                newUser = new UserAccount();
+            }
             if(username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (new CreateUserAccountController().addAccount(newUser)) {

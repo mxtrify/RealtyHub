@@ -1,15 +1,15 @@
 package Controller;
 
-import Entity.SystemAdmin;
+import Entity.UserProfile;
 
 public class CreateUserProfileController {
-    private SystemAdmin systemAdmin;
+    private UserProfile userProfile;
 
     public CreateUserProfileController() {
-        this.systemAdmin = new SystemAdmin();
+        this.userProfile = new UserProfile();
     }
     public boolean createUserProfile(String profileName, String profileDesc) {
-        return systemAdmin.insertProfile(profileName, profileDesc);
+        return userProfile.createUserProfile(profileName, profileDesc);
     }
 
 }
