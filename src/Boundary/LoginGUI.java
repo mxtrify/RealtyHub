@@ -69,6 +69,10 @@ public class LoginGUI {
         if (userAccount == null) {
             // Error message for invalid username or password
             JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+        } else if (!userAccount.getUserProfile().isProfileStatus()) {
+            JOptionPane.showMessageDialog(frame, "This profile is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+        } else if (!userAccount.isStatus()) {
+            JOptionPane.showMessageDialog(frame, "This account is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
         } else {
             frame.dispose();
             // Login based on the profile

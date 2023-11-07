@@ -9,6 +9,7 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +59,13 @@ public class BidStatusGUI {
         clearButton.setBounds(320, 135, 60, 36);
         clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearButton);
+
+        // Update Button
+        JButton updateButton = new JButton("Update");
+        updateButton.setBounds(600, 200, 120, 36);
+        updateButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        updateButton.setEnabled(false);
+        panel.add(updateButton);
 
         // Cancel Button
         JButton cancelButton = new JButton("Cancel");
@@ -111,12 +119,26 @@ public class BidStatusGUI {
                     String bidStatus = model.getValueAt(table.getSelectedRow(), 1).toString();
                     if (bidStatus.equals("Pending")) {
                         cancelButton.setEnabled(true);
-                        cancelButton.setText("Cancel");
+                        updateButton.setEnabled(true);
                     } else {
                         cancelButton.setEnabled(false);
-                        cancelButton.setText("Can't cancel");
+                        updateButton.setEnabled(false);
                     }
                 }
+            }
+        });
+
+
+        updateButton.addActionListener(e -> {
+            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
+                java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+                frame.dispose();
+                new UpdateBidGUI(userAccount, date);
+            } catch (ParseException d) {
+                d.printStackTrace();
             }
         });
 
@@ -125,7 +147,7 @@ public class BidStatusGUI {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
-                java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+                Date date = new Date(utilDate.getTime()); // Convert to java.sql.Date
                 CancelBidController cancelBidController = new CancelBidController();
                 if(cancelBidController.cancelBid(date)) {
                     JOptionPane.showMessageDialog(frame, "Successfully cancel bid", "Success", JOptionPane.PLAIN_MESSAGE);
