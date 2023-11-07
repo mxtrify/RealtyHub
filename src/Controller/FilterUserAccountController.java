@@ -10,6 +10,9 @@ public class FilterUserAccountController {
     public FilterUserAccountController() {
         this.userAccount = new UserAccount();
     }
+    public ArrayList<String> getProfileList() {
+        return userAccount.getProfileByName();
+    }
     public ArrayList<UserAccount> FilterUserAccount(String profileName) {
         return userAccount.selectByProfileName(profileName);
     }

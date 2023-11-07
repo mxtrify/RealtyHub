@@ -1,6 +1,10 @@
 package Boundary;
 
+import Controller.CancelBidController;
+import Controller.UpdateBidController;
+import Controller.ViewBidStatusController;
 import Controller.WorkSlotController;
+import Entity.Bid;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
@@ -9,7 +13,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,11 +27,11 @@ public class UpdateBidGUI {
     private JPanel panel;
     private String[] columnNames = {"Date"};
 
-    public UpdateBidGUI(UserAccount userAccount, Date date) {
-        displayUpdateBid(userAccount, date);
+    public UpdateBidGUI(UserAccount userAccount, Bid bid) {
+        displayUpdateBid(userAccount, bid);
     }
 
-    private void displayUpdateBid(UserAccount userAccount, Date date) {
+    private void displayUpdateBid(UserAccount userAccount, Bid bid) {
         frame = new JFrame("Update Bid");
         panel = new JPanel();
         panel.setLayout(null);
@@ -43,7 +49,7 @@ public class UpdateBidGUI {
         frame.add(currentDateLabel);
 
         // DateChooser
-        JDateChooser dateChooser = new JDateChooser(date);
+        JDateChooser dateChooser = new JDateChooser(bid.getDate());
         AtomicReference<Calendar> currentDate = new AtomicReference<>(Calendar.getInstance());
         dateChooser.setMinSelectableDate(currentDate.get().getTime());
         dateChooser.setBounds(180,110, 175,36);
@@ -56,7 +62,21 @@ public class UpdateBidGUI {
         newDate.setFont(new Font("Jost", Font.BOLD, 18));
         frame.add(newDate);
 
-        DisplayWorkSlotTable(date);
+        // Table
+        model = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        model.setColumnIdentifiers(columnNames);
+        getWorkSlot(bid.getDate());
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(50,200, 200, 250);
+        frame.add(scrollPane);
 
         // Back button
         JButton backButton = new JButton("Back");
@@ -67,8 +87,6 @@ public class UpdateBidGUI {
         JButton saveButton = new JButton("Save");
         saveButton.setBounds(500, 500, 235, 30);
         panel.add(saveButton);
-
-
 
         frame.add(panel);
         frame.setSize(800, 600);
@@ -81,22 +99,29 @@ public class UpdateBidGUI {
         });
 
         saveButton.addActionListener(e -> {
-            frame.dispose();
+            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
+                Date sqlDate = new Date(utilDate.getTime()); // Convert to java.sql.Date
+                UpdateBidController updateBidController = new UpdateBidController();
+                if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                    JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                    frame.dispose();
+                    new BidStatusGUI(userAccount);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                }
+            } catch (ParseException d) {
+                d.printStackTrace();
+            }
         });
     }
 
-    public void DisplayWorkSlotTable(Date date) {
-        model = new DefaultTableModel();
-        table = new JTable(model);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-
+    public void getWorkSlot(Date date) {
         model.setRowCount(0);
-        model.setColumnIdentifiers(columnNames);
-
         WorkSlotController workSlotController = new WorkSlotController();
         List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
-
 
         for (WorkSlot workSlot : workSlotData) {
             try {
@@ -110,9 +135,6 @@ public class UpdateBidGUI {
                 e.printStackTrace();
             }
         }
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50, 200, 200, 250);
-        panel.add(scrollPane);
     }
+
 }

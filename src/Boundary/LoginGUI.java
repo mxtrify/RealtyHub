@@ -7,75 +7,79 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LoginGUI {
-    // Variables
+    // Variables declaration
     private JFrame frame;
 
     // Constructor
     public LoginGUI() {
-        displayLogin();
+        displayLogin(); // Call the login GUI method
     }
 
-    // Display login function
+    // Method to display the login GUI
     public void displayLogin() {
+        // Initializing frame and panel
         frame = new JFrame("Login");
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        // Title Label
+        // Title label for the login window
         JLabel titleLabel = new JLabel("Cafe Staff Management System");
         titleLabel.setBounds(100, 20, 500, 25);
         panel.add(titleLabel);
 
-        // Username Label
+        // Username label
         JLabel usernameLabel = new JLabel("Username : ");
         usernameLabel.setBounds(75, 75, 100, 25);
         panel.add(usernameLabel);
 
-        // Username Field
+        // Username field
         JTextField usernameField = new JTextField(20);
         usernameField.setBounds(150, 75, 175, 25);
         panel.add(usernameField);
 
-        // Password Label
+        // Password label
         JLabel passwordLabel = new JLabel("Password : ");
         passwordLabel.setBounds(75, 115, 100, 25);
         panel.add(passwordLabel);
 
-        // Password Field
-        JTextField passwordField = new JPasswordField(20);
+        // Password field
+        JPasswordField passwordField = new JPasswordField(20);
         passwordField.setBounds(150, 115, 175, 25);
         panel.add(passwordField);
 
-        // Login Button
+        // Login button
         JButton loginButton = new JButton("Login");
         loginButton.setBounds(150, 175, 100, 25);
         panel.add(loginButton);
 
+        // Set up frame properties
         frame.setContentPane(panel);
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
-        // Action for Login Button
+        // Action listener for the login button
         loginButton.addActionListener(e -> login(usernameField.getText(), passwordField.getText()));
 
+        // Action listener for the password field
         passwordField.addActionListener(e -> login(usernameField.getText(), passwordField.getText()));
     }
 
-    // Login handling function
+    // Method to handle the login process
     public void login(String username, String password) {
+        // Call the loginController to validate login credentials
         UserAccount userAccount = new LoginController().login(username, password);
 
+        // Check the account username and password / account status / profile status
         if (userAccount == null) {
-            // Error message for invalid username or password
             JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
         } else if (!userAccount.getUserProfile().isProfileStatus()) {
             JOptionPane.showMessageDialog(frame, "This profile is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
         } else if (!userAccount.isStatus()) {
             JOptionPane.showMessageDialog(frame, "This account is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            frame.dispose();
-            // Login based on the profile
+            frame.dispose(); // Close the login window
+            // Open the appropriate GUI based on the user's profile
             if (userAccount.getUserProfile().getProfileName().equals("System Admin")) {
                 new SystemAdminGUI(userAccount);
             } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Owner")) {
@@ -89,6 +93,7 @@ public class LoginGUI {
         }
     }
 
+    // Main method to start
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override

@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BidStatusGUI {
     private JFrame frame;
     private DefaultTableModel model;
-    private String[] columnNames = {"Date", "Status"};
+    private String[] columnNames = {"ID", "Date", "Status"};
     private ArrayList<Bid> bids;
 
     public BidStatusGUI(UserAccount userAccount) {
@@ -117,7 +117,7 @@ public class BidStatusGUI {
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 if (table.getSelectedRow() != -1 ) {
-                    String bidStatus = model.getValueAt(table.getSelectedRow(), 1).toString();
+                    String bidStatus = model.getValueAt(table.getSelectedRow(), 2).toString();
                     if (bidStatus.equals("Pending")) {
                         cancelButton.setEnabled(true);
                         updateButton.setEnabled(true);
@@ -131,20 +131,22 @@ public class BidStatusGUI {
 
 
         updateButton.addActionListener(e -> {
-            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+            int bidId = (int) model.getValueAt(table.getSelectedRow(), 0);
+            String dateString = model.getValueAt(table.getSelectedRow(), 1).toString();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
                 java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
                 frame.dispose();
-                new UpdateBidGUI(userAccount, date);
+                Bid selectedBid = new Bid(bidId, date);
+                new UpdateBidGUI(userAccount, selectedBid);
             } catch (ParseException d) {
                 d.printStackTrace();
             }
         });
 
         cancelButton.addActionListener(e -> {
-            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+            String dateString = model.getValueAt(table.getSelectedRow(), 1).toString();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
@@ -178,6 +180,7 @@ public class BidStatusGUI {
         ArrayList<Bid> bids = new ViewBidStatusController().viewBidStatus(userAccount.getUsername());
         for (Bid bid : bids) {
             model.addRow(new Object[]{
+                    bid.getBidId(),
                     bid.getDate(),
                     bid.getBidStatus()
             });
@@ -189,6 +192,7 @@ public class BidStatusGUI {
         ArrayList<Bid> bids = new FilterBidStatusController().filterBidStatus(userAccount.getUsername(), selectedBidStatus);
         for (Bid bid : bids) {
             model.addRow(new Object[]{
+                    bid.getBidId(),
                     bid.getDate(),
                     bid.getBidStatus()
             });
@@ -200,6 +204,7 @@ public class BidStatusGUI {
         ArrayList<Bid> bids = new SearchBidController().searchBid(userAccount.getUsername(), selectedDate);
         for (Bid bid : bids) {
             model.addRow(new Object[]{
+                    bid.getBidId(),
                     bid.getDate(),
                     bid.getBidStatus()
             });
