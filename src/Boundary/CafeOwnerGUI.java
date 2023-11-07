@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -97,8 +96,6 @@ public class CafeOwnerGUI {
                 Date selectedDate = new Date(searchDate.getDate().getTime());
                 filterTableByDate(selectedDate);
                 System.out.println(selectedDate);
-
-
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
@@ -252,7 +249,7 @@ public class CafeOwnerGUI {
         }
     }
 
-    public void WorkSlotTable() {
+    private void WorkSlotTable() {
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
         workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
