@@ -102,6 +102,17 @@ public class UserAccount {
         this.status = status;
     }
 
+    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.userProfile = userProfile;
+        this.status = status;
+        this.role_id = role_id;
+    }
+
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status, int role_id, int max_slot) {
         this.username = username;
         this.password = password;
@@ -211,7 +222,7 @@ public class UserAccount {
                 boolean status = resultSet.getBoolean("status");
                 boolean profileStatus = resultSet.getBoolean("profile_status");
                 int maxSlot;
-                if (resultSet.wasNull()) {
+                if (resultSet.getObject("max_slot") == null) {
                     maxSlot = -1; // Assign some default value if max_slot is NULL
                 } else {
                     maxSlot = resultSet.getInt("max_slot");
@@ -288,7 +299,7 @@ public class UserAccount {
 
     // Update
     public boolean updateUserAccount(UserAccount updatedUser) {
-        String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, max_slot = ?, profile_id = ?, role_id = ? WHERE username = ?";
+        String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ?, role_id = ? WHERE username = ?";
         try {
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -296,16 +307,14 @@ public class UserAccount {
             preparedStatement.setString(2, updatedUser.getFirstName());
             preparedStatement.setString(3, updatedUser.getLastName());
             preparedStatement.setString(4, updatedUser.getEmail());
-            preparedStatement.setNull(5, Types.INTEGER); // Assuming getMaxSlot() returns the max_slot value
-            preparedStatement.setInt(6, updatedUser.getUserProfile().getProfileID()); // Set profile_id
+            preparedStatement.setInt(5, updatedUser.getUserProfile().getProfileID()); // Set profile_id
             if(updatedUser.getUserProfile().getProfileID() == 4) {
-                preparedStatement.setInt(7, updatedUser.getRole_id());
+                preparedStatement.setInt(6, updatedUser.getRole_id());
             }
             if (updatedUser.getUserProfile().getProfileID() != 4) {
-                preparedStatement.setNull(5, Types.INTEGER); // If profile_id is not 4, set max_slot to NULL
-                preparedStatement.setNull(7, Types.INTEGER); // Also set role_id to NULL
+                preparedStatement.setNull(6, Types.INTEGER); // Also set role_id to NULL
             }
-            preparedStatement.setString(8, updatedUser.getUsername());
+            preparedStatement.setString(7, updatedUser.getUsername());
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {

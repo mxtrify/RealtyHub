@@ -127,7 +127,7 @@ public class UpdateUserAccountGUI {
             } else if(profile == 3) {
                 updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile));
             } else if(profile == 4) {
-                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), role, 0);
+                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), role);
             } else {
                 updatedUser = new UserAccount();
             }

@@ -83,7 +83,7 @@ public class LoginGUI {
             } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Manager")) {
                 new CafeManagerGUI(userAccount);
             } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Staff")) {
-                //new CafeStaffGUI(userAccount);
+                System.out.println(userAccount.getMax_slot());
                 new CafeStaffGUI(userAccount);
             }
         }
