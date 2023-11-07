@@ -1,7 +1,6 @@
 package Boundary;
 
-import Controller.CancelBidController;
-import Controller.ViewBidStatusController;
+import Controller.*;
 import Entity.Bid;
 import Entity.UserAccount;
 import com.toedter.calendar.JDateChooser;
@@ -9,6 +8,7 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +20,7 @@ public class BidStatusGUI {
     private JFrame frame;
     private DefaultTableModel model;
     private String[] columnNames = {"Date", "Status"};
+    private ArrayList<Bid> bids;
 
     public BidStatusGUI(UserAccount userAccount) {
         displayBidStatus(userAccount);
@@ -75,7 +76,7 @@ public class BidStatusGUI {
         panel.add(cancelButton);
 
         // Dropdown filter
-        String[] options = {"Pending", "Accepted", "Rejected"};
+        String[] options = {"Pending", "Approved", "Rejected"};
         JComboBox<String> dropdown = new JComboBox<>(options);
         dropdown.setBounds(380, 135, 125, 36);
         dropdown.setFont(new Font("Helvetica", Font.PLAIN,18));
@@ -159,11 +160,44 @@ public class BidStatusGUI {
                 d.printStackTrace();
             }
         });
+
+        dropdown.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                bidStatusFilter(userAccount, (String) dropdown.getSelectedItem());
+            }
+        });
+
+        searchButton.addActionListener(e -> {
+            Date selectedDate = new Date(dateChooser.getDate().getTime());
+            searchBid(userAccount, selectedDate);
+        });
     }
 
     public void getBidStatus(UserAccount userAccount) {
         model.setRowCount(0);
         ArrayList<Bid> bids = new ViewBidStatusController().viewBidStatus(userAccount.getUsername());
+        for (Bid bid : bids) {
+            model.addRow(new Object[]{
+                    bid.getDate(),
+                    bid.getBidStatus()
+            });
+        }
+    }
+
+    public void bidStatusFilter(UserAccount userAccount, String selectedBidStatus) {
+        model.setRowCount(0);
+        ArrayList<Bid> bids = new FilterBidStatusController().filterBidStatus(userAccount.getUsername(), selectedBidStatus);
+        for (Bid bid : bids) {
+            model.addRow(new Object[]{
+                    bid.getDate(),
+                    bid.getBidStatus()
+            });
+        }
+    }
+
+    public void searchBid(UserAccount userAccount, Date selectedDate) {
+        model.setRowCount(0);
+        ArrayList<Bid> bids = new SearchBidController().searchBid(userAccount.getUsername(), selectedDate);
         for (Bid bid : bids) {
             model.addRow(new Object[]{
                     bid.getDate(),

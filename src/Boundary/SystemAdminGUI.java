@@ -133,7 +133,7 @@ public class SystemAdminGUI {
         // Action for profile filter
         profileFilter.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                profileFilter(model, (String) profileFilter.getSelectedItem());
+                profileFilter((String) profileFilter.getSelectedItem());
             }
         });
 
@@ -245,7 +245,7 @@ public class SystemAdminGUI {
         }
     }
 
-    public void profileFilter(DefaultTableModel model, String profileName) {
+    public void profileFilter(String profileName) {
         model.setRowCount(0);
         userAccounts = new FilterUserAccountController().FilterUserAccount(profileName);
         for (UserAccount userAccount : userAccounts) {

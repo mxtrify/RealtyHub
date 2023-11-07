@@ -490,4 +490,46 @@ public class Bid {
             throw new RuntimeException(e);
         }
     }
+
+    public ArrayList<Bid> getBidByStatus(String username, String selectedBidStatus) {
+        ArrayList<Bid> bids = new ArrayList<>();
+        String query = "SELECT date, bid_status FROM bid WHERE username = ? AND bid_status = ?";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, selectedBidStatus);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                Date date = resultSet.getDate("date");
+                String bidStatus = resultSet.getString("bid_status");
+                Bid bid = new Bid(date, bidStatus);
+                bids.add(bid);
+            }
+            return bids;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<Bid> getBidByDate(String username, Date selectedDate) {
+        ArrayList<Bid> bids = new ArrayList<>();
+        String query = "SELECT date, bid_status FROM bid WHERE username = ? AND date = ?";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setDate(2, selectedDate);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+                Date date = resultSet.getDate("date");
+                String bidStatus = resultSet.getString("bid_status");
+                Bid bid = new Bid(date, bidStatus);
+                bids.add(bid);
+            }
+            return bids;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
