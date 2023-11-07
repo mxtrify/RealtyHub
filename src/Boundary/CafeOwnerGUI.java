@@ -222,9 +222,9 @@ public class CafeOwnerGUI {
 
 
     private void deleteSelectedRow() {
-        int seletedRow = workSlotTable.getSelectedRow();
-        if(seletedRow != -1) {
-            String dateToDelete = tableComponents.getValueAt(seletedRow, 0).toString();
+        int selectedRow = workSlotTable.getSelectedRow();
+        if(selectedRow != -1) {
+            String dateToDelete = tableComponents.getValueAt(selectedRow, 0).toString();
             JFrame deleteFrame = new JFrame();
 
             int confirmDelete = JOptionPane.showConfirmDialog(
@@ -235,7 +235,7 @@ public class CafeOwnerGUI {
             );
 
             if(confirmDelete == JOptionPane.YES_OPTION) {
-                tableComponents.removeRow(seletedRow);
+                tableComponents.removeRow(selectedRow);
                 DeleteWorkSlotController deleteWorkSlotController = new DeleteWorkSlotController();
 
                 boolean deleteSuccess = deleteWorkSlotController.deleteWorkSlot(dateToDelete);
