@@ -27,6 +27,11 @@ public class UserProfile {
         this.profileName = profileName;
     }
 
+    public UserProfile(String profileName, boolean status) {
+        this.profileName = profileName;
+        this.profileStatus = status;
+    }
+
     public UserProfile(String profileName, String profileDesc, boolean status) {
         this.profileName = profileName;
         this.profileDesc = profileDesc;

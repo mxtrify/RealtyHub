@@ -33,7 +33,7 @@ public class UpdateUserAccountGUI {
         passwordLabel.setBounds(100, 150, 235, 50);
         panel.add(passwordLabel);
 
-        JTextField passwordField = new JTextField(u.getPassword());
+        JPasswordField passwordField = new JPasswordField(u.getPassword());
         passwordField.setBounds(200, 150, 235, 50);
         panel.add(passwordField);
 

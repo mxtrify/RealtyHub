@@ -47,12 +47,22 @@ public class UserAccount {
         this.userProfile = userProfile;
     }
 
-    public UserAccount(String username, String password, UserProfile userProfile, int max_slot) {
+    public UserAccount(String username, String password, UserProfile userProfile, boolean status) {
         this.username = username;
         this.password = password;
         this.userProfile = userProfile;
+        this.status = status;
+    }
+
+
+    public UserAccount(String username, String password, UserProfile userProfile, boolean status, int max_slot) {
+        this.username = username;
+        this.password = password;
+        this.userProfile = userProfile;
+        this.status = status;
         this.max_slot = max_slot;
     }
+
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
         this.username = username;
@@ -188,7 +198,7 @@ public class UserAccount {
 
     // Login Validation
     public UserAccount validateLogin(String username, String password) {
-        String query = "SELECT username, password, profile_name, max_slot FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
+        String query = "SELECT username, password, profile_name, max_slot, status, profile_status FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
         try{
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -198,21 +208,23 @@ public class UserAccount {
 
             if(resultSet.next()) {
                 String profileName = resultSet.getString("profile_name");
+                boolean status = resultSet.getBoolean("status");
+                boolean profileStatus = resultSet.getBoolean("profile_status");
                 int maxSlot;
                 if (resultSet.wasNull()) {
                     maxSlot = -1; // Assign some default value if max_slot is NULL
                 } else {
                     maxSlot = resultSet.getInt("max_slot");
                 }
-                UserProfile userProfile = new UserProfile(profileName);
+                UserProfile userProfile = new UserProfile(profileName, profileStatus);
                 if(resultSet.getString("profile_name").equals("System Admin")) {
-                    return new UserAccount(username, password, userProfile);
+                    return new UserAccount(username, password, userProfile, status);
                 } else if (resultSet.getString("profile_name").equals("Cafe Owner")) {
-                    return new UserAccount(username, password, userProfile);
+                    return new UserAccount(username, password, userProfile, status);
                 } else if (resultSet.getString("profile_name").equals("Cafe Manager")) {
-                    return new UserAccount(username, password, userProfile);
+                    return new UserAccount(username, password, userProfile, status);
                 } else if (resultSet.getString("profile_name").equals("Cafe Staff")) {
-                    return new UserAccount(username, password, userProfile, maxSlot);
+                    return new UserAccount(username, password, userProfile, status, maxSlot);
                 } else {
                     return null;
                 }
