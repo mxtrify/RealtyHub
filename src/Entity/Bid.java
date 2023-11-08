@@ -133,7 +133,7 @@ public class Bid {
         Object[][] data = null;
         try {
             // Connect db
-            this.conn = new DBConfig().getConnection();
+            //this.conn = new DBConfig().getConnection();
 
             String query = "SELECT `bid`.`bid_id` AS `ID`,"+
                     "CONCAT(`user_account`.`f_name`, ' ' ,`user_account`.`l_name`) AS `Name`,"+
