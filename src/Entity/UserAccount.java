@@ -82,6 +82,17 @@ public class UserAccount {
         this.max_slot = max_slot;
     }
 
+    public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot, int role_id) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userProfile = userProfile;
+        this.status = status;
+        this.max_slot = max_slot;
+        this.role_id = role_id;
+    }
+
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
         this.username = username;
@@ -228,7 +239,7 @@ public class UserAccount {
 
     // Login Validation
     public UserAccount validateLogin(String username, String password) {
-        String query = "SELECT username, password, f_name, l_name, profile_name, max_slot, status, profile_status FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
+        String query = "SELECT username, password, f_name, l_name, profile_name, max_slot, status, profile_status, role_id FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
         try{
             Connection conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -242,6 +253,7 @@ public class UserAccount {
                 String profileName = resultSet.getString("profile_name");
                 boolean status = resultSet.getBoolean("status");
                 boolean profileStatus = resultSet.getBoolean("profile_status");
+                int roleId = resultSet.getInt("role_id");
                 int maxSlot;
                 if (resultSet.getObject("max_slot") == null) {
                     maxSlot = -1; // Assign some default value if max_slot is NULL
@@ -256,7 +268,7 @@ public class UserAccount {
                 } else if (resultSet.getString("profile_name").equals("Cafe Manager")) {
                     return new UserAccount(username, password, fName, lName, userProfile, status);
                 } else if (resultSet.getString("profile_name").equals("Cafe Staff")) {
-                    return new UserAccount(username, password, fName, lName, userProfile, status, maxSlot);
+                    return new UserAccount(username, password, fName, lName, userProfile, status, maxSlot, roleId);
                 } else {
                     return null;
                 }

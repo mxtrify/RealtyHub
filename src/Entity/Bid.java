@@ -593,7 +593,6 @@ public class Bid {
             PreparedStatement checkStatement = conn.prepareStatement(checkQuery);
             checkStatement.setString(1, username);
             checkStatement.setDate(2, date);
-
             ResultSet resultSet = checkStatement.executeQuery();
             if (resultSet.next()) {
                 return false;

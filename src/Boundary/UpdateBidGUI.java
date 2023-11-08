@@ -1,9 +1,6 @@
 package Boundary;
 
-import Controller.CancelBidController;
-import Controller.UpdateBidController;
-import Controller.ViewBidStatusController;
-import Controller.WorkSlotController;
+import Controller.*;
 import Entity.Bid;
 import Entity.UserAccount;
 import Entity.WorkSlot;
@@ -25,7 +22,6 @@ public class UpdateBidGUI {
     private DefaultTableModel model;
     private JTable table;
     private JPanel panel;
-    private String[] columnNames = {"Date"};
 
     public UpdateBidGUI(UserAccount userAccount, Bid bid) {
         displayUpdateBid(userAccount, bid);
@@ -52,13 +48,13 @@ public class UpdateBidGUI {
         JDateChooser dateChooser = new JDateChooser(bid.getDate());
         AtomicReference<Calendar> currentDate = new AtomicReference<>(Calendar.getInstance());
         dateChooser.setMinSelectableDate(currentDate.get().getTime());
-        dateChooser.setBounds(180,110, 175,36);
+        dateChooser.setBounds(225,110, 175,36);
         dateChooser.setEnabled(false);
         frame.add(dateChooser);
 
         // Label
         JLabel newDate = new JLabel("Choose new date : ");
-        newDate.setBounds(50, 150, 415, 58);
+        newDate.setBounds(50, 150, 415, 36);
         newDate.setFont(new Font("Jost", Font.BOLD, 18));
         frame.add(newDate);
 
@@ -69,13 +65,12 @@ public class UpdateBidGUI {
             }
         };
 
-        model.setColumnIdentifiers(columnNames);
         getWorkSlot(bid.getDate());
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,200, 200, 250);
+        scrollPane.setBounds(225,150, 450, 250);
         frame.add(scrollPane);
 
         // Back button
@@ -100,17 +95,53 @@ public class UpdateBidGUI {
 
         saveButton.addActionListener(e -> {
             String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            System.out.println(dateString);
+            SimpleDateFormat format = new SimpleDateFormat("dd MMM, yyyy");
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
                 Date sqlDate = new Date(utilDate.getTime()); // Convert to java.sql.Date
-                UpdateBidController updateBidController = new UpdateBidController();
-                if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
-                    JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
-                    frame.dispose();
-                    new BidStatusGUI(userAccount);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                if(userAccount.getRole_id() == 1) { // Waiter
+                    int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),3);
+                    if(chefAmountLeft != 0) {
+                        UpdateBidController updateBidController = new UpdateBidController();
+                        if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                            JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                            frame.dispose();
+                            new BidStatusGUI(userAccount);
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
+                    }
+                } else if (userAccount.getRole_id() == 2) { // Cashier
+                    int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),2);
+                    if(chefAmountLeft != 0) {
+                        UpdateBidController updateBidController = new UpdateBidController();
+                        if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                            JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                            frame.dispose();
+                            new BidStatusGUI(userAccount);
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
+                    }
+                } else if (userAccount.getRole_id() == 3) { // Chef
+                    int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),1);
+                    if(chefAmountLeft != 0) {
+                        UpdateBidController updateBidController = new UpdateBidController();
+                        if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                            JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                            frame.dispose();
+                            new BidStatusGUI(userAccount);
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
+                    }
                 }
             } catch (ParseException d) {
                 d.printStackTrace();
@@ -120,21 +151,11 @@ public class UpdateBidGUI {
 
     public void getWorkSlot(Date date) {
         model.setRowCount(0);
-        WorkSlotController workSlotController = new WorkSlotController();
-        List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
+        String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's", "Availability"};
+        ViewAvailWSController workSlotController = new ViewAvailWSController();
+        Object[][] workSlotData = workSlotController.getAllWorkSlots();
 
-        for (WorkSlot workSlot : workSlotData) {
-            try {
-                if (!date.equals(workSlot.getDate())) {
-                    Object[] rowData = {
-                            workSlot.getDate()
-                    };
-                    model.addRow(rowData);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        model.setDataVector(workSlotData, tableTitle);
     }
 
 }
