@@ -13,7 +13,5 @@ public class ViewUserAccountController {
         return userAccount.selectAll();
     }
 
-    public ArrayList<String> getProfileList() {
-        return userAccount.getProfileByName();
-    }
+
 }

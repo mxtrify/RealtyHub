@@ -33,7 +33,7 @@ public class CreateUserAccountGUI {
         passwordLabel.setBounds(100, 150, 235, 50);
         panel.add(passwordLabel);
 
-        JTextField passwordField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
         passwordField.setBounds(200, 150, 235, 50);
         panel.add(passwordField);
 
@@ -121,7 +121,7 @@ public class CreateUserAccountGUI {
             } else if(profile == 4) {
                 newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true, role, 0);
             } else {
-                newUser = new UserAccount();
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
             }
             if(username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);

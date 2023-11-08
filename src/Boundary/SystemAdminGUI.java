@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 
 public class SystemAdminGUI {
+    // Variables declaration
     private JFrame frame;
     private DefaultTableModel model;
     private final String[] columnNames = {"Username", "First Name", "Last Name", "Profile", "Status"};
@@ -16,10 +17,10 @@ public class SystemAdminGUI {
 
     // Constructor
     public SystemAdminGUI(UserAccount u) {
-        displaySystemAdminGUI(u);
+        displaySystemAdminGUI(u); // Call the system admin GUI method
     }
 
-    // Display System Admin GUI
+    // Method to display system admin GUI
     public void displaySystemAdminGUI(UserAccount u) {
         // Initialize frame and panel
         frame = new JFrame("System Admin");
@@ -82,6 +83,7 @@ public class SystemAdminGUI {
         suspendButton.setEnabled(false);
         panel.add(suspendButton);
 
+        // Clear Button
         JButton clearButton = new JButton("Clear");
         clearButton.setBounds(320, 135, 60, 36);
         clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
@@ -94,12 +96,14 @@ public class SystemAdminGUI {
             }
         };
 
-        model.setColumnIdentifiers(columnNames);
+        // Fetch data into table
         getAccountList();
 
+        //
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        //
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
@@ -108,7 +112,7 @@ public class SystemAdminGUI {
         logoutButton.addActionListener(e -> logout());
 
         // Search action button
-        searchButton.addActionListener(e -> searchUserAccount(searchTextField, model));
+        searchButton.addActionListener(e -> searchUserAccount(searchTextField));
 
         // View profile action
         viewProfileButton.addActionListener(e -> {
@@ -118,11 +122,11 @@ public class SystemAdminGUI {
 
         clearButton.addActionListener(e -> {
             searchTextField.setText("");
-            searchUserAccount(searchTextField, model);
+            searchUserAccount(searchTextField);
         });
 
         // Press "ENTER" to search
-        searchTextField.addActionListener(e -> searchUserAccount(searchTextField, model));
+        searchTextField.addActionListener(e -> searchUserAccount(searchTextField));
 
         // Create account action button
         createAccountButton.addActionListener(e -> {
@@ -133,7 +137,7 @@ public class SystemAdminGUI {
         // Action for profile filter
         profileFilter.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
-                profileFilter(model, (String) profileFilter.getSelectedItem());
+                profileFilter((String) profileFilter.getSelectedItem());
             }
         });
 
@@ -195,7 +199,7 @@ public class SystemAdminGUI {
         frame.dispose();
         new LoginGUI();
     }
-    public void searchUserAccount(JTextField searchTextField, DefaultTableModel model) {
+    public void searchUserAccount(JTextField searchTextField) {
         String search = searchTextField.getText();
 
         if(search.isEmpty()) {
@@ -221,12 +225,14 @@ public class SystemAdminGUI {
         }
     }
 
+    // Method for populating list of profile for dropdown
     public ArrayList<String> getProfileList() {
-        return new ViewUserAccountController().getProfileList();
+        return new FilterUserAccountController().getProfileList();
     }
 
     public void getAccountList() {
         model.setRowCount(0);
+        model.setColumnIdentifiers(columnNames);
         userAccounts = new ViewUserAccountController().getAccountList();
         for (UserAccount userAccount : userAccounts) {
             String status;
@@ -245,7 +251,7 @@ public class SystemAdminGUI {
         }
     }
 
-    public void profileFilter(DefaultTableModel model, String profileName) {
+    public void profileFilter(String profileName) {
         model.setRowCount(0);
         userAccounts = new FilterUserAccountController().FilterUserAccount(profileName);
         for (UserAccount userAccount : userAccounts) {

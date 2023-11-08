@@ -33,7 +33,7 @@ public class UpdateUserAccountGUI {
         passwordLabel.setBounds(100, 150, 235, 50);
         panel.add(passwordLabel);
 
-        JTextField passwordField = new JTextField(u.getPassword());
+        JPasswordField passwordField = new JPasswordField(u.getPassword());
         passwordField.setBounds(200, 150, 235, 50);
         panel.add(passwordField);
 
@@ -127,7 +127,7 @@ public class UpdateUserAccountGUI {
             } else if(profile == 3) {
                 updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile));
             } else if(profile == 4) {
-                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), role, 0);
+                updatedUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), role);
             } else {
                 updatedUser = new UserAccount();
             }

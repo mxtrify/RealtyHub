@@ -1,7 +1,6 @@
 package Boundary;
 
-import Controller.CancelBidController;
-import Controller.ViewBidStatusController;
+import Controller.*;
 import Entity.Bid;
 import Entity.UserAccount;
 import com.toedter.calendar.JDateChooser;
@@ -9,6 +8,8 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BidStatusGUI {
     private JFrame frame;
     private DefaultTableModel model;
-    private String[] columnNames = {"Date", "Status"};
+    private String[] columnNames = {"ID", "Date", "Status"};
+    private ArrayList<Bid> bids;
 
     public BidStatusGUI(UserAccount userAccount) {
         displayBidStatus(userAccount);
@@ -59,6 +61,13 @@ public class BidStatusGUI {
         clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearButton);
 
+        // Update Button
+        JButton updateButton = new JButton("Update");
+        updateButton.setBounds(600, 200, 120, 36);
+        updateButton.setFont(new Font("Helvetica", Font.PLAIN,18));
+        updateButton.setEnabled(false);
+        panel.add(updateButton);
+
         // Cancel Button
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setBounds(600, 250, 120, 36);
@@ -67,7 +76,7 @@ public class BidStatusGUI {
         panel.add(cancelButton);
 
         // Dropdown filter
-        String[] options = {"Pending", "Accepted", "Rejected"};
+        String[] options = {"Pending", "Approved", "Rejected"};
         JComboBox<String> dropdown = new JComboBox<>(options);
         dropdown.setBounds(380, 135, 125, 36);
         dropdown.setFont(new Font("Helvetica", Font.PLAIN,18));
@@ -108,24 +117,40 @@ public class BidStatusGUI {
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 if (table.getSelectedRow() != -1 ) {
-                    String bidStatus = model.getValueAt(table.getSelectedRow(), 1).toString();
+                    String bidStatus = model.getValueAt(table.getSelectedRow(), 2).toString();
                     if (bidStatus.equals("Pending")) {
                         cancelButton.setEnabled(true);
-                        cancelButton.setText("Cancel");
+                        updateButton.setEnabled(true);
                     } else {
                         cancelButton.setEnabled(false);
-                        cancelButton.setText("Can't cancel");
+                        updateButton.setEnabled(false);
                     }
                 }
             }
         });
 
-        cancelButton.addActionListener(e -> {
-            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+
+        updateButton.addActionListener(e -> {
+            int bidId = (int) model.getValueAt(table.getSelectedRow(), 0);
+            String dateString = model.getValueAt(table.getSelectedRow(), 1).toString();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
                 java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+                frame.dispose();
+                Bid selectedBid = new Bid(bidId, date);
+                new UpdateBidGUI(userAccount, selectedBid);
+            } catch (ParseException d) {
+                d.printStackTrace();
+            }
+        });
+
+        cancelButton.addActionListener(e -> {
+            String dateString = model.getValueAt(table.getSelectedRow(), 1).toString();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
+                Date date = new Date(utilDate.getTime()); // Convert to java.sql.Date
                 CancelBidController cancelBidController = new CancelBidController();
                 if(cancelBidController.cancelBid(date)) {
                     JOptionPane.showMessageDialog(frame, "Successfully cancel bid", "Success", JOptionPane.PLAIN_MESSAGE);
@@ -137,6 +162,17 @@ public class BidStatusGUI {
                 d.printStackTrace();
             }
         });
+
+        dropdown.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                bidStatusFilter(userAccount, (String) dropdown.getSelectedItem());
+            }
+        });
+
+        searchButton.addActionListener(e -> {
+            Date selectedDate = new Date(dateChooser.getDate().getTime());
+            searchBid(userAccount, selectedDate);
+        });
     }
 
     public void getBidStatus(UserAccount userAccount) {
@@ -144,6 +180,31 @@ public class BidStatusGUI {
         ArrayList<Bid> bids = new ViewBidStatusController().viewBidStatus(userAccount.getUsername());
         for (Bid bid : bids) {
             model.addRow(new Object[]{
+                    bid.getBidId(),
+                    bid.getDate(),
+                    bid.getBidStatus()
+            });
+        }
+    }
+
+    public void bidStatusFilter(UserAccount userAccount, String selectedBidStatus) {
+        model.setRowCount(0);
+        ArrayList<Bid> bids = new FilterBidStatusController().filterBidStatus(userAccount.getUsername(), selectedBidStatus);
+        for (Bid bid : bids) {
+            model.addRow(new Object[]{
+                    bid.getBidId(),
+                    bid.getDate(),
+                    bid.getBidStatus()
+            });
+        }
+    }
+
+    public void searchBid(UserAccount userAccount, Date selectedDate) {
+        model.setRowCount(0);
+        ArrayList<Bid> bids = new SearchBidController().searchBid(userAccount.getUsername(), selectedDate);
+        for (Bid bid : bids) {
+            model.addRow(new Object[]{
+                    bid.getBidId(),
                     bid.getDate(),
                     bid.getBidStatus()
             });
