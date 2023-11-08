@@ -55,7 +55,7 @@ public class CafeStaffGUI {
 
         // Title label
         JLabel titleLabel = new JLabel("Welcome Staff: " + u.getFullName());
-        titleLabel.setBounds(100,20, 500, 25);
+        titleLabel.setBounds(50,20, 500, 25);
         panel.add(titleLabel);
 
 
