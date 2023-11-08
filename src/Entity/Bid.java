@@ -257,7 +257,7 @@ public class Bid {
                 Bid bid = new Bid();
                 bid.setBid_id(resultSet.getInt("bid_id"));
 
-                return bid.approveRejectBid("Approved");
+                return bid.approveBid();
             }else{
                 // Assign staff
                 query = "INSERT INTO `bid`(`username`, `date`, `bid_status`) " +
@@ -289,24 +289,24 @@ public class Bid {
     }
 
 
-    public boolean approveRejectBid(String action){
-        try{
-            // Change bid status to 'Rejected'
-            String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
-
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, action);
-            preparedStatement.setInt(2, getBidId());
-            preparedStatement.execute();
-
-
-            return true;
-
-        }catch (SQLException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    public boolean approveRejectBid(String action){
+//        try{
+//            // Change bid status to 'Rejected'
+//            String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
+//
+//            PreparedStatement preparedStatement = conn.prepareStatement(query);
+//            preparedStatement.setString(1, action);
+//            preparedStatement.setInt(2, getBidId());
+//            preparedStatement.execute();
+//
+//
+//            return true;
+//
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
     public Object[][] getUpcomingWork(){
         Object[][] data = null;
@@ -488,6 +488,41 @@ public class Bid {
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public int getMonthlySlotLeft(){
+        try {
+            String query = "SELECT `max_slot` FROM `user_account` WHERE `username` = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, getName());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int maxSlot = -1;
+            if (resultSet.next()){
+                maxSlot = resultSet.getInt("max_slot");
+            }
+
+            System.out.println(maxSlot);
+
+            query = "SELECT COUNT(*) as `total` FROM `bid` " +
+                    "WHERE `username` = ? and MONTH(`date`) = ? AND YEAR(`date`) = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, getName());
+            preparedStatement.setInt(2, getDate().getMonth()+1);
+            preparedStatement.setInt(3, getDate().getYear()+1900);
+            resultSet = preparedStatement.executeQuery();
+
+            int currentTotal = -1;
+            if (resultSet.next()){
+                currentTotal = resultSet.getInt("total");
+            }
+            System.out.println(currentTotal);
+
+            return maxSlot-currentTotal;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return -1;
         }
     }
 }
