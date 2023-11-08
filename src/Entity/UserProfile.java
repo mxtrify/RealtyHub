@@ -19,25 +19,55 @@ public class UserProfile {
         this.profileName = "";
         this.profileDesc = "";
         this.profileStatus = false;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserProfile(int profileID) {
         this.profileID = profileID;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserProfile(String profileName) {
         this.profileName = profileName;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserProfile(String profileName, boolean status) {
         this.profileName = profileName;
         this.profileStatus = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserProfile(String profileName, String profileDesc, boolean status) {
         this.profileName = profileName;
         this.profileDesc = profileDesc;
         this.profileStatus = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserProfile(int profileID, String profileName, String profileDesc, boolean status) {
@@ -45,6 +75,12 @@ public class UserProfile {
         this.profileName = profileName;
         this.profileDesc = profileDesc;
         this.profileStatus = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public int getProfileID() {
@@ -83,7 +119,6 @@ public class UserProfile {
     public boolean createUserProfile(String profileName, String profileDesc) {
         String query = "INSERT INTO profile (profile_name, profile_desc, profile_status) VALUES (?, ?, ?)";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             preparedStatement.setString(2, profileDesc);
@@ -100,7 +135,6 @@ public class UserProfile {
         ArrayList<UserProfile> userProfiles = new ArrayList<>();
         String query = "SELECT * FROM profile";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -121,7 +155,6 @@ public class UserProfile {
     public boolean updateUserProfile(String profileName, String newProfileDesc) {
         String query = "UPDATE profile SET profile_desc = ? WHERE profile_name = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, newProfileDesc);
             preparedStatement.setString(2, profileName);
@@ -136,7 +169,6 @@ public class UserProfile {
     public boolean suspendUserProfile(String profileName) {
         String query = "UPDATE profile SET profile_status = 0 WHERE profile_name = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -150,7 +182,6 @@ public class UserProfile {
     public boolean unsuspendUserProfile(String profileName) {
         String query = "UPDATE profile SET profile_status = 1 WHERE profile_name = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -165,7 +196,6 @@ public class UserProfile {
         ArrayList<UserProfile> userProfiles = new ArrayList<>();
         String query = "SELECT profile_name, profile_desc, profile_status FROM profile WHERE profile_name LIKE ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();

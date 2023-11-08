@@ -39,12 +39,24 @@ public class UserAccount {
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, UserProfile userProfile) {
         this.username = username;
         this.password = password;
         this.userProfile = userProfile;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, UserProfile userProfile, boolean status) {
@@ -52,6 +64,12 @@ public class UserAccount {
         this.password = password;
         this.userProfile = userProfile;
         this.status = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status) {
@@ -61,6 +79,12 @@ public class UserAccount {
         this.lastName = lastName;
         this.userProfile = userProfile;
         this.status = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -70,6 +94,12 @@ public class UserAccount {
         this.userProfile = userProfile;
         this.status = status;
         this.max_slot = max_slot;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot) {
@@ -80,6 +110,12 @@ public class UserAccount {
         this.userProfile = userProfile;
         this.status = status;
         this.max_slot = max_slot;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot, int role_id) {
@@ -91,6 +127,12 @@ public class UserAccount {
         this.status = status;
         this.max_slot = max_slot;
         this.role_id = role_id;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -101,6 +143,12 @@ public class UserAccount {
         this.lastName = lastName;
         this.email = email;
         this.userProfile = userProfile;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id, int max_slot) {
@@ -112,6 +160,12 @@ public class UserAccount {
         this.userProfile = userProfile;
         this.role_id = role_id;
         this.max_slot = max_slot;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String firstName, String lastName, UserProfile userProfile, boolean status) {
@@ -120,6 +174,12 @@ public class UserAccount {
         this.lastName = lastName;
         this.userProfile = userProfile;
         this.status = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status) {
@@ -130,6 +190,12 @@ public class UserAccount {
         this.email = email;
         this.userProfile = userProfile;
         this.status = status;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id) {
@@ -139,8 +205,13 @@ public class UserAccount {
         this.lastName = lastName;
         this.email = email;
         this.userProfile = userProfile;
-        this.status = status;
         this.role_id = role_id;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status, int role_id, int max_slot) {
@@ -153,6 +224,12 @@ public class UserAccount {
         this.status = status;
         this.role_id = role_id;
         this.max_slot = max_slot;
+
+        try{
+            this.conn = new DBConfig().getConnection();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public String getUsername() {
@@ -285,7 +362,6 @@ public class UserAccount {
     public boolean insertAccount(UserAccount newUser) {
         String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, newUser.getUsername());
             preparedStatement.setString(2, newUser.getPassword());
@@ -311,7 +387,6 @@ public class UserAccount {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -334,7 +409,6 @@ public class UserAccount {
     public boolean updateUserAccount(UserAccount updatedUser) {
         String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ?, role_id = ? WHERE username = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, updatedUser.getPassword());
             preparedStatement.setString(2, updatedUser.getFirstName());
@@ -359,7 +433,6 @@ public class UserAccount {
     public boolean suspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 0 WHERE username = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -373,7 +446,6 @@ public class UserAccount {
     public boolean unsuspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 1 WHERE username = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -388,7 +460,6 @@ public class UserAccount {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -413,7 +484,6 @@ public class UserAccount {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -436,7 +506,6 @@ public class UserAccount {
     public UserAccount getSelectedAccount(String username) {
         String query = "SELECT * FROM user_account WHERE username = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -473,7 +542,6 @@ public class UserAccount {
         ArrayList<String> profileNameList = new ArrayList<>();
 
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -493,7 +561,6 @@ public class UserAccount {
         ArrayList<String> roleNameList = new ArrayList<>();
 
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -510,7 +577,6 @@ public class UserAccount {
     public void setMaxSlot(UserAccount u) {
         String query = "UPDATE user_account SET max_slot = ? WHERE username = ?";
         try {
-            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, u.getMax_slot());
             preparedStatement.setString(2, u.getUsername());
@@ -520,31 +586,4 @@ public class UserAccount {
         }
     }
 
-    // Staff Object
-//    public CafeStaff(String username, String password) {
-//        super(username, password);
-//        try{
-//            // Get Staff details (Role name and max slot)
-//            super.conn = new DBConfig().getConnection();
-//            String query = "SELECT `user_account`.`max_slot` AS `Max`, `role`.`role_name` AS `RName` FROM `user_account` " +
-//                    "JOIN `role` ON `user_account`.`role_id` = `role`.`role_id` " +
-//                    "JOIN `profile` ON `user_account`.`profile_id` = `profile`.`profile_id` " +
-//                    "WHERE `user_account`.`username` = ? AND `profile`.`profile_name` = \"Cafe Staff\" ";
-//
-//            PreparedStatement preparedStatement = conn.prepareStatement(query);
-//            preparedStatement.setString(1, super.username);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            if(resultSet.next()){
-//                this.role_name = resultSet.getString("RName");
-//                this.max_slot = resultSet.getInt("Max");
-//            }else{
-//                this.role_name = "";
-//                this.max_slot = 0;
-//            }
-//
-//        }catch (SQLException e){
-//            e.printStackTrace();
-//        }
-//    }
 }
