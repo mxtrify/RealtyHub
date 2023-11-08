@@ -214,6 +214,8 @@ public class CafeOwnerGUI {
             editFrame.setSize(500, 400);
             editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             editFrame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to edit");
         }
     }
 
@@ -242,6 +244,8 @@ public class CafeOwnerGUI {
                     System.out.println("Error In Deleting");
                 }
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to delete");
         }
     }
 
