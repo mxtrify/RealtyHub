@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserAccount {
-    protected Connection conn;
+    protected Connection conn = new DBConfig().getConnection();
 
     protected String username;
     protected String password;
@@ -19,7 +19,6 @@ public class UserAccount {
     private String role_name;
     private int max_slot;
 
-
     public UserAccount() {
         this.username = "";
         this.password = "";
@@ -29,34 +28,18 @@ public class UserAccount {
         this.userProfile = new UserProfile();
         this.status = false;
 
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+
     }
 
     public UserAccount(String username, String password) {
         this.username = username;
         this.password = password;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, UserProfile userProfile) {
         this.username = username;
         this.password = password;
         this.userProfile = userProfile;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, UserProfile userProfile, boolean status) {
@@ -64,12 +47,6 @@ public class UserAccount {
         this.password = password;
         this.userProfile = userProfile;
         this.status = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status) {
@@ -79,12 +56,6 @@ public class UserAccount {
         this.lastName = lastName;
         this.userProfile = userProfile;
         this.status = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
 
@@ -95,11 +66,6 @@ public class UserAccount {
         this.status = status;
         this.max_slot = max_slot;
 
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot) {
@@ -110,12 +76,6 @@ public class UserAccount {
         this.userProfile = userProfile;
         this.status = status;
         this.max_slot = max_slot;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot, int role_id) {
@@ -127,12 +87,6 @@ public class UserAccount {
         this.status = status;
         this.max_slot = max_slot;
         this.role_id = role_id;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
 
@@ -143,12 +97,6 @@ public class UserAccount {
         this.lastName = lastName;
         this.email = email;
         this.userProfile = userProfile;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id, int max_slot) {
@@ -160,12 +108,6 @@ public class UserAccount {
         this.userProfile = userProfile;
         this.role_id = role_id;
         this.max_slot = max_slot;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String firstName, String lastName, UserProfile userProfile, boolean status) {
@@ -174,12 +116,6 @@ public class UserAccount {
         this.lastName = lastName;
         this.userProfile = userProfile;
         this.status = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status) {
@@ -190,12 +126,6 @@ public class UserAccount {
         this.email = email;
         this.userProfile = userProfile;
         this.status = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id) {
@@ -206,12 +136,6 @@ public class UserAccount {
         this.email = email;
         this.userProfile = userProfile;
         this.role_id = role_id;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status, int role_id, int max_slot) {
@@ -224,12 +148,6 @@ public class UserAccount {
         this.status = status;
         this.role_id = role_id;
         this.max_slot = max_slot;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public String getUsername() {

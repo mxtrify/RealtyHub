@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class Bid {
-    private Connection conn;
+    private Connection conn = new DBConfig().getConnection();
     private int bid_id;
     private String name;
     private String role;
@@ -22,13 +22,6 @@ public class Bid {
         this.role = "";
         this.date = null;
         this.bidStatus = "";
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
 
 
@@ -37,13 +30,6 @@ public class Bid {
         this.name = "";
         this.role = "";
         this.date = date;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
 
     public Bid(String name, Date date){
@@ -51,13 +37,6 @@ public class Bid {
         this.name = name;
         this.role = "";
         this.date = date;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
 
     public Bid(int bid_id, Date date){
@@ -66,13 +45,6 @@ public class Bid {
         this.role = "";
         this.date = date;
         this.bidStatus = "";
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
     public Bid(int bid_id, Date date, String bidStatus){
         this.bid_id = bid_id;
@@ -80,13 +52,6 @@ public class Bid {
         this.role = "";
         this.date = date;
         this.bidStatus = bidStatus;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
 
     public Bid(int bid_id, String name, String role, Date date){
@@ -94,13 +59,6 @@ public class Bid {
         this.name = name;
         this.role = role;
         this.date = date;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
 
 

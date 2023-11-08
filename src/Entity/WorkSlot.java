@@ -13,7 +13,7 @@ public class WorkSlot {
     public static final int CHEF = 3;
     public static final int CASHIER = 2;
     public static final int WAITER = 1;
-    private Connection conn;
+    private Connection conn = new DBConfig().getConnection();
     private Date date;
     private int chefAmount;
     private int cashierAmount;
@@ -61,11 +61,6 @@ public class WorkSlot {
         this.chefAmount = 0;
         this.cashierAmount = 0;
         this.waiterAmount = 0;
-        try {
-            this.conn = new DBConfig().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public WorkSlot(Date date) {
@@ -126,11 +121,6 @@ public class WorkSlot {
         this.chefAmount = chefAmount;
         this.cashierAmount = cashierAmount;
         this.waiterAmount = waiterAmount;
-        try {
-            this.conn = new DBConfig().getConnection();
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public Object[][] getAllWS(){

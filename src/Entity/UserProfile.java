@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserProfile {
-    private Connection conn;
+    private Connection conn = new DBConfig().getConnection();
 
     private UserProfile userProfile;
     private int profileID;
@@ -19,55 +19,25 @@ public class UserProfile {
         this.profileName = "";
         this.profileDesc = "";
         this.profileStatus = false;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserProfile(int profileID) {
         this.profileID = profileID;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserProfile(String profileName) {
         this.profileName = profileName;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserProfile(String profileName, boolean status) {
         this.profileName = profileName;
         this.profileStatus = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserProfile(String profileName, String profileDesc, boolean status) {
         this.profileName = profileName;
         this.profileDesc = profileDesc;
         this.profileStatus = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public UserProfile(int profileID, String profileName, String profileDesc, boolean status) {
@@ -75,12 +45,6 @@ public class UserProfile {
         this.profileName = profileName;
         this.profileDesc = profileDesc;
         this.profileStatus = status;
-
-        try{
-            this.conn = new DBConfig().getConnection();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public int getProfileID() {
