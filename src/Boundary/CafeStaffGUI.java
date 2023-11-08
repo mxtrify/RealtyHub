@@ -1,8 +1,6 @@
 package Boundary;
 
-import Controller.SetMaxSlotController;
-import Controller.WorkSlotController;
-import Controller.MakeBidController;
+import Controller.*;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
@@ -16,12 +14,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Vector;
 
 public class CafeStaffGUI {
-    JPanel panel = new JPanel();
+    private JFrame frame;
+    private JPanel panel = new JPanel();
     private Calendar current;
     private JTable workSlotTable;
     private DefaultTableModel tableComponents;
+    private JScrollPane scrollPane;
 
     // Constructor
     public CafeStaffGUI(UserAccount u) {
@@ -49,7 +50,7 @@ public class CafeStaffGUI {
 
     // Display cafe staff GUI
     public void displayCafeStaffGUI(UserAccount u) {
-        JFrame frame = new JFrame("Cafe Staff");
+        frame = new JFrame("Cafe Staff");
         panel.setLayout(null);
 
         // Title label
@@ -57,10 +58,6 @@ public class CafeStaffGUI {
         titleLabel.setBounds(100,20, 500, 25);
         panel.add(titleLabel);
 
-        // Max Slot label
-        JLabel maxSlotLabel = new JLabel("My Slot : " + u.getMax_slot() );
-        maxSlotLabel.setBounds(500,20, 500, 25);
-        panel.add(maxSlotLabel);
 
         // Schedule button
         JButton scheduleButton = new JButton("Schedule");
@@ -84,7 +81,7 @@ public class CafeStaffGUI {
 
         // Search Bar
         JDateChooser searchDate = new JDateChooser();
-        searchDate.setDateFormatString("dd/MM/yyyy");
+        searchDate.setDateFormatString("dd MMM, yyyy");
         current = Calendar.getInstance();
         searchDate.setMinSelectableDate(current.getTime());
         searchDate.setBounds(50,100, 150,25);
@@ -116,9 +113,14 @@ public class CafeStaffGUI {
         // Action for Search Button
         searchButton.addActionListener(e -> {
             try {
-                Date selectedDate = new Date(searchDate.getDate().getTime());
-                filterTableByDate(selectedDate);
-                System.out.println(selectedDate);
+                if (searchDate.getDate() == null){
+                    filterTableByDate(null);
+                }else{
+                    Date selectedDate = new Date(searchDate.getDate().getTime());
+                    filterTableByDate(selectedDate);
+                    System.out.println(selectedDate);
+                }
+
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
@@ -150,39 +152,27 @@ public class CafeStaffGUI {
     }
 
     public void DisplayWorkSlotTable() {
-        tableComponents = new DefaultTableModel();
+        tableComponents = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make all cells in the button column editable
+                return column == 5;
+            }
+        };
         workSlotTable = new JTable(tableComponents);
         workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
         tableComponents.setRowCount(0);
-        tableComponents.addColumn("Date");
-        tableComponents.addColumn("Chef's");
-        tableComponents.addColumn("Cashier's");
-        tableComponents.addColumn("Waiter's");
+        String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's", "Availability"};
 
-        WorkSlotController workSlotController = new WorkSlotController();
-        List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
 
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
+        ViewAvailWSController workSlotController = new ViewAvailWSController();
+        Object[][] workSlotData = workSlotController.getAllWorkSlots();
 
-        for (WorkSlot workSlot : workSlotData) {
-            try {
-                String formattedDate = outputFormat.format(workSlot.getDate());
+        tableComponents.setDataVector(workSlotData, tableTitle);
 
-                Object[] rowData = {
-                        formattedDate,
-                        workSlot.getChefAmount(),
-                        workSlot.getCashierAmount(),
-                        workSlot.getWaiterAmount()
-                };
-                tableComponents.addRow(rowData);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        JScrollPane scrollPane = new JScrollPane(workSlotTable);
+        scrollPane = new JScrollPane(workSlotTable);
         scrollPane.setBounds(50, 150, 500, 300);
         panel.add(scrollPane);
     }
@@ -192,7 +182,7 @@ public class CafeStaffGUI {
         workSlotTable.setRowSorter(sorter);
 
         if (selectedDate != null) {
-            String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
+            String formattedDate = new SimpleDateFormat("dd MMM, yyyy").format(selectedDate);
             RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
             sorter.setRowFilter(rowFilter);
         } else {
@@ -205,14 +195,32 @@ public class CafeStaffGUI {
         if (selectedRow != -1) {
             String dateString = (String) tableComponents.getValueAt(selectedRow, 0);
             try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
                 java.util.Date parsedDate = dateFormat.parse(dateString);
                 Date selectedDate = new Date(parsedDate.getTime());
 
-                MakeBidController bidController = new MakeBidController();
-                if (bidController.makeBid(u.getUsername(), selectedDate)) {
-                    DisplayWorkSlotTable();
+                int slotLeft = new ViewMonthlySlotLeft().viewMonthlySlotLeft(u,selectedDate);
+                if (slotLeft > 0){
+                    int confirm = JOptionPane.showConfirmDialog(frame, String.format("Slot left this Month: %d%nAre you sure want to make bid on this date?", slotLeft) , "Make Bid", JOptionPane.YES_NO_OPTION);
+
+                    if (confirm == JOptionPane.YES_OPTION){
+                        MakeBidController bidController = new MakeBidController();
+                        if (bidController.makeBid(u.getUsername(), selectedDate)) {
+                            panel.remove(scrollPane);
+                            panel.repaint();
+                            panel.revalidate();
+                            DisplayWorkSlotTable();
+                        }
+                    }
+
+
+                } else if (slotLeft == 0) {
+                    JOptionPane.showMessageDialog(frame, String.format("Slot limit reached!%nSlot left this Month: %d", slotLeft), "Limit Reached", JOptionPane.WARNING_MESSAGE);
+                }else {
+                    JOptionPane.showMessageDialog(frame, "Issue while approving bid, please try again!", "Exception Occurs", JOptionPane.WARNING_MESSAGE);
                 }
+
+
             } catch (IllegalArgumentException | ParseException e) {
                 e.printStackTrace();
             }
