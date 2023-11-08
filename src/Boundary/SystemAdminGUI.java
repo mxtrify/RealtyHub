@@ -28,7 +28,7 @@ public class SystemAdminGUI {
         panel.setLayout(null);
 
         // Display welcome message for the logged-in user
-        JLabel titleLabel = new JLabel("Welcome, " + u.getUsername());
+        JLabel titleLabel = new JLabel("Welcome, " + u.getFullName());
         titleLabel.setBounds(50,75, 500, 36);
         titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         panel.add(titleLabel);
