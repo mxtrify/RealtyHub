@@ -379,9 +379,20 @@ public class WorkSlot {
 
 
     public boolean deleteWorkSlot(Date date) {
+        deleteBid(date);
         deleteRoleAmountTableEntry(date);
         deleteWorkSlotEntry(date);
         return true;
+    }
+
+    private void deleteBid(Date date) {
+        String delBidQuery = "DELETE FROM bid WHERE date = ?";
+        try(PreparedStatement preparedStatement = conn.prepareStatement(delBidQuery)) {
+            preparedStatement.setDate(1, date);
+            preparedStatement.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteRoleAmountTableEntry(Date date) {
