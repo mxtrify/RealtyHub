@@ -25,7 +25,6 @@ public class OwnerCreateWorkSlotGUI {
         displayCreateWorkSlotGUI(u);
     }
 
-    // Need each part to be an object?
     public void displayCreateWorkSlotGUI(UserAccount u){
         JFrame frame = new JFrame("Create Work Slot");
         JPanel panel = new JPanel();
@@ -59,7 +58,6 @@ public class OwnerCreateWorkSlotGUI {
         chefField.setBounds(150, 115, 100, 25);
         panel.add(chefField);
 
-
         // Cashier Label
         JLabel cashierLabel = new JLabel("Cashier:");
         cashierLabel.setBounds(75, 155, 100, 25);
@@ -92,6 +90,7 @@ public class OwnerCreateWorkSlotGUI {
 
         // Action for create button
         createButton.addActionListener(e -> {
+            // If date field is not selected, prompt user to select
             if(dateChooser.getDate() != null) {
                 java.util.Date selectedDateUtil = dateChooser.getDate();
                 java.sql.Date selectedDate = new java.sql.Date(selectedDateUtil.getTime());
@@ -104,11 +103,11 @@ public class OwnerCreateWorkSlotGUI {
                     return;
                 }
 
+                // If any of the fields is empty, prompt user to enter valid amount
                 if(!chefField.getText().isEmpty() || !cashierField.getText().isEmpty() || !waiterField.getText().isEmpty()) {
                     int numOfChef = Integer.parseInt(chefField.getText());
                     int numOfCashier = Integer.parseInt(cashierField.getText());
                     int numOfWaiter = Integer.parseInt(waiterField.getText());
-                    WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
 
                     if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
                         JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
@@ -123,11 +122,7 @@ public class OwnerCreateWorkSlotGUI {
             } else {
                 JOptionPane.showMessageDialog(frame, "Please select a date");
             }
-
-
-
         });
-
 
         // Action for back button
         backButton.addActionListener(e -> {

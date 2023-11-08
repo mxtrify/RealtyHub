@@ -1,8 +1,6 @@
 package Boundary;
 
-import Controller.CancelBidController;
 import Controller.UpdateBidController;
-import Controller.ViewBidStatusController;
 import Controller.WorkSlotController;
 import Entity.Bid;
 import Entity.UserAccount;
@@ -136,5 +134,4 @@ public class UpdateBidGUI {
             }
         }
     }
-
 }

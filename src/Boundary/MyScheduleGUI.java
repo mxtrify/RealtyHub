@@ -50,7 +50,6 @@ public class MyScheduleGUI {
         date_search.setBounds(30,145, 350,36);
         frame.add(date_search);
 
-
         // Search button
         JButton searchButton = new JButton("Search");
         searchButton.setBounds(385,145,80, 36);
@@ -66,7 +65,6 @@ public class MyScheduleGUI {
         JComboBox<String > dropdown = new JComboBox<>(options);
         dropdown.setBounds(585, 145, 100, 36);
         frame.add(dropdown);
-
 
         // Table
         data = new ViewAllUpcomingController().getAllUpcoming(userAccount);
@@ -152,11 +150,7 @@ public class MyScheduleGUI {
             // Refresh frame
             frame.repaint();
             frame.revalidate();
-
-
-
         });
-
 
         searchButton.addActionListener(e->{
             // Remove old table
@@ -194,7 +188,6 @@ public class MyScheduleGUI {
                 }
             }
 
-
             // Set data into model
             model.setDataVector(data, columnNames);
             table.setModel(model);
@@ -221,8 +214,6 @@ public class MyScheduleGUI {
         });
 
         clearFilter.addActionListener(e->{
-
-
             // Clear date chooser
             date_search.setDate(null);
             current = Calendar.getInstance();
@@ -234,8 +225,6 @@ public class MyScheduleGUI {
             // Get data from database
             // Display all upcoming work
             data = new ViewAllUpcomingController().getAllUpcoming(userAccount);
-
-
 
             // Set data into model
             model.setDataVector(data, columnNames);
@@ -252,17 +241,11 @@ public class MyScheduleGUI {
             // Refresh table
             table.repaint();
             table.revalidate();
-
-
-
         });
 
         back.addActionListener(e -> {
             frame.dispose();
             new CafeStaffGUI(userAccount);
         });
-
-
-
     }
 }

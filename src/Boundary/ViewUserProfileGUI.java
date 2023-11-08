@@ -165,7 +165,6 @@ public class ViewUserProfileGUI {
                 }
             }
         });
-
     }
 
     public void getProfileList() {
