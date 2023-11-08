@@ -121,7 +121,7 @@ public class CreateUserAccountGUI {
             } else if(profile == 4) {
                 newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true, role, 0);
             } else {
-                newUser = new UserAccount();
+                newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
             }
             if(username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);
