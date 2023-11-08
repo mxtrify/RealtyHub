@@ -75,7 +75,6 @@ public class CreateUserAccountGUI {
         roleLabel.setBounds(100, 400, 235, 50);
         panel.add(roleLabel);
 
-
         ArrayList<String> roleList = new CreateUserAccountController().getRoleList();
         DefaultComboBoxModel<String> roleComboModel = new DefaultComboBoxModel<>(roleList.toArray(new String[0]));
         JComboBox<String> roleComboBox = new JComboBox<>(roleComboModel);

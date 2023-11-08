@@ -45,7 +45,6 @@ public class CafeOwnerGUI {
         logoutButton.setBounds(650, 20, 100, 25);
         panel.add(logoutButton);
 
-
         // Search Button
         JButton searchButton = new JButton("Search");
         searchButton.setBounds(250, 100, 100, 25);
@@ -63,7 +62,6 @@ public class CafeOwnerGUI {
         JButton clearSearchButton = new JButton("Clear");
         clearSearchButton.setBounds(350, 100, 100, 25);
         panel.add(clearSearchButton);
-
 
         // Create workSlot button
         JButton createWorkSlotButton = new JButton("+");
@@ -216,10 +214,10 @@ public class CafeOwnerGUI {
             editFrame.setSize(500, 400);
             editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             editFrame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to edit");
         }
     }
-
-
 
     private void deleteSelectedRow() {
         int selectedRow = workSlotTable.getSelectedRow();
@@ -246,6 +244,8 @@ public class CafeOwnerGUI {
                     System.out.println("Error In Deleting");
                 }
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to delete");
         }
     }
 
@@ -253,7 +253,6 @@ public class CafeOwnerGUI {
         tableComponents = new DefaultTableModel();
         workSlotTable = new JTable(tableComponents);
         workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 
         tableComponents.setRowCount(0);
         tableComponents.addColumn("Date");

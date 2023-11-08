@@ -15,7 +15,6 @@ import java.util.Calendar;
 
 public class CafeManagerGUI {
     private JDateChooser date_search;
-
     private Object[][] data;
     private DefaultTableModel model;
     private JTable table;
@@ -32,7 +31,6 @@ public class CafeManagerGUI {
     public void displayCafeManagerGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Manager");
         frame.setLayout(null);
-
 
         // Title label
         JLabel titleLabel = new JLabel("Welcome, "+u.getUsername());
@@ -63,12 +61,9 @@ public class CafeManagerGUI {
 
                 // Switch to assign staff frame
                 new AssignStaffGUI(u, workSlot);
-
-
             }
 
         });
-
 
         // Date search bar
         date_search = new JDateChooser();
@@ -132,13 +127,10 @@ public class CafeManagerGUI {
                     }catch (Exception ex){
                         ex.printStackTrace();
                     }
-
-
                 }
             }
 
         });
-
 
         // Action button to search specific date
         searchButton.addActionListener(e-> {
@@ -187,11 +179,6 @@ public class CafeManagerGUI {
             // Refresh frame
             frame.repaint();
             frame.revalidate();
-
-
-
-
-
         });
 
         // Button for clear filter (Date)
@@ -210,7 +197,6 @@ public class CafeManagerGUI {
             // Refresh frame
             frame.repaint();
             frame.revalidate();
-
 
             // Get data from database
             data = new ViewAvailWSController().getAllWorkSlots();
@@ -237,15 +223,7 @@ public class CafeManagerGUI {
             // Refresh frame
             frame.repaint();
             frame.revalidate();
-
-
-
-
-
-
         });
-
-
 
         // Frame format
         frame.setSize(800, 600);
@@ -258,6 +236,5 @@ public class CafeManagerGUI {
             new LoginGUI();
         });
     }
-
 }
 

@@ -54,8 +54,8 @@ public class CafeStaffGUI {
         panel.setLayout(null);
 
         // Title label
-        JLabel titleLabel = new JLabel("Welcome, Cafe " + u.getFullName());
-        titleLabel.setBounds(100,20, 500, 25);
+        JLabel titleLabel = new JLabel("Welcome Staff: " + u.getFullName());
+        titleLabel.setBounds(50,20, 500, 25);
         panel.add(titleLabel);
 
 
@@ -162,10 +162,8 @@ public class CafeStaffGUI {
         workSlotTable = new JTable(tableComponents);
         workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-
         tableComponents.setRowCount(0);
         String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's", "Availability"};
-
 
         ViewAvailWSController workSlotController = new ViewAvailWSController();
         Object[][] workSlotData = workSlotController.getAllWorkSlots();
@@ -212,15 +210,11 @@ public class CafeStaffGUI {
                             DisplayWorkSlotTable();
                         }
                     }
-
-
                 } else if (slotLeft == 0) {
                     JOptionPane.showMessageDialog(frame, String.format("Slot limit reached!%nSlot left this Month: %d", slotLeft), "Limit Reached", JOptionPane.WARNING_MESSAGE);
                 }else {
                     JOptionPane.showMessageDialog(frame, "Issue while approving bid, please try again!", "Exception Occurs", JOptionPane.WARNING_MESSAGE);
                 }
-
-
             } catch (IllegalArgumentException | ParseException e) {
                 e.printStackTrace();
             }

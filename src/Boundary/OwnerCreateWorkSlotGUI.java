@@ -25,7 +25,6 @@ public class OwnerCreateWorkSlotGUI {
         displayCreateWorkSlotGUI(u);
     }
 
-    // Need each part to be an object?
     public void displayCreateWorkSlotGUI(UserAccount u){
         JFrame frame = new JFrame("Create Work Slot");
         JPanel panel = new JPanel();
@@ -59,7 +58,6 @@ public class OwnerCreateWorkSlotGUI {
         chefField.setBounds(150, 115, 100, 25);
         panel.add(chefField);
 
-
         // Cashier Label
         JLabel cashierLabel = new JLabel("Cashier:");
         cashierLabel.setBounds(75, 155, 100, 25);
@@ -92,32 +90,39 @@ public class OwnerCreateWorkSlotGUI {
 
         // Action for create button
         createButton.addActionListener(e -> {
-            java.util.Date selectedDateUtil = dateChooser.getDate();
-            java.sql.Date selectedDate = new java.sql.Date(selectedDateUtil.getTime());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String date = sdf.format(selectedDate);
+            // If date field is not selected, prompt user to select
+            if(dateChooser.getDate() != null) {
+                java.util.Date selectedDateUtil = dateChooser.getDate();
+                java.sql.Date selectedDate = new java.sql.Date(selectedDateUtil.getTime());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String date = sdf.format(selectedDate);
 
-            // Error message if there is already an existing workslot
-            if (workSlotAlreadyExists(selectedDate)) {
-                JOptionPane.showMessageDialog(frame, "Work slot already exists for the selected date", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+                // Error message if there is already an existing workslot
+                if (workSlotAlreadyExists(selectedDate)) {
+                    JOptionPane.showMessageDialog(frame, "Work slot already exists for the selected date", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-            int numOfChef = Integer.parseInt(chefField.getText());
-            int numOfCashier = Integer.parseInt(cashierField.getText());
-            int numOfWaiter = Integer.parseInt(waiterField.getText());
-            WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
+                // If any of the fields is empty, prompt user to enter valid amount
+                if(!chefField.getText().isEmpty() || !cashierField.getText().isEmpty() || !waiterField.getText().isEmpty()) {
+                    int numOfChef = Integer.parseInt(chefField.getText());
+                    int numOfCashier = Integer.parseInt(cashierField.getText());
+                    int numOfWaiter = Integer.parseInt(waiterField.getText());
 
-            if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
-                JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
+                    if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
+                        JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Successfully created!");
+                        frame.dispose();
+                        new CafeOwnerGUI(u);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Fields must be filled");
+                }
             } else {
-                JOptionPane.showMessageDialog(frame, "Successfully created!");
-                frame.dispose();
-                new CafeOwnerGUI(u);
+                JOptionPane.showMessageDialog(frame, "Please select a date");
             }
-
         });
-
 
         // Action for back button
         backButton.addActionListener(e -> {

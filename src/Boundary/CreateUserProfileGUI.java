@@ -8,7 +8,6 @@ import java.awt.*;
 
 public class CreateUserProfileGUI {
     private JFrame frame;
-
     public CreateUserProfileGUI(UserAccount u) {
         displayCreateUserProfile(u);
     }

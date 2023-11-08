@@ -1,6 +1,8 @@
 package Boundary;
 
 import Controller.*;
+import Controller.UpdateBidController;
+import Controller.WorkSlotController;
 import Entity.Bid;
 import Entity.UserAccount;
 import Entity.WorkSlot;
@@ -95,8 +97,7 @@ public class UpdateBidGUI {
 
         saveButton.addActionListener(e -> {
             String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
-            System.out.println(dateString);
-            SimpleDateFormat format = new SimpleDateFormat("dd MMM, yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
                 Date sqlDate = new Date(utilDate.getTime()); // Convert to java.sql.Date
@@ -157,5 +158,4 @@ public class UpdateBidGUI {
 
         model.setDataVector(workSlotData, tableTitle);
     }
-
 }
