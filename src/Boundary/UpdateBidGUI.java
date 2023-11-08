@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class UpdateBidGUI {
     private JFrame frame;
     private DefaultTableModel model;
-    private JTable table;
     private JPanel panel;
 
     public UpdateBidGUI(UserAccount userAccount, Bid bid) {
@@ -67,7 +66,7 @@ public class UpdateBidGUI {
             }
         };
 
-        getWorkSlot(bid.getDate());
+        getWorkSlot();
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -150,7 +149,7 @@ public class UpdateBidGUI {
         });
     }
 
-    public void getWorkSlot(Date date) {
+    public void getWorkSlot() {
         model.setRowCount(0);
         String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's", "Availability"};
         ViewAvailWSController workSlotController = new ViewAvailWSController();
