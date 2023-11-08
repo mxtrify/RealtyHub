@@ -143,8 +143,9 @@ public class Bid {
     public boolean makeBid(String username, Date date) {
         try {
             // Check if Staff has already made a bid
-            String checkQuery = "SELECT * FROM bid WHERE username = ? AND date = ?";
-            PreparedStatement checkStatement = conn.prepareStatement(checkQuery);
+            String query = "SELECT * FROM bid WHERE username = ? AND date = ? " +
+                    "AND `bid_status` != 'Rejected' ";
+            PreparedStatement checkStatement = conn.prepareStatement(query);
             checkStatement.setString(1, username);
             checkStatement.setDate(2, date);
 
@@ -154,13 +155,24 @@ public class Bid {
                 return false;
             }
 
-            // If staff haven't made a bid, make new bid
-            String insertQuery = "INSERT INTO bid (username, date, bid_status) VALUES (?, ?, 'Pending')";
-            PreparedStatement insertStatement = conn.prepareStatement(insertQuery);
-            insertStatement.setString(1, username);
-            insertStatement.setDate(2, date);
+            query = "SELECT * FROM bid WHERE username = ? AND date = ?" +
+                    "AND `bid_status` = 'Rejected' ";
+            checkStatement = conn.prepareStatement(query);
+            checkStatement.setString(1, username);
+            checkStatement.setDate(2, date);
 
-            int rowsAffected = insertStatement.executeUpdate();
+            checkResult = checkStatement.executeQuery();
+            if (checkResult.next()){
+                query = "UPDATE `bid` SET `bid_status` = 'Pending' WHERE `username` = ? AND `date` = ?";
+            }else{
+                query = "INSERT INTO bid (username, date, bid_status) VALUES (?, ?, 'Pending')";
+            }
+
+            checkStatement = conn.prepareStatement(query);
+            checkStatement.setString(1, username);
+            checkStatement.setDate(2, date);
+
+            int rowsAffected = checkStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Bid submitted successfully!");
@@ -169,6 +181,9 @@ public class Bid {
                 JOptionPane.showMessageDialog(null, "Failed to submit bid. Please try again.");
                 return false;
             }
+
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -433,7 +448,7 @@ public class Bid {
 
     public ArrayList<Bid> getAllBidStatus(String username) {
         ArrayList<Bid> bids = new ArrayList<>();
-        String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? ORDER BY CASE bid_status " +
+        String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? AND bid_status != 'Assigned' ORDER BY CASE bid_status " +
                 "WHEN 'Pending' THEN 1 WHEN 'Approved' THEN 2 ELSE 3 END";
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -480,7 +495,7 @@ public class Bid {
             System.out.println(maxSlot);
 
             query = "SELECT COUNT(*) as `total` FROM `bid` " +
-                    "WHERE `username` = ? and MONTH(`date`) = ? AND YEAR(`date`) = ?";
+                    "WHERE `username` = ? and MONTH(`date`) = ? AND YEAR(`date`) = ? AND `bid_status` != 'Rejected'";
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, getName());
             preparedStatement.setInt(2, getDate().getMonth()+1);
@@ -524,7 +539,8 @@ public class Bid {
 
     public ArrayList<Bid> getBidByDate(String username, Date selectedDate) {
         ArrayList<Bid> bids = new ArrayList<>();
-        String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? AND date = ?";
+        String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? AND date = ? " +
+                "AND bid_status != 'Assigned'";
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
