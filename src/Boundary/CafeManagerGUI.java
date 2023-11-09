@@ -1,5 +1,6 @@
 package Boundary;
 
+import Controller.SearchAvailWSController;
 import Controller.ViewAvailWSController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
@@ -154,7 +155,7 @@ public class CafeManagerGUI {
             }else {
                 // Search for a workslot
                 java.sql.Date selectedDate = new java.sql.Date(d.getTime());
-                data = new ViewAvailWSController().getWorkSlot(selectedDate);
+                data = new SearchAvailWSController().getWorkSlot(selectedDate);
             }
 
             // Set data into model
