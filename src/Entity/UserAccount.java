@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserAccount {
+    private Connection conn;
     private String username;
     private String password;
     private String firstName;
@@ -231,8 +232,9 @@ public class UserAccount {
     // Login Validation
     public UserAccount validateLogin(String username, String password) {
         String query = "SELECT username, password, f_name, l_name, profile_name, max_slot, status, profile_status, role_id FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -268,14 +270,25 @@ public class UserAccount {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     // Create
     public boolean insertAccount(UserAccount newUser) {
         String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, newUser.getUsername());
             preparedStatement.setString(2, newUser.getPassword());
             preparedStatement.setString(3, newUser.getFirstName());
@@ -292,6 +305,16 @@ public class UserAccount {
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -299,8 +322,9 @@ public class UserAccount {
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
@@ -315,14 +339,25 @@ public class UserAccount {
             return userAccounts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     // Update
     public boolean updateUserAccount(UserAccount updatedUser) {
         String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ?, role_id = ? WHERE username = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, updatedUser.getPassword());
             preparedStatement.setString(2, updatedUser.getFirstName());
             preparedStatement.setString(3, updatedUser.getLastName());
@@ -339,32 +374,64 @@ public class UserAccount {
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     // Suspend
     public boolean suspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 0 WHERE username = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     // Unsuspend
     public boolean unsuspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 1 WHERE username = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -372,8 +439,9 @@ public class UserAccount {
     public ArrayList<UserAccount> getUserAccountByUsername(String search) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -389,6 +457,16 @@ public class UserAccount {
             return userAccounts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -396,8 +474,9 @@ public class UserAccount {
     public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -413,13 +492,24 @@ public class UserAccount {
             return userAccounts;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     public UserAccount getSelectedAccount(String username) {
         String query = "SELECT * FROM user_account WHERE username = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             UserAccount userAccount = null;
@@ -445,6 +535,16 @@ public class UserAccount {
             return userAccount;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -453,8 +553,9 @@ public class UserAccount {
         String query = "SELECT profile_name FROM profile";
         ArrayList<String> profileNameList = new ArrayList<>();
 
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
@@ -464,6 +565,16 @@ public class UserAccount {
             return profileNameList;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -472,8 +583,9 @@ public class UserAccount {
         String query = "SELECT role_name FROM role";
         ArrayList<String> roleNameList = new ArrayList<>();
 
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
@@ -483,18 +595,39 @@ public class UserAccount {
             return roleNameList;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     public void setMaxSlot(UserAccount u) {
         String query = "UPDATE user_account SET max_slot = ? WHERE username = ?";
-        try (Connection conn = new DBConfig().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, u.getMax_slot());
             preparedStatement.setString(2, u.getUsername());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class Bid {
-    private Connection conn = new DBConfig().getConnection();
+    private Connection conn;
     private int bid_id;
     private String name;
     private String role;
@@ -89,25 +89,19 @@ public class Bid {
 
     public Object[][] getBids(){
         Object[][] data = null;
+        String query = "SELECT `bid`.`bid_id` AS `ID`,"+
+                "CONCAT(`user_account`.`f_name`, ' ' ,`user_account`.`l_name`) AS `Name`,"+
+                "`role`.`role_name` as `Role`"+
+                "FROM `user_account`"+
+                "JOIN `role` ON `user_account`.`role_id` = `role`.`role_id`"+
+                "JOIN `bid` ON `user_account`.`username` = `bid`.`username`"+
+                "JOIN `work_slot` ON `bid`.`date` = `work_slot`.`date` "+
+                "WHERE `work_slot`.`date` = ? AND `bid`.`bid_status` = 'Pending' " +
+                "ORDER BY `bid`.`bid_id`, `role`.`role_name`";
         try {
-            // Connect db
-            //this.conn = new DBConfig().getConnection();
-
-            String query = "SELECT `bid`.`bid_id` AS `ID`,"+
-                    "CONCAT(`user_account`.`f_name`, ' ' ,`user_account`.`l_name`) AS `Name`,"+
-                    "`role`.`role_name` as `Role`"+
-                    "FROM `user_account`"+
-                    "JOIN `role` ON `user_account`.`role_id` = `role`.`role_id`"+
-                    "JOIN `bid` ON `user_account`.`username` = `bid`.`username`"+
-                    "JOIN `work_slot` ON `bid`.`date` = `work_slot`.`date` "+
-                    "WHERE `work_slot`.`date` = ? AND `bid`.`bid_status` = 'Pending' " +
-                    "ORDER BY `bid`.`bid_id`, `role`.`role_name`";
-
-
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setDate(1, getDate());
-
-
 
             // Execute statement
             ResultSet result = preparedStatement.executeQuery();
@@ -136,6 +130,16 @@ public class Bid {
 
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
         return data;
     }
@@ -145,6 +149,7 @@ public class Bid {
             // Check if Staff has already made a bid
             String query = "SELECT * FROM bid WHERE username = ? AND date = ? " +
                     "AND `bid_status` != 'Rejected' ";
+            conn = new DBConfig().getConnection();
             PreparedStatement checkStatement = conn.prepareStatement(query);
             checkStatement.setString(1, username);
             checkStatement.setDate(2, date);
@@ -181,12 +186,19 @@ public class Bid {
                 JOptionPane.showMessageDialog(null, "Failed to submit bid. Please try again.");
                 return false;
             }
-
-
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -196,18 +208,25 @@ public class Bid {
         try{
             // Change bid status to 'Rejected'
             String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
-
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Approved");
             preparedStatement.setInt(2, getBidId());
             preparedStatement.execute();
-
-
             return true;
-
         }catch (SQLException e){
             e.printStackTrace();
             return false;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -215,7 +234,7 @@ public class Bid {
         try{
             // Change bid status to 'Rejected'
             String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
-
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Rejected");
             preparedStatement.setInt(2, getBidId());
@@ -227,15 +246,25 @@ public class Bid {
         }catch (SQLException e){
             e.printStackTrace();
             return false;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
 
     public boolean assignAvailableStaff(String username){
         try{
-
             // Check if he has submitted a bid
             String query = "SELECT * FROM `bid` WHERE `username` = ? AND `date` = ? AND (`bid_status` = 'Pending' OR `bid_status` = 'Rejected')";
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setDate(2, date);
@@ -245,7 +274,7 @@ public class Bid {
                 Bid bid = new Bid();
                 bid.setBid_id(resultSet.getInt("bid_id"));
 
-                return bid.approveRejectBid("Approved");
+                return bid.approveBid();
             }else{
                 // Assign staff
                 query = "INSERT INTO `bid`(`username`, `date`, `bid_status`) " +
@@ -255,44 +284,23 @@ public class Bid {
                 preparedStatement.setDate(2, getDate());
                 preparedStatement.setString(3, "Assigned");
                 preparedStatement.execute();
-
                 preparedStatement.close();
 
                 return true;
-
-
             }
-
-
-
-
-
-
-
-
         }catch (SQLException e){
             e.printStackTrace();
             return false;
-        }
-    }
-
-
-    public boolean approveRejectBid(String action){
-        try{
-            // Change bid status to 'Rejected'
-            String query = "UPDATE `bid` SET `bid_status` = ? WHERE `bid_id` = ?";
-
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, action);
-            preparedStatement.setInt(2, getBidId());
-            preparedStatement.execute();
-
-
-            return true;
-
-        }catch (SQLException e){
-            e.printStackTrace();
-            return false;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -302,13 +310,11 @@ public class Bid {
             String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
                     "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
                     "AND `date` = ?";
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, getName());
             preparedStatement.setDate(2, getDate());
-
             ResultSet result = preparedStatement.executeQuery();
-
-
 
             if (result.next()){
                 data = new Object[1][3];
@@ -319,6 +325,16 @@ public class Bid {
 
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return data;
@@ -330,6 +346,7 @@ public class Bid {
             String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
                     "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
                     "ORDER BY `date`";
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, getName());
 
@@ -346,18 +363,15 @@ public class Bid {
             while (result.next()){
                 Vector<Object> row = new Vector<>();
                 for (int i = 1; i <= col; i++){
-
                     if (i == 2){
                         setDate(result.getDate(i));
                         row.add(dateToString());
                     }else{
                         row.add(result.getObject(i));
                     }
-
                 }
                 dataVector.add(row);
             }
-
             // Convert into 2D Object array
             data = new Object[dataVector.size()][col];
             for (int i = 0; i < dataVector.size(); i++){
@@ -367,6 +381,16 @@ public class Bid {
 
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return data;
@@ -379,13 +403,12 @@ public class Bid {
             String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
                     "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` < CURRENT_DATE "+
                     "AND `date` = ?";
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, getName());
             preparedStatement.setDate(2, getDate());
 
             ResultSet result = preparedStatement.executeQuery();
-
-
 
             if (result.next()){
                 data = new Object[1][3];
@@ -396,6 +419,16 @@ public class Bid {
 
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return data;
@@ -407,6 +440,7 @@ public class Bid {
             String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
                     "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` < CURRENT_DATE "+
                     "ORDER BY `date`";
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, getName());
 
@@ -427,8 +461,6 @@ public class Bid {
                 setDate(result.getDate(2));
                 row.add(dateToString());
                 row.add(String.format("%s / %s", result.getString(3), "Done"));
-
-
                 dataVector.add(row);
             }
 
@@ -437,10 +469,18 @@ public class Bid {
             for (int i = 0; i < dataVector.size(); i++){
                 data[i] = dataVector.get(i).toArray();
             }
-
-
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return data;
@@ -451,6 +491,7 @@ public class Bid {
         String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? AND bid_status != 'Assigned' ORDER BY CASE bid_status " +
                 "WHEN 'Pending' THEN 1 WHEN 'Approved' THEN 2 ELSE 3 END";
         try {
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -465,24 +506,46 @@ public class Bid {
             return bids;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     public boolean cancelBid(Date date) {
         String query = "DELETE FROM bid WHERE date = ?";
         try {
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setDate(1, date);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     public int getMonthlySlotLeft(){
         try {
             String query = "SELECT `max_slot` FROM `user_account` WHERE `username` = ?";
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, getName());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -491,9 +554,6 @@ public class Bid {
             if (resultSet.next()){
                 maxSlot = resultSet.getInt("max_slot");
             }
-
-            System.out.println(maxSlot);
-
             query = "SELECT COUNT(*) as `total` FROM `bid` " +
                     "WHERE `username` = ? and MONTH(`date`) = ? AND YEAR(`date`) = ? AND `bid_status` != 'Rejected'";
             preparedStatement = conn.prepareStatement(query);
@@ -506,12 +566,20 @@ public class Bid {
             if (resultSet.next()){
                 currentTotal = resultSet.getInt("total");
             }
-            System.out.println(currentTotal);
-
             return maxSlot-currentTotal;
         }catch (SQLException e){
             e.printStackTrace();
             return -1;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -519,6 +587,7 @@ public class Bid {
         ArrayList<Bid> bids = new ArrayList<>();
         String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? AND bid_status = ?";
         try {
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, selectedBidStatus);
@@ -534,6 +603,16 @@ public class Bid {
             return bids;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -542,6 +621,7 @@ public class Bid {
         String query = "SELECT bid_id, date, bid_status FROM bid WHERE username = ? AND date = ? " +
                 "AND bid_status != 'Assigned'";
         try {
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setDate(2, selectedDate);
@@ -557,6 +637,16 @@ public class Bid {
             return bids;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -564,6 +654,7 @@ public class Bid {
         String checkQuery = "SELECT * FROM bid WHERE username = ? AND date = ?";
         String insertQuery = "UPDATE bid SET date = ? WHERE bid_id = ?";
         try {
+            conn = new DBConfig().getConnection();
             PreparedStatement checkStatement = conn.prepareStatement(checkQuery);
             checkStatement.setString(1, username);
             checkStatement.setDate(2, date);
@@ -581,6 +672,16 @@ public class Bid {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 }

@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class WorkSlot {
+    private Connection conn;
     public static final int CHEF = 3;
     public static final int CASHIER = 2;
     public static final int WAITER = 1;
-    private Connection conn = new DBConfig().getConnection();
     private Date date;
     private int chefAmount;
     private int cashierAmount;
@@ -73,6 +73,7 @@ public class WorkSlot {
                     "WHERE r.role_name = ? AND ra.date = ?";
 
             // Set Chef Amount
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Chef");
             preparedStatement.setDate(2, getDate());
@@ -112,6 +113,16 @@ public class WorkSlot {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -128,6 +139,7 @@ public class WorkSlot {
         try{
             // Select all workslots
             String query = "SELECT `date` FROM `work_slot` WHERE `date` >= CURRENT_DATE ORDER BY `date`";
+            conn = new DBConfig().getConnection();
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -158,6 +170,16 @@ public class WorkSlot {
 
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return data;
@@ -183,6 +205,7 @@ public class WorkSlot {
                     "WHERE `role`.`role_name` = ? AND `bid`.`date` = ? AND (`bid`.`bid_status` = \"Approved\" OR `bid`.`bid_status` = \"Assigned\")";
 
             // Get number of chef approved
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Chef");
             preparedStatement.setDate(2, getDate());
@@ -193,7 +216,6 @@ public class WorkSlot {
             }else{
                 return null;
             }
-
 
             // Get number of cashier approved
             preparedStatement = conn.prepareStatement(query);
@@ -206,8 +228,6 @@ public class WorkSlot {
             }else{
                 return null;
             }
-
-
             // Get number of waiter approved
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, "Waiter");
@@ -245,34 +265,52 @@ public class WorkSlot {
         }catch (SQLException e){
             e.printStackTrace();
             return null;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
-
-
 
     public WorkSlot createWorkSlot(String dateString, int chefAmount, int cashierAmount, int waiterAmount) {
         String workSlotQuery = "INSERT INTO work_slot (date) VALUES (?)";
         try {
-            try (PreparedStatement preparedStatement = conn.prepareStatement(workSlotQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(workSlotQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-                java.util.Date parsedDate = inputFormat.parse(dateString);
-                java.sql.Date date = new java.sql.Date(parsedDate.getTime());
+            java.util.Date parsedDate = inputFormat.parse(dateString);
+            java.sql.Date date = new java.sql.Date(parsedDate.getTime());
 
-                preparedStatement.setDate(1, date);
+            preparedStatement.setDate(1, date);
 
-                int row = preparedStatement.executeUpdate();
-                if (row > 0) {
-                    // Insert into role_amount table
-                    insertRoleAmount(date, CHEF, chefAmount);
-                    insertRoleAmount(date, CASHIER, cashierAmount);
-                    insertRoleAmount(date, WAITER, waiterAmount);
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                // Insert into role_amount table
+                insertRoleAmount(date, CHEF, chefAmount);
+                insertRoleAmount(date, CASHIER, cashierAmount);
+                insertRoleAmount(date, WAITER, waiterAmount);
 
-                    return new WorkSlot(date, chefAmount, cashierAmount, waiterAmount);
-                }
+                return new WorkSlot(date, chefAmount, cashierAmount, waiterAmount);
             }
         } catch (SQLException | ParseException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
         return null;
     }
@@ -281,21 +319,32 @@ public class WorkSlot {
         try {
             String roleAmountQuery = "INSERT INTO role_amount (date, role_id, amount) VALUES (?, ?, ?)";
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(roleAmountQuery)) {
-                preparedStatement.setDate(1, date);
-                preparedStatement.setInt(2, roleId);
-                preparedStatement.setInt(3, amount);
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(roleAmountQuery);
+            preparedStatement.setDate(1, date);
+            preparedStatement.setInt(2, roleId);
+            preparedStatement.setInt(3, amount);
 
-                int rowsAffected = preparedStatement.executeUpdate();
+            int rowsAffected = preparedStatement.executeUpdate();
 
-                if (rowsAffected > 0) {
-                    System.out.println("Role amount created successfully.");
-                } else {
-                    System.out.println("Failed to create role amount.");
-                }
+            if (rowsAffected > 0) {
+                System.out.println("Role amount created successfully.");
+            } else {
+                System.out.println("Failed to create role amount.");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -305,21 +354,30 @@ public class WorkSlot {
         try {
             String query = "SELECT * FROM work_slot";
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(query);
-                 ResultSet resultSet = preparedStatement.executeQuery()) {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                WorkSlot workSlot = new WorkSlot();
 
-                while (resultSet.next()) {
-                    WorkSlot workSlot = new WorkSlot();
-
-                    workSlot.setDate(resultSet.getDate("date"));
-                    workSlot.setChefAmount(getRoleAmount(workSlot.getDate(), CHEF));
-                    workSlot.setCashierAmount(getRoleAmount(workSlot.getDate(), CASHIER));
-                    workSlot.setWaiterAmount(getRoleAmount(workSlot.getDate(), WAITER));
-                    workSlots.add(workSlot);
-                }
+                workSlot.setDate(resultSet.getDate("date"));
+                workSlot.setChefAmount(getRoleAmount(workSlot.getDate(), CHEF));
+                workSlot.setCashierAmount(getRoleAmount(workSlot.getDate(), CASHIER));
+                workSlot.setWaiterAmount(getRoleAmount(workSlot.getDate(), WAITER));
+                workSlots.add(workSlot);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return workSlots;
@@ -330,19 +388,27 @@ public class WorkSlot {
 
         try {
             String query = "SELECT amount FROM role_amount WHERE date = ? AND role_id = ?";
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setDate(1, date);
+            preparedStatement.setInt(2, roleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-                preparedStatement.setDate(1, date);
-                preparedStatement.setInt(2, roleId);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        amount = resultSet.getInt("amount");
-                    }
-                }
+            if (resultSet.next()) {
+                amount = resultSet.getInt("amount");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
         return amount;
     }
@@ -351,7 +417,9 @@ public class WorkSlot {
     public boolean updateRoleAmount(Date date, int roleID, int newAmount) {
         String updateRoleAmountQuery = "UPDATE role_amount SET amount = ? WHERE date = ? AND role_id = ?";
 
-        try (PreparedStatement preparedStatement = conn.prepareStatement(updateRoleAmountQuery)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateRoleAmountQuery);
             preparedStatement.setInt(1, newAmount);
             preparedStatement.setDate(2, date);
             preparedStatement.setInt(3, roleID);
@@ -368,6 +436,16 @@ public class WorkSlot {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -382,30 +460,66 @@ public class WorkSlot {
 
     private void deleteBid(Date date) {
         String delBidQuery = "DELETE FROM bid WHERE date = ?";
-        try(PreparedStatement preparedStatement = conn.prepareStatement(delBidQuery)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(delBidQuery);
             preparedStatement.setDate(1, date);
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
     private void deleteRoleAmountTableEntry(Date date) {
         String delRoleAmountQuery = "DELETE FROM role_amount WHERE date = ?";
-        try(PreparedStatement preparedStatement = conn.prepareStatement(delRoleAmountQuery)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(delRoleAmountQuery);
             preparedStatement.setDate(1, date);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
     private void deleteWorkSlotEntry(Date date) {
         String delWorkSlotQuery = "DELETE FROM work_slot WHERE date = ?";
-        try(PreparedStatement preparedStatement = conn.prepareStatement(delWorkSlotQuery)) {
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(delWorkSlotQuery);
             preparedStatement.setDate(1, date);
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -442,7 +556,7 @@ public class WorkSlot {
                     "GROUP BY `user_account`.`username` " +
                     "HAVING `num` < `max` " +
                     "ORDER BY `role`.`role_name`; ";
-
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, getDate().getYear() + 1900);
             preparedStatement.setInt(2, getDate().getMonth() + 1);
@@ -484,6 +598,16 @@ public class WorkSlot {
 
         }catch (SQLException e){
             e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
 
         return data;

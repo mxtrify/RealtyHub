@@ -104,7 +104,7 @@ public class OwnerCreateWorkSlotGUI {
                 }
 
                 // If any of the fields is empty, prompt user to enter valid amount
-                if(!chefField.getText().isEmpty() || !cashierField.getText().isEmpty() || !waiterField.getText().isEmpty()) {
+                if(!chefField.getText().isEmpty() && !cashierField.getText().isEmpty() && !waiterField.getText().isEmpty()) {
                     int numOfChef = Integer.parseInt(chefField.getText());
                     int numOfCashier = Integer.parseInt(cashierField.getText());
                     int numOfWaiter = Integer.parseInt(waiterField.getText());
