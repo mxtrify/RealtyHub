@@ -13,8 +13,8 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.sql.Date;
 
 public class CafeOwnerGUI {
@@ -261,7 +261,7 @@ public class CafeOwnerGUI {
         tableComponents.addColumn("Waiter's");
 
         WorkSlotController workSlotController = new WorkSlotController();
-        List<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
+        ArrayList<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
 
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
 

@@ -5,7 +5,6 @@ import Config.DBConfig;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -348,8 +347,8 @@ public class WorkSlot {
         }
     }
 
-    public List<WorkSlot> getAllWorkSlots() {
-        List<WorkSlot> workSlots = new ArrayList<>();
+    public ArrayList<WorkSlot> getAllWorkSlots() {
+        ArrayList<WorkSlot> workSlots = new ArrayList<>();
 
         try {
             String query = "SELECT * FROM work_slot";

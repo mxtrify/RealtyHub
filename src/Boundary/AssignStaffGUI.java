@@ -14,15 +14,12 @@ public class AssignStaffGUI {
     // ~~ For Available Staff Table data ~~
     private Object[][] as_data;
     private DefaultTableModel as_model;
-
     private JTable as_table;
     private JScrollPane as_scrollPane;
-
 
     // ~~ For Bids Table data ~~
     private Object[][] bids_data;
     private DefaultTableModel bids_model;
-
     private JTable bids_table;
     private JScrollPane bids_scrollPane;
 
@@ -34,14 +31,11 @@ public class AssignStaffGUI {
     private JLabel cashierAmt;
     private JLabel waiterAmt;
 
-
     public AssignStaffGUI(UserAccount u, WorkSlot workSlot){
         displayAssignStaff(u, workSlot);
     }
 
-
     public void displayAssignStaff(UserAccount u, WorkSlot workSlot){
-
         // Set frame
         JFrame frame = new JFrame("Assign Staff");
         frame.setLayout(null);
@@ -109,8 +103,6 @@ public class AssignStaffGUI {
         as_title.setBounds(110, 20, 200, 30);
         as_panel.add(as_title);
 
-
-
         // Initialize column name
         String[] as_col = {"Name", "Username", "Role"};
 
@@ -139,11 +131,8 @@ public class AssignStaffGUI {
         as_panel.add(as_button);
         // Add available staff panel to frame
         frame.add(as_panel);
+
         // Assign Staff Button is implemented below
-
-
-
-
         // Set panel for upcoming bids
         JPanel bidsPanel = new JPanel();
         bidsPanel.setBackground(Color.LIGHT_GRAY);
@@ -179,38 +168,30 @@ public class AssignStaffGUI {
         // Get data from table after selecting
         bids_table.getSelectionModel().addListSelectionListener(e-> {
 
-            if(!e.getValueIsAdjusting()) {
-                int selected = bids_table.getSelectedRow();
-                if (selected != -1) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, yyyy");
+        if(!e.getValueIsAdjusting()) {
+            int selected = bids_table.getSelectedRow();
+            if (selected != -1) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, yyyy");
 
-                    try {
-                        // Create Workslot object
-                        int bid_id = (int) bids_table.getValueAt(selected, 0);
-                        String name = (String) bids_table.getValueAt(selected, 1);
-                        String role = (String) bids_table.getValueAt(selected, 2);
+                try {
+                    // Create Workslot object
+                    int bid_id = (int) bids_table.getValueAt(selected, 0);
+                    String name = (String) bids_table.getValueAt(selected, 1);
+                    String role = (String) bids_table.getValueAt(selected, 2);
 
-                        bid = new Bid(bid_id, name, role, workSlot.getDate());
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-
+                    bid = new Bid(bid_id, name, role, workSlot.getDate());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
-
+        }
         });
-
 
         // Button for approving bid
         JButton approve = new JButton("Approve");
         approve.setBounds(245, 80, 100, 30);
         approve.setHorizontalAlignment(SwingConstants.CENTER);
         bidsPanel.add(approve);
-
-
-
-
 
         // Button for rejecting bid
         JButton reject = new JButton("Reject");
@@ -221,15 +202,6 @@ public class AssignStaffGUI {
         bidsPanel.add(reject);
         // Add bids panel to frame
         frame.add(bidsPanel);
-
-
-
-
-
-
-
-
-
 
         // Available staff button implementation
         as_button.addActionListener(e->{
@@ -258,7 +230,6 @@ public class AssignStaffGUI {
 
                         frame.remove(amountPanel);
 
-
                         // Update labels
                         chefAmt.setText("Chef: " + workSlot.getChefAmount());
 
@@ -277,16 +248,11 @@ public class AssignStaffGUI {
 
                         frame.repaint();
                         frame.revalidate();
-
-
-
-
                         // Update bids table
                         bidsPanel.remove(bids_scrollPane);
 
                         frame.repaint();
                         frame.revalidate();
-
 
                         bids_data = new ViewBidDataController().viewBidData(workSlot.getDate());
                         bids_model.setDataVector(bids_data, bid_col);
@@ -296,28 +262,18 @@ public class AssignStaffGUI {
                         bids_scrollPane.setBounds(10, 60, 210, 265);
                         bidsPanel.add(bids_scrollPane);
 
-
                         frame.repaint();
                         frame.revalidate();
-
-
-
-
-
-
 
                         // Show success message
                         JOptionPane.showMessageDialog(frame, "Assigning process completed", "Assign Success", JOptionPane.INFORMATION_MESSAGE);
                     }else {
                         JOptionPane.showMessageDialog(frame, result[1], "Warning!", JOptionPane.WARNING_MESSAGE);
                     }
-
-
                 }
             }else {
                 JOptionPane.showMessageDialog(frame, "Please select a workslot", "Select Workslot", JOptionPane.WARNING_MESSAGE);
             }
-
         });
 
         // Implement approve button
@@ -369,8 +325,6 @@ public class AssignStaffGUI {
                             frame.repaint();
                             frame.revalidate();
 
-
-
                             // Update available staff table
                             as_panel.remove(as_scrollPane);
 
@@ -403,14 +357,8 @@ public class AssignStaffGUI {
                     }
 
                 }
-
-
-
-
             }
         });
-
-
 
         // Action listener to reject bid
         reject.addActionListener(e->{
@@ -436,7 +384,6 @@ public class AssignStaffGUI {
                             // Set selected bid data to default
                             bid = null;
                         }
-
                     }else{
                         // Show error message when issue occur
                         JOptionPane.showMessageDialog(frame, "Issue when rejecting bid", "Error", JOptionPane.WARNING_MESSAGE);
@@ -445,5 +392,4 @@ public class AssignStaffGUI {
             }
         });
     }
-
 }

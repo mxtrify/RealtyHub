@@ -12,10 +12,9 @@ public class WorkSlotController {
         this.workSlot = new WorkSlot();
     }
 
-    public List<WorkSlot> getWorkSlotsByDate(Date selectedDate) {
-        List<WorkSlot> workSlots = new ArrayList<>();
-
-        List<WorkSlot> allWorkSlots = getAllWorkSlots();
+    public ArrayList<WorkSlot> getWorkSlotsByDate(Date selectedDate) {
+        ArrayList<WorkSlot> workSlots = new ArrayList<>();
+        ArrayList<WorkSlot> allWorkSlots = getAllWorkSlots();
 
         for (WorkSlot workSlot : allWorkSlots) {
             if (workSlot.getDate().equals(selectedDate)) {
@@ -26,7 +25,7 @@ public class WorkSlotController {
         return workSlots;
     }
 
-    public List<WorkSlot> getAllWorkSlots() {
+    public ArrayList<WorkSlot> getAllWorkSlots() {
         WorkSlot workSlot = new WorkSlot();
         return workSlot.getAllWorkSlots();
     }

@@ -8,6 +8,7 @@ public class LoginController {
     public LoginController() {
         this.userAccount = new UserAccount();
     }
+
     // Checking username and password
     public UserAccount login(String username, String password) {
         // Return true if match
