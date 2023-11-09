@@ -66,7 +66,6 @@ public class WorkSlot {
     public WorkSlot(Date date) {
         this.date = date;
         try {
-            this.conn = new DBConfig().getConnection();
 
             String query = "SELECT ra.amount " +
                     "FROM role_amount ra JOIN role r " +
@@ -254,7 +253,6 @@ public class WorkSlot {
     public WorkSlot createWorkSlot(String dateString, int chefAmount, int cashierAmount, int waiterAmount) {
         String workSlotQuery = "INSERT INTO work_slot (date) VALUES (?)";
         try {
-            conn = new DBConfig().getConnection();
             try (PreparedStatement preparedStatement = conn.prepareStatement(workSlotQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -281,7 +279,6 @@ public class WorkSlot {
 
     private void insertRoleAmount(Date date, int roleId, int amount) {
         try {
-            Connection conn = new DBConfig().getConnection();
             String roleAmountQuery = "INSERT INTO role_amount (date, role_id, amount) VALUES (?, ?, ?)";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(roleAmountQuery)) {
@@ -306,7 +303,6 @@ public class WorkSlot {
         List<WorkSlot> workSlots = new ArrayList<>();
 
         try {
-            Connection conn = new DBConfig().getConnection();
             String query = "SELECT * FROM work_slot";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -333,7 +329,6 @@ public class WorkSlot {
         int amount = 0;
 
         try {
-            Connection conn = new DBConfig().getConnection();
             String query = "SELECT amount FROM role_amount WHERE date = ? AND role_id = ?";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {

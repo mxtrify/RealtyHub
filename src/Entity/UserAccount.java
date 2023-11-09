@@ -6,15 +6,13 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserAccount {
-    protected Connection conn = new DBConfig().getConnection();
-
-    protected String username;
-    protected String password;
-    protected String firstName;
-    protected String lastName;
-    protected String email;
-    protected UserProfile userProfile;
-    protected boolean status;
+    private String username;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private UserProfile userProfile;
+    private boolean status;
     private int role_id;
     private String role_name;
     private int max_slot;
@@ -235,9 +233,8 @@ public class UserAccount {
     // Login Validation
     public UserAccount validateLogin(String username, String password) {
         String query = "SELECT username, password, f_name, l_name, profile_name, max_slot, status, profile_status, role_id FROM user_account INNER JOIN profile ON  user_account.profile_id = profile.profile_id WHERE username = ? AND password = ?";
-        try{
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -279,8 +276,8 @@ public class UserAccount {
     // Create
     public boolean insertAccount(UserAccount newUser) {
         String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, newUser.getUsername());
             preparedStatement.setString(2, newUser.getPassword());
             preparedStatement.setString(3, newUser.getFirstName());
@@ -304,8 +301,8 @@ public class UserAccount {
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
@@ -326,8 +323,8 @@ public class UserAccount {
     // Update
     public boolean updateUserAccount(UserAccount updatedUser) {
         String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ?, role_id = ? WHERE username = ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, updatedUser.getPassword());
             preparedStatement.setString(2, updatedUser.getFirstName());
             preparedStatement.setString(3, updatedUser.getLastName());
@@ -350,8 +347,8 @@ public class UserAccount {
     // Suspend
     public boolean suspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 0 WHERE username = ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -363,8 +360,8 @@ public class UserAccount {
     // Unsuspend
     public boolean unsuspendUserAccount(String username) {
         String query = "UPDATE user_account SET status = 1 WHERE username = ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -377,8 +374,8 @@ public class UserAccount {
     public ArrayList<UserAccount> getUserAccountByUsername(String search) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -401,8 +398,8 @@ public class UserAccount {
     public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, profileName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -423,8 +420,8 @@ public class UserAccount {
 
     public UserAccount getSelectedAccount(String username) {
         String query = "SELECT * FROM user_account WHERE username = ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             UserAccount userAccount = null;
@@ -459,8 +456,8 @@ public class UserAccount {
         String query = "SELECT profile_name FROM profile";
         ArrayList<String> profileNameList = new ArrayList<>();
 
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
@@ -478,8 +475,8 @@ public class UserAccount {
         String query = "SELECT role_name FROM role";
         ArrayList<String> roleNameList = new ArrayList<>();
 
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
@@ -494,8 +491,8 @@ public class UserAccount {
 
     public void setMaxSlot(UserAccount u) {
         String query = "UPDATE user_account SET max_slot = ? WHERE username = ?";
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, u.getMax_slot());
             preparedStatement.setString(2, u.getUsername());
             preparedStatement.executeUpdate();
