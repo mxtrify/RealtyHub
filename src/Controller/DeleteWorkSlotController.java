@@ -10,18 +10,7 @@ public class DeleteWorkSlotController {
 
     public DeleteWorkSlotController() {this.workSlot = new WorkSlot();}
 
-    public boolean deleteWorkSlot(String date) {
-        try {
-            System.out.println("Format checking: " + date);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            java.util.Date utilDate = dateFormat.parse(date);
-            Date sqlDate = new Date(utilDate.getTime());
-            System.out.println("Format converted: " + sqlDate);
-
-            return workSlot.deleteWorkSlot(sqlDate);
-        } catch (ParseException | IllegalArgumentException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public boolean deleteWorkSlot(Date date) {
+        return workSlot.deleteWorkSlot(date);
     }
 }

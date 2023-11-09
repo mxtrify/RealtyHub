@@ -233,16 +233,23 @@ public class CafeOwnerGUI {
             );
 
             if(confirmDelete == JOptionPane.YES_OPTION) {
-                tableComponents.removeRow(selectedRow);
-                DeleteWorkSlotController deleteWorkSlotController = new DeleteWorkSlotController();
+                try {
+                    tableComponents.removeRow(selectedRow);
+                    DeleteWorkSlotController deleteWorkSlotController = new DeleteWorkSlotController();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    java.util.Date utilDate = dateFormat.parse(dateToDelete);
+                    Date sqlDate = new Date(utilDate.getTime());
+                    boolean deleteSuccess = deleteWorkSlotController.deleteWorkSlot(sqlDate);
+                    if(deleteSuccess) {
+                        System.out.println("Row Deleted");
+                    }
+                    else {
+                        System.out.println("Error In Deleting");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-                boolean deleteSuccess = deleteWorkSlotController.deleteWorkSlot(dateToDelete);
-                if(deleteSuccess) {
-                    System.out.println("Row Deleted");
-                }
-                else {
-                    System.out.println("Error In Deleting");
-                }
             }
         } else {
             JOptionPane.showMessageDialog(null, "Please select a row to delete");
