@@ -147,23 +147,28 @@ public class ViewUserProfileGUI {
         suspendButton.addActionListener(e -> {
             String status = model.getValueAt(table.getSelectedRow(), 2).toString();
             String profileName = model.getValueAt(table.getSelectedRow(),0).toString();
-            if(status.equals("Active")) {
-                if(new SuspendUserProfileController().suspendUserProfile(profileName)) {
-                    getProfileList();
-                    JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
-                    suspendButton.setEnabled(false);
+            if(!profileName.equals("System Admin")) {
+                if(status.equals("Active")) {
+                    if(new SuspendUserProfileController().suspendUserProfile(profileName)) {
+                        getProfileList();
+                        JOptionPane.showMessageDialog(frame, "Successfully suspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                        suspendButton.setEnabled(false);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to suspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                    if(new UnsuspendUserProfileController().unsuspendUserProfile(profileName)) {
+                        getProfileList();
+                        JOptionPane.showMessageDialog(frame, "Successfully unsuspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                        suspendButton.setEnabled(false);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Failed to unsuspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             } else {
-                if(new UnsuspendUserProfileController().unsuspendUserProfile(profileName)) {
-                    getProfileList();
-                    JOptionPane.showMessageDialog(frame, "Successfully unsuspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
-                    suspendButton.setEnabled(false);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to unsuspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(frame, "Can't suspend System Admin", "Failed", JOptionPane.ERROR_MESSAGE);
             }
+
         });
     }
 

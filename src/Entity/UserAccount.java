@@ -25,8 +25,6 @@ public class UserAccount {
         this.email = "";
         this.userProfile = new UserProfile();
         this.status = false;
-
-
     }
 
     public UserAccount(String username, String password) {
@@ -426,7 +424,6 @@ public class UserAccount {
             ResultSet resultSet = preparedStatement.executeQuery();
             UserAccount userAccount = null;
             while(resultSet.next()) {
-                String userName = resultSet.getString("username");
                 String password = resultSet.getString("password");
                 String firstName = resultSet.getString("f_name");
                 String lastName = resultSet.getString("l_name");

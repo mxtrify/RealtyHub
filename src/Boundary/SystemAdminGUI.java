@@ -170,23 +170,29 @@ public class SystemAdminGUI {
         suspendButton.addActionListener(e -> {
             String status = model.getValueAt(table.getSelectedRow(), 4).toString();
             String username = model.getValueAt(table.getSelectedRow(),0).toString();
-            if(status.equals("Active")) {
-                if(new SuspendUserAccountController().suspendUserAccount(username)) {
-                    getAccountList();
-                    JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
-                    suspendButton.setEnabled(false);
+            String profile = model.getValueAt(table.getSelectedRow(),3).toString();
+            if(!profile.equals("System Admin")) {
+                if(status.equals("Active")) {
+                    if(new SuspendUserAccountController().suspendUserAccount(username)) {
+                        getAccountList();
+                        JOptionPane.showMessageDialog(frame, "Successfully suspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                        suspendButton.setEnabled(false);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to suspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                    if(new UnsuspendUserAccountController().unsuspendUserAccount(username)) {
+                        getAccountList();
+                        JOptionPane.showMessageDialog(frame, "Successfully unsuspend account", "Success", JOptionPane.PLAIN_MESSAGE);
+                        suspendButton.setEnabled(false);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Failed to unsuspend account", "Failed", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             } else {
-                if(new UnsuspendUserAccountController().unsuspendUserAccount(username)) {
-                    getAccountList();
-                    JOptionPane.showMessageDialog(frame, "Successfully unsuspend account", "Success", JOptionPane.PLAIN_MESSAGE);
-                    suspendButton.setEnabled(false);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to unsuspend account", "Failed", JOptionPane.ERROR_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(frame, "Can't suspend System Admin", "Failed", JOptionPane.ERROR_MESSAGE);
             }
+
         });
 
         frame.add(panel);
