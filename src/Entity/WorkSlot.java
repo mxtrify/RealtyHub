@@ -412,6 +412,31 @@ public class WorkSlot {
         return amount;
     }
 
+    public ArrayList<WorkSlot> getWorkSlotByDate(Date date) {
+        ArrayList<WorkSlot> workSlots = new ArrayList<>();
+        String query = "SELECT * from work_slot WHERE date = ?";
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setDate(1, date);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                WorkSlot workSlot = new WorkSlot((Date) resultSet);
+                workSlots.add(workSlot);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return workSlots;
+    }
 
     public boolean updateRoleAmount(Date date, int roleID, int newAmount) {
         String updateRoleAmountQuery = "UPDATE role_amount SET amount = ? WHERE date = ? AND role_id = ?";

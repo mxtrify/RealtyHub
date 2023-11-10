@@ -1,10 +1,8 @@
 package Boundary;
 
-import Controller.UpdateWorkSlotController;
-import Controller.DeleteWorkSlotController;
+import Controller.*;
 import Entity.UserAccount;
 import Entity.WorkSlot;
-import Controller.WorkSlotController;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -90,15 +88,16 @@ public class CafeOwnerGUI {
 
         // Action for searchButton
         searchButton.addActionListener(e -> {
+            SearchWorkSlotController searchWorkSlotController = new SearchWorkSlotController();
             try {
                 Date selectedDate = new Date(searchDate.getDate().getTime());
                 filterTableByDate(selectedDate);
                 System.out.println(selectedDate);
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error occurred while searching. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
         // Action for clear search
         clearSearchButton.addActionListener(e -> {
             searchDate.setDate(null);
@@ -119,18 +118,20 @@ public class CafeOwnerGUI {
     }
 
     private void filterTableByDate(Date selectedDate) {
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(workSlotTable.getModel());
-        workSlotTable.setRowSorter(sorter);
-
-        if (selectedDate != null) {
-            String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
-            RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
-            sorter.setRowFilter(rowFilter);
-        } else {
-            sorter.setRowFilter(null);
-        }
+        SearchWorkSlotController searchWorkSlotController = new SearchWorkSlotController();
+        searchWorkSlotController.searchDate(selectedDate);
     }
 
+//    private void searchDate() {
+//            try {
+//                Date selectedDate = new Date(searchDate.getDate().getTime());
+//                filterTableByDate(selectedDate);
+//                System.out.println(selectedDate);
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                JOptionPane.showMessageDialog(null, "Error occurred while searching. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//    }
 
     private void editSelectedRow() {
         int selectedRow = workSlotTable.getSelectedRow();
@@ -295,3 +296,28 @@ public class CafeOwnerGUI {
 }
 
 
+// Action for searchButton
+//        searchButton.addActionListener(e -> {
+//                SearchUserAccountController searchUserAccountController = new SearchUserAccountController();
+//                try {
+//                Date selectedDate = new Date(searchDate.getDate().getTime());
+//                filterTableByDate(selectedDate);
+//                System.out.println(selectedDate);
+//                } catch(Exception ex) {
+//                ex.printStackTrace();
+//                }
+//                });
+
+
+//    private void filterTableByDate(Date selectedDate) {
+//        TableRowSorter<TableModel> sorter = new TableRowSorter<>(workSlotTable.getModel());
+//        workSlotTable.setRowSorter(sorter);
+//
+//        if (selectedDate != null) {
+//            String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
+//            RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
+//            sorter.setRowFilter(rowFilter);
+//        } else {
+//            sorter.setRowFilter(null);
+//        }
+//    }
