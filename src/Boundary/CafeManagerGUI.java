@@ -1,7 +1,7 @@
 package Boundary;
 
 import Controller.CMViewAvailWSController;
-import Controller.SearchAvailWSController;
+import Controller.CMSearchAvailWSController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
@@ -155,7 +155,7 @@ public class CafeManagerGUI {
             }else {
                 // Search for a workslot
                 java.sql.Date selectedDate = new java.sql.Date(d.getTime());
-                data = new SearchAvailWSController().getWorkSlot(selectedDate);
+                data = new CMSearchAvailWSController().getWorkSlot(selectedDate);
             }
 
             // Set data into model

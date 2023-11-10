@@ -6,22 +6,22 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Objects;
 
 public class CafeStaffGUI {
+    private JDateChooser searchDate;
+    private Object[][] data;
     private JFrame frame;
     private JPanel panel = new JPanel();
     private Calendar current;
     private JTable workSlotTable;
     private DefaultTableModel tableComponents;
     private JScrollPane scrollPane;
+    private String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's"};
 
     // Constructor
     public CafeStaffGUI(UserAccount u) {
@@ -126,7 +126,7 @@ public class CafeStaffGUI {
         panel.add(searchButton);
 
         // Search Bar
-        JDateChooser searchDate = new JDateChooser();
+        searchDate = new JDateChooser();
         searchDate.setDateFormatString("dd MMM, yyyy");
         current = Calendar.getInstance();
         searchDate.setMinSelectableDate(current.getTime());
@@ -160,10 +160,10 @@ public class CafeStaffGUI {
         searchButton.addActionListener(e -> {
             try {
                 if (searchDate.getDate() == null){
-                    filterTableByDate(null);
+                    searchByDate();
                 }else{
                     Date selectedDate = new Date(searchDate.getDate().getTime());
-                    filterTableByDate(selectedDate);
+                    searchByDate();
                 }
 
             } catch(Exception ex) {
@@ -174,7 +174,7 @@ public class CafeStaffGUI {
         // Action for Clear Search
         clearSearchButton.addActionListener(e -> {
             searchDate.setDate(null);
-            filterTableByDate(null);
+            searchByDate();
         });
 
         // Action for schedule button
@@ -208,7 +208,7 @@ public class CafeStaffGUI {
         workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         tableComponents.setRowCount(0);
-        String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's"};
+
 
         CSViewAvailWSController workSlotController = new CSViewAvailWSController();
         Object[][] workSlotData = workSlotController.getAllWorkSlots();
@@ -220,17 +220,24 @@ public class CafeStaffGUI {
         panel.add(scrollPane);
     }
 
-    private void filterTableByDate(Date selectedDate) {
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(workSlotTable.getModel());
-        workSlotTable.setRowSorter(sorter);
+    private void searchByDate() {
+        // Get selected date
+        java.util.Date d = searchDate.getDate();
 
-        if (selectedDate != null) {
-            String formattedDate = new SimpleDateFormat("dd MMM, yyyy").format(selectedDate);
-            RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
-            sorter.setRowFilter(rowFilter);
-        } else {
-            sorter.setRowFilter(null);
+        // Get data from database
+        if (d == null){
+            // Search nothing
+            // Display all workslots
+            data = new CSViewAvailWSController().getAllWorkSlots();
+        }else {
+            // Search for a workslot
+            java.sql.Date selectedDate = new java.sql.Date(d.getTime());
+            data = new CSSearchAvailWSController().getWorkSlot(selectedDate);
         }
+
+        // Set data into model
+        tableComponents.setDataVector(data, tableTitle);
+        workSlotTable.setModel(tableComponents);
     }
 
     private void bidSelectedRow(UserAccount u) {
