@@ -285,7 +285,7 @@ public class UserAccount {
 
     // Create
     public boolean insertAccount(UserAccount newUser) {
-        String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -294,13 +294,10 @@ public class UserAccount {
             preparedStatement.setString(3, newUser.getFirstName());
             preparedStatement.setString(4, newUser.getLastName());
             preparedStatement.setString(5, newUser.getEmail());
-            preparedStatement.setInt(6, newUser.getUserProfile().getProfileID());
-            if(newUser.getUserProfile().getProfileID() == 4) {
-                preparedStatement.setInt(7, newUser.getRole_id());
-            } else {
-                preparedStatement.setNull(7, Types.INTEGER);
-            }
-            preparedStatement.setBoolean(8, true);
+            preparedStatement.setNull(6, Types.INTEGER);
+            preparedStatement.setInt(7, newUser.getUserProfile().getProfileID());
+            preparedStatement.setNull(8, Types.INTEGER);
+            preparedStatement.setBoolean(9, true);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -317,6 +314,40 @@ public class UserAccount {
             }
         }
     }
+
+//    public boolean insertAccount(UserAccount newUser) {
+//        String query = "INSERT INTO user_account (username, password, f_name, l_name, email, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+//        try {
+//            conn = new DBConfig().getConnection();
+//            PreparedStatement preparedStatement = conn.prepareStatement(query);
+//            preparedStatement.setString(1, newUser.getUsername());
+//            preparedStatement.setString(2, newUser.getPassword());
+//            preparedStatement.setString(3, newUser.getFirstName());
+//            preparedStatement.setString(4, newUser.getLastName());
+//            preparedStatement.setString(5, newUser.getEmail());
+//            preparedStatement.setInt(6, newUser.getUserProfile().getProfileID());
+//            if(newUser.getUserProfile().getProfileID() == 4) {
+//                preparedStatement.setInt(7, newUser.getRole_id());
+//            } else {
+//                preparedStatement.setNull(7, Types.INTEGER);
+//            }
+//            preparedStatement.setBoolean(8, true);
+//            int rowsAffected = preparedStatement.executeUpdate();
+//            return rowsAffected > 0;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+//            try {
+//                if (conn != null) {
+//                    conn.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                // Handle the SQLException during closing.
+//            }
+//        }
+//    }
 
     // Read (View)
     public ArrayList<UserAccount> selectAll() {
@@ -354,7 +385,7 @@ public class UserAccount {
 
     // Update
     public boolean updateUserAccount(UserAccount updatedUser) {
-        String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ?, role_id = ? WHERE username = ?";
+        String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ? WHERE username = ?";
         try {
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -363,13 +394,7 @@ public class UserAccount {
             preparedStatement.setString(3, updatedUser.getLastName());
             preparedStatement.setString(4, updatedUser.getEmail());
             preparedStatement.setInt(5, updatedUser.getUserProfile().getProfileID()); // Set profile_id
-            if(updatedUser.getUserProfile().getProfileID() == 4) {
-                preparedStatement.setInt(6, updatedUser.getRole_id());
-            }
-            if (updatedUser.getUserProfile().getProfileID() != 4) {
-                preparedStatement.setNull(6, Types.INTEGER); // Also set role_id to NULL
-            }
-            preparedStatement.setString(7, updatedUser.getUsername());
+            preparedStatement.setString(6, updatedUser.getUsername());
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -386,6 +411,40 @@ public class UserAccount {
             }
         }
     }
+
+//    public boolean updateUserAccount(UserAccount updatedUser) {
+//        String query = "UPDATE user_account SET password = ?, f_name = ?, l_name = ?, email = ?, profile_id = ?, role_id = ? WHERE username = ?";
+//        try {
+//            conn = new DBConfig().getConnection();
+//            PreparedStatement preparedStatement = conn.prepareStatement(query);
+//            preparedStatement.setString(1, updatedUser.getPassword());
+//            preparedStatement.setString(2, updatedUser.getFirstName());
+//            preparedStatement.setString(3, updatedUser.getLastName());
+//            preparedStatement.setString(4, updatedUser.getEmail());
+//            preparedStatement.setInt(5, updatedUser.getUserProfile().getProfileID()); // Set profile_id
+//            if(updatedUser.getUserProfile().getProfileID() == 4) {
+//                preparedStatement.setInt(6, updatedUser.getRole_id());
+//            }
+//            if (updatedUser.getUserProfile().getProfileID() != 4) {
+//                preparedStatement.setNull(6, Types.INTEGER); // Also set role_id to NULL
+//            }
+//            preparedStatement.setString(7, updatedUser.getUsername());
+//            int rowsAffected = preparedStatement.executeUpdate();
+//            return rowsAffected > 0;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+//            try {
+//                if (conn != null) {
+//                    conn.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                // Handle the SQLException during closing.
+//            }
+//        }
+//    }
 
     // Suspend
     public boolean suspendUserAccount(String username) {
@@ -614,6 +673,29 @@ public class UserAccount {
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, u.getMax_slot());
+            preparedStatement.setString(2, u.getUsername());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
+        }
+    }
+
+    public void setRole(UserAccount u) {
+        String query = "UPDATE user_account SET role_id = ? WHERE username = ?";
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, u.getRole_id());
             preparedStatement.setString(2, u.getUsername());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,27 +24,70 @@ public class CafeStaffGUI {
 
     // Constructor
     public CafeStaffGUI(UserAccount u) {
-        askMaxSlot(u);
+        askMaxSlotAndRole(u);
         displayCafeStaffGUI(u);
     }
 
-    public void askMaxSlot(UserAccount u) {
-        while (u.getMax_slot() < 0) {
-            String input = JOptionPane.showInputDialog(null, "Please input max slot (must be greater than 0):");
-            try {
-                int newMaxSlot = Integer.parseInt(input);
-                if (newMaxSlot > 0) {
-                    u.setMax_slot(newMaxSlot);
-                    new SetMaxSlotController().setMaxSlot(u);;
-                    break; // Exit the loop when a valid input is provided
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please enter a value greater than 0.");
+    public void askMaxSlotAndRole(UserAccount u) {
+        while(true) {
+            // Create a panel for the input components
+            JPanel inputPanel = new JPanel();
+            inputPanel.setLayout(new GridLayout(3, 2));
+
+            // Max Slot components
+            JLabel maxSlotLabel = new JLabel("Max Slot (must be greater than 0):");
+            JTextField maxSlotField = new JTextField();
+            inputPanel.add(maxSlotLabel);
+            inputPanel.add(maxSlotField);
+
+            // Role components
+            JLabel roleLabel = new JLabel("Select role (Can't change):");
+            String[] roles = {"Waiter", "Cashier", "Chef"};
+            JComboBox<String> roleDropdown = new JComboBox<>(roles);
+            inputPanel.add(roleLabel);
+            inputPanel.add(roleDropdown);
+
+            // OK button
+            int result = JOptionPane.showConfirmDialog(
+                    null, inputPanel, "Role and Max Slot Input", JOptionPane.OK_CANCEL_OPTION);
+
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    int newMaxSlot = Integer.parseInt(maxSlotField.getText());
+                    int roleId = roleDropdown.getSelectedIndex() + 1;
+                    if (newMaxSlot > 0 && roleId != -1) {
+                        u.setMax_slot(newMaxSlot);
+                        u.setRole_id(roleId);
+                        new SetMaxSlotController().setMaxSlot(u);
+                        new SetRoleController().setRole(u);
+                        break;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please enter a value greater than 0.");
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid number.");
                 }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Please enter a valid number.");
             }
         }
     }
+
+//    public void askMaxSlot(UserAccount u) {
+//        while (u.getMax_slot() < 0) {
+//            String input = JOptionPane.showInputDialog(null, "Please input max slot (must be greater than 0):");
+//            try {
+//                int newMaxSlot = Integer.parseInt(input);
+//                if (newMaxSlot > 0) {
+//                    u.setMax_slot(newMaxSlot);
+//                    new SetMaxSlotController().setMaxSlot(u);;
+//                    break; // Exit the loop when a valid input is provided
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Please enter a value greater than 0.");
+//                }
+//            } catch (NumberFormatException e) {
+//                JOptionPane.showMessageDialog(null, "Please enter a valid number.");
+//            }
+//        }
+//    }
 
     // Display cafe staff GUI
     public void displayCafeStaffGUI(UserAccount u) {
