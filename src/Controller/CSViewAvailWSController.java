@@ -2,8 +2,6 @@ package Controller;
 
 import Entity.WorkSlot;
 
-import java.sql.Date;
-
-public class ViewAvailWSController {
+public class CSViewAvailWSController {
     public Object[][] getAllWorkSlots(){return new WorkSlot().getAllWS();}
 }

@@ -2,7 +2,6 @@ package Boundary;
 
 import Controller.*;
 import Entity.UserAccount;
-import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -13,8 +12,6 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Vector;
 
 public class CafeStaffGUI {
     private JFrame frame;
@@ -156,16 +153,16 @@ public class CafeStaffGUI {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Make all cells in the button column editable
-                return column == 5;
+                return column == 4;
             }
         };
         workSlotTable = new JTable(tableComponents);
         workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         tableComponents.setRowCount(0);
-        String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's", "Availability"};
+        String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's"};
 
-        ViewAvailWSController workSlotController = new ViewAvailWSController();
+        CSViewAvailWSController workSlotController = new CSViewAvailWSController();
         Object[][] workSlotData = workSlotController.getAllWorkSlots();
 
         tableComponents.setDataVector(workSlotData, tableTitle);

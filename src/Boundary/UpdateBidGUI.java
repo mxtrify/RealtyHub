@@ -2,10 +2,8 @@ package Boundary;
 
 import Controller.*;
 import Controller.UpdateBidController;
-import Controller.WorkSlotController;
 import Entity.Bid;
 import Entity.UserAccount;
-import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -14,9 +12,7 @@ import java.awt.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UpdateBidGUI {
@@ -152,7 +148,7 @@ public class UpdateBidGUI {
     public void getWorkSlot() {
         model.setRowCount(0);
         String[] tableTitle = {"Date", "Chef's", "Cashier's", "Waiter's", "Availability"};
-        ViewAvailWSController workSlotController = new ViewAvailWSController();
+        CSViewAvailWSController workSlotController = new CSViewAvailWSController();
         Object[][] workSlotData = workSlotController.getAllWorkSlots();
 
         model.setDataVector(workSlotData, tableTitle);

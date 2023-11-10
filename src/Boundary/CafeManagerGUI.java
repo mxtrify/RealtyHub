@@ -1,7 +1,7 @@
 package Boundary;
 
+import Controller.CMViewAvailWSController;
 import Controller.SearchAvailWSController;
-import Controller.ViewAvailWSController;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
@@ -80,7 +80,7 @@ public class CafeManagerGUI {
         frame.add(searchButton);
 
         // Table
-        data = new ViewAvailWSController().getAllWorkSlots();
+        data = new CMViewAvailWSController().getAllWorkSlots();
         String[] columnNames = {"Date", "Chef", "Cashier", "Waiter", "Status"};
 
         // Generate table model
@@ -151,7 +151,7 @@ public class CafeManagerGUI {
             if (d == null){
                 // Search nothing
                 // Display all workslots
-                data = new ViewAvailWSController().getAllWorkSlots();
+                data = new CMViewAvailWSController().getAllWorkSlots();
             }else {
                 // Search for a workslot
                 java.sql.Date selectedDate = new java.sql.Date(d.getTime());
@@ -200,7 +200,7 @@ public class CafeManagerGUI {
             frame.revalidate();
 
             // Get data from database
-            data = new ViewAvailWSController().getAllWorkSlots();
+            data = new CMViewAvailWSController().getAllWorkSlots();
 
             // Set data into model
             model.setDataVector(data, columnNames);
