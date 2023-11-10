@@ -71,23 +71,6 @@ public class CafeStaffGUI {
         }
     }
 
-//    public void askMaxSlot(UserAccount u) {
-//        while (u.getMax_slot() < 0) {
-//            String input = JOptionPane.showInputDialog(null, "Please input max slot (must be greater than 0):");
-//            try {
-//                int newMaxSlot = Integer.parseInt(input);
-//                if (newMaxSlot > 0) {
-//                    u.setMax_slot(newMaxSlot);
-//                    new SetMaxSlotController().setMaxSlot(u);;
-//                    break; // Exit the loop when a valid input is provided
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Please enter a value greater than 0.");
-//                }
-//            } catch (NumberFormatException e) {
-//                JOptionPane.showMessageDialog(null, "Please enter a valid number.");
-//            }
-//        }
-//    }
 
     // Display cafe staff GUI
     public void displayCafeStaffGUI(UserAccount u) {
