@@ -1,6 +1,7 @@
 package Boundary;
 
 import Controller.*;
+import Entity.Bid;
 import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
@@ -16,21 +17,20 @@ import java.util.Calendar;
 import java.sql.Date;
 
 public class CafeOwnerGUI {
-    JPanel panel = new JPanel();
-    private Calendar current;
-    private JTable workSlotTable;
-    private DefaultTableModel tableComponents;
-    private WorkSlotController getAllWorkSlotData;
+    private JPanel panel;
+    private JTable table;
+    private DefaultTableModel model;
+    private final String[] columnNames = {"Date", "Chef's", "Cashier's", "Waiter's"};
 
     // Constructor
     public CafeOwnerGUI(UserAccount u) {
-        this.getAllWorkSlotData = new WorkSlotController();
         displayCafeOwnerGUI(u);
     }
 
     // Display cafe owner GUI
     public void displayCafeOwnerGUI(UserAccount u) {
         JFrame frame = new JFrame("Cafe Owner");
+        panel = new JPanel();
         panel.setLayout(null);
 
         // Title Label
@@ -51,7 +51,7 @@ public class CafeOwnerGUI {
         // Search Bar
         JDateChooser searchDate = new JDateChooser();
         searchDate.setDateFormatString("dd/MM/yyyy");
-        current = Calendar.getInstance();
+        Calendar current = Calendar.getInstance();
         searchDate.setMinSelectableDate(current.getTime());
         searchDate.setBounds(50,100, 150,25);
         frame.add(searchDate);
@@ -66,8 +66,21 @@ public class CafeOwnerGUI {
         createWorkSlotButton.setBounds(650, 100, 50, 25);
         panel.add(createWorkSlotButton);
 
+        model = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         // Display Table
         WorkSlotTable();
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(50, 150, 500, 300);
+        panel.add(scrollPane);
 
         // Delete Button
         JButton deleteButton = new JButton("Delete");
@@ -84,24 +97,45 @@ public class CafeOwnerGUI {
         JButton editButton = new JButton("Edit");
         editButton.setBounds(600, 200, 100, 25);
         panel.add(editButton);
-        editButton.addActionListener(e -> editSelectedRow());
+
+
+        editButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if(selectedRow != -1) {
+                String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+                int chefAmount = (int) model.getValueAt(table.getSelectedRow(), 1);
+                int cashierAmount = (int) model.getValueAt(table.getSelectedRow(), 2);
+                int waiterAmount = (int) model.getValueAt(table.getSelectedRow(), 3);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                try {
+                    java.util.Date utilDate = dateFormat.parse(dateString); // Parse to java.util.Date
+                    java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
+                    WorkSlot workSlot = new WorkSlot(date, chefAmount, cashierAmount, waiterAmount);
+                    frame.dispose();
+                    new UpdateWorkSlotGUI(u, workSlot);
+                } catch (ParseException d) {
+                    d.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a row to edit");
+            }
+
+        });
 
         // Action for searchButton
         searchButton.addActionListener(e -> {
-            SearchWorkSlotController searchWorkSlotController = new SearchWorkSlotController();
-            try {
+            if (searchDate.getDate() == null) {
+                WorkSlotTable();
+            } else {
                 Date selectedDate = new Date(searchDate.getDate().getTime());
-                filterTableByDate(selectedDate);
-                System.out.println(selectedDate);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error occurred while searching. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                searchWorkSlot(selectedDate);
             }
         });
+
         // Action for clear search
         clearSearchButton.addActionListener(e -> {
             searchDate.setDate(null);
-            filterTableByDate(null);
+            WorkSlotTable();
         });
 
         // Action for createWorkSlotButton
@@ -117,113 +151,18 @@ public class CafeOwnerGUI {
         });
     }
 
-    private void filterTableByDate(Date selectedDate) {
-        SearchWorkSlotController searchWorkSlotController = new SearchWorkSlotController();
-        searchWorkSlotController.searchDate(selectedDate);
-    }
-
-//    private void searchDate() {
-//            try {
-//                Date selectedDate = new Date(searchDate.getDate().getTime());
-//                filterTableByDate(selectedDate);
-//                System.out.println(selectedDate);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                JOptionPane.showMessageDialog(null, "Error occurred while searching. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-//    }
-
-    private void editSelectedRow() {
-        int selectedRow = workSlotTable.getSelectedRow();
-
-        if (selectedRow != -1) {
-            // Retrieve data from the selected row
-            String dateToEdit = tableComponents.getValueAt(selectedRow, 0).toString();
-            int chefAmount = (int) tableComponents.getValueAt(selectedRow, 1);
-            int cashierAmount = (int) tableComponents.getValueAt(selectedRow, 2);
-            int waiterAmount = (int) tableComponents.getValueAt(selectedRow, 3);
-
-            // Frame
-            JFrame editFrame = new JFrame("Edit Work Slot");
-            JPanel editPanel = new JPanel();
-            editPanel.setLayout(null);
-
-            JLabel titleLabel = new JLabel("Edit Work Slot");
-            titleLabel.setBounds(75, 50, 500, 25);
-            editPanel.add(titleLabel);
-
-            JLabel chefLabel = new JLabel("Chef");
-            JLabel cashierLabel = new JLabel("Cashier");
-            JLabel waiterLabel = new JLabel("Waiter");
-
-            chefLabel.setBounds(75, 115, 100, 25);
-            cashierLabel.setBounds(75, 155, 100, 25);
-            waiterLabel.setBounds(75, 195, 100, 25);
-
-            editPanel.add(chefLabel);
-            editPanel.add(cashierLabel);
-            editPanel.add(waiterLabel);
-
-            JTextField chefField = new JTextField(String.valueOf(chefAmount));
-            JTextField cashierField = new JTextField(String.valueOf(cashierAmount));
-            JTextField waiterField = new JTextField(String.valueOf(waiterAmount));
-
-            chefField.setBounds(150, 115, 100, 25);
-            cashierField.setBounds(150, 155, 100, 25);
-            waiterField.setBounds(150, 195, 100, 25);
-
-            editPanel.add(chefField);
-            editPanel.add(cashierField);
-            editPanel.add(waiterField);
-
-            JButton saveButton = new JButton("Save");
-            saveButton.setBounds(350, 300, 100, 25);
-            editPanel.add(saveButton);
-
-            JButton backButton = new JButton("Back");
-            backButton.setBounds(50, 300, 100, 25);
-            editPanel.add(backButton);
-
-            // Action for back button
-            backButton.addActionListener(e -> {
-                    editFrame.dispose();
-            });
-
-            // Action for the save button
-            saveButton.addActionListener(e -> {
-                try{
-                    tableComponents.setValueAt(Integer.parseInt(chefField.getText()), selectedRow, 1);
-                    tableComponents.setValueAt(Integer.parseInt(cashierField.getText()), selectedRow, 2);
-                    tableComponents.setValueAt(Integer.parseInt(waiterField.getText()), selectedRow, 3);
-
-                    UpdateWorkSlotController updateWorkSlotController = new UpdateWorkSlotController();
-
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    java.util.Date utilDate = dateFormat.parse(dateToEdit);
-                    Date sqlDate = new Date(utilDate.getTime());
-
-                    updateWorkSlotController.updateRoleAmount(sqlDate, 3, Integer.parseInt(chefField.getText()));
-                    updateWorkSlotController.updateRoleAmount(sqlDate, 2, Integer.parseInt(cashierField.getText()));
-                    updateWorkSlotController.updateRoleAmount(sqlDate, 1, Integer.parseInt(waiterField.getText()));
-                    editFrame.dispose();
-                } catch(NumberFormatException | ParseException ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            editFrame.add(editPanel);
-            editFrame.setSize(500, 400);
-            editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            editFrame.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a row to edit");
+    private void searchWorkSlot(Date selectedDate) {
+        model.setRowCount(0);
+        WorkSlot workSlot = new SearchWorkSlotController().searchDate(selectedDate);
+        if (workSlot != null) {
+            model.addRow(new Object[]{workSlot.getDate(), workSlot.getChefAmount(), workSlot.getCashierAmount(), workSlot.getWaiterAmount()});
         }
     }
 
     private void deleteSelectedRow() {
-        int selectedRow = workSlotTable.getSelectedRow();
+        int selectedRow = table.getSelectedRow();
         if(selectedRow != -1) {
-            String dateToDelete = tableComponents.getValueAt(selectedRow, 0).toString();
+            String dateToDelete = model.getValueAt(selectedRow, 0).toString();
             JFrame deleteFrame = new JFrame();
 
             int confirmDelete = JOptionPane.showConfirmDialog(
@@ -235,7 +174,7 @@ public class CafeOwnerGUI {
 
             if(confirmDelete == JOptionPane.YES_OPTION) {
                 try {
-                    tableComponents.removeRow(selectedRow);
+                    model.removeRow(selectedRow);
                     DeleteWorkSlotController deleteWorkSlotController = new DeleteWorkSlotController();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     java.util.Date utilDate = dateFormat.parse(dateToDelete);
@@ -258,15 +197,9 @@ public class CafeOwnerGUI {
     }
 
     private void WorkSlotTable() {
-        tableComponents = new DefaultTableModel();
-        workSlotTable = new JTable(tableComponents);
-        workSlotTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        tableComponents.setRowCount(0);
-        tableComponents.addColumn("Date");
-        tableComponents.addColumn("Chef's");
-        tableComponents.addColumn("Cashier's");
-        tableComponents.addColumn("Waiter's");
+        model.setRowCount(0);
+        model.setColumnIdentifiers(columnNames);
 
         WorkSlotController workSlotController = new WorkSlotController();
         ArrayList<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
@@ -283,41 +216,13 @@ public class CafeOwnerGUI {
                         workSlot.getCashierAmount(),
                         workSlot.getWaiterAmount()
                 };
-                tableComponents.addRow(rowData);
+                model.addRow(rowData);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        JScrollPane scrollPane = new JScrollPane(workSlotTable);
-        scrollPane.setBounds(50, 150, 500, 300);
-        panel.add(scrollPane);
+
     }
 }
 
-
-// Action for searchButton
-//        searchButton.addActionListener(e -> {
-//                SearchUserAccountController searchUserAccountController = new SearchUserAccountController();
-//                try {
-//                Date selectedDate = new Date(searchDate.getDate().getTime());
-//                filterTableByDate(selectedDate);
-//                System.out.println(selectedDate);
-//                } catch(Exception ex) {
-//                ex.printStackTrace();
-//                }
-//                });
-
-
-//    private void filterTableByDate(Date selectedDate) {
-//        TableRowSorter<TableModel> sorter = new TableRowSorter<>(workSlotTable.getModel());
-//        workSlotTable.setRowSorter(sorter);
-//
-//        if (selectedDate != null) {
-//            String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
-//            RowFilter<TableModel, Integer> rowFilter = RowFilter.regexFilter(formattedDate, 0);
-//            sorter.setRowFilter(rowFilter);
-//        } else {
-//            sorter.setRowFilter(null);
-//        }
-//    }

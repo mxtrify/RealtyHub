@@ -10,7 +10,7 @@ public class SearchWorkSlotController {
 
     public SearchWorkSlotController() {this.workSlot = new WorkSlot();}
 
-    public ArrayList<WorkSlot> searchDate(Date date) {
-        return workSlot.getWorkSlotByDate(date);
+    public WorkSlot searchDate(Date selectedDate) {
+        return workSlot.getWorkSlotByDate(selectedDate);
     }
 }

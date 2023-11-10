@@ -170,8 +170,12 @@ public class BidStatusGUI {
         });
 
         searchButton.addActionListener(e -> {
-            Date selectedDate = new Date(dateChooser.getDate().getTime());
-            searchBid(userAccount, selectedDate);
+            if(dateChooser.getDate() == null) {
+                getBidStatus(userAccount);
+            } else {
+                Date selectedDate = new Date(dateChooser.getDate().getTime());
+                searchBid(userAccount, selectedDate);
+            }
         });
     }
 

@@ -164,7 +164,6 @@ public class CafeStaffGUI {
                 }else{
                     Date selectedDate = new Date(searchDate.getDate().getTime());
                     filterTableByDate(selectedDate);
-                    System.out.println(selectedDate);
                 }
 
             } catch(Exception ex) {
