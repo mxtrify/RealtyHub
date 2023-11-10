@@ -362,6 +362,13 @@ public class UserAccount {
             preparedStatement.setInt(5, updatedUser.getUserProfile().getProfileID()); // Set profile_id
             preparedStatement.setString(6, updatedUser.getUsername());
             int rowsAffected = preparedStatement.executeUpdate();
+
+            if(updatedUser.getUserProfile().getProfileID() != 4) {
+                query = "DELETE FROM bid WHERE username = ?";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, updatedUser.getUsername());
+                preparedStatement.executeUpdate();
+            }
             return rowsAffected > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -29,7 +29,7 @@ public class CafeStaffGUI {
     }
 
     public void askMaxSlotAndRole(UserAccount u) {
-        while(true) {
+        while(u.getMax_slot() < 0) {
             // Create a panel for the input components
             JPanel inputPanel = new JPanel();
             inputPanel.setLayout(new GridLayout(3, 2));
