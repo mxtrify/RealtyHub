@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class CafeStaffGUI {
     private JFrame frame;
@@ -24,12 +25,26 @@ public class CafeStaffGUI {
 
     // Constructor
     public CafeStaffGUI(UserAccount u) {
-        askMaxSlotAndRole(u);
-        displayCafeStaffGUI(u);
+
+        if (u.getMax_slot() > 0 && u.getRole_id() != 0){
+            displayCafeStaffGUI(u);
+        }else {
+            boolean hasInput = askMaxSlotAndRole(u);
+
+            if (hasInput){
+                displayCafeStaffGUI(u);
+            }
+        }
+
+
+
+
+
     }
 
-    public void askMaxSlotAndRole(UserAccount u) {
-        while(u.getMax_slot() < 0) {
+    public boolean askMaxSlotAndRole(UserAccount u) {
+        boolean hasInput = false;
+        while(!hasInput) {
             // Create a panel for the input components
             JPanel inputPanel = new JPanel();
             inputPanel.setLayout(new GridLayout(3, 2));
@@ -58,17 +73,24 @@ public class CafeStaffGUI {
                     if (newMaxSlot > 0 && roleId != -1) {
                         u.setMax_slot(newMaxSlot);
                         u.setRole_id(roleId);
+
                         new SetMaxSlotController().setMaxSlot(u);
                         new SetRoleController().setRole(u);
-                        break;
+
+                        hasInput = true;
                     } else {
                         JOptionPane.showMessageDialog(null, "Please enter a value greater than 0.");
                     }
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Please enter a valid number.");
                 }
+            }else {
+                new LoginGUI();
+                break;
             }
         }
+
+        return hasInput;
     }
 
 

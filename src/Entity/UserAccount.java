@@ -285,21 +285,31 @@ public class UserAccount {
 
     // Create
     public boolean insertAccount(UserAccount newUser) {
-        String query = "INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             conn = new DBConfig().getConnection();
+
+            String query = "SELECT * FROM user_account WHERE username = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, newUser.getUsername());
-            preparedStatement.setString(2, newUser.getPassword());
-            preparedStatement.setString(3, newUser.getFirstName());
-            preparedStatement.setString(4, newUser.getLastName());
-            preparedStatement.setString(5, newUser.getEmail());
-            preparedStatement.setNull(6, Types.INTEGER);
-            preparedStatement.setInt(7, newUser.getUserProfile().getProfileID());
-            preparedStatement.setNull(8, Types.INTEGER);
-            preparedStatement.setBoolean(9, true);
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                return false;
+            }else{
+                query = "INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, profile_id, role_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, newUser.getUsername());
+                preparedStatement.setString(2, newUser.getPassword());
+                preparedStatement.setString(3, newUser.getFirstName());
+                preparedStatement.setString(4, newUser.getLastName());
+                preparedStatement.setString(5, newUser.getEmail());
+                preparedStatement.setNull(6, Types.INTEGER);
+                preparedStatement.setInt(7, newUser.getUserProfile().getProfileID());
+                preparedStatement.setNull(8, Types.INTEGER);
+                preparedStatement.setBoolean(9, true);
+                int rowsAffected = preparedStatement.executeUpdate();
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
