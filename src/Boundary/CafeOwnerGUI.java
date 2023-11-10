@@ -202,9 +202,9 @@ public class CafeOwnerGUI {
                     java.util.Date utilDate = dateFormat.parse(dateToEdit);
                     Date sqlDate = new Date(utilDate.getTime());
 
-                    updateWorkSlotController.updateRoleAmount(sqlDate, 1, Integer.parseInt(chefField.getText()));
+                    updateWorkSlotController.updateRoleAmount(sqlDate, 3, Integer.parseInt(chefField.getText()));
                     updateWorkSlotController.updateRoleAmount(sqlDate, 2, Integer.parseInt(cashierField.getText()));
-                    updateWorkSlotController.updateRoleAmount(sqlDate, 3, Integer.parseInt(waiterField.getText()));
+                    updateWorkSlotController.updateRoleAmount(sqlDate, 1, Integer.parseInt(waiterField.getText()));
                     editFrame.dispose();
                 } catch(NumberFormatException | ParseException ex) {
                     ex.printStackTrace();
