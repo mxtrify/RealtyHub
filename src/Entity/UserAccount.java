@@ -217,12 +217,12 @@ public class UserAccount {
         this.status = status;
     }
 
-    public void setRole_id(int role_id) {
-        this.role_id = role_id;
-    }
-
     public void setRole_name(String role_name) {
         this.role_name = role_name;
+    }
+
+    public void setRole_id(int role_id) {
+        this.role_id = role_id;
     }
 
     public void setMax_slot(int max_slot) {
@@ -262,7 +262,7 @@ public class UserAccount {
                 } else if (resultSet.getString("profile_name").equals("Cafe Staff")) {
                     return new UserAccount(username, password, fName, lName, userProfile, status, maxSlot, roleId);
                 } else {
-                    return null;
+                    return new UserAccount(username, password, fName, lName, userProfile, status);
                 }
             } else {
                 return null;
