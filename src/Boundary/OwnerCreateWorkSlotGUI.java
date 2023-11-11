@@ -108,12 +108,12 @@ public class OwnerCreateWorkSlotGUI {
                     int numOfChef = Integer.parseInt(chefField.getText());
                     int numOfCashier = Integer.parseInt(cashierField.getText());
                     int numOfWaiter = Integer.parseInt(waiterField.getText());
-                    WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
 
                     if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
                         JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 1");
                     } else {
                         JOptionPane.showMessageDialog(frame, "Successfully created!");
+                        WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
                         frame.dispose();
                         new CafeOwnerGUI(u);
                     }
