@@ -11,50 +11,10 @@ import java.util.Vector;
 
 public class WorkSlot {
     private Connection conn;
-    private final int CHEF = 3;
-    private final int CASHIER = 2;
-    private final int WAITER = 1;
     private Date date;
     private int chefAmount;
     private int cashierAmount;
     private int waiterAmount;
-
-    public Date getDate() {
-        return date;
-    }
-
-    public int getChefAmount() {
-        return chefAmount;
-    }
-
-    public int getCashierAmount() {
-        return cashierAmount;
-    }
-
-    public int getWaiterAmount() {
-        return waiterAmount;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setChefAmount(int chefAmount) {
-        this.chefAmount = chefAmount;
-    }
-
-    public void setCashierAmount(int cashierAmount) {
-        this.cashierAmount = cashierAmount;
-    }
-
-    public void setWaiterAmount(int waiterAmount) {
-        this.waiterAmount = waiterAmount;
-    }
-
-    public String dateToString(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
-        return dateFormat.format(getDate());
-    }
 
     public WorkSlot() {
         this.date = new Date(2000, 1, 1);
@@ -132,6 +92,77 @@ public class WorkSlot {
         this.cashierAmount = cashierAmount;
         this.waiterAmount = waiterAmount;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public int getChefAmount() {
+        return chefAmount;
+    }
+
+    public int getCashierAmount() {
+        return cashierAmount;
+    }
+
+    public int getWaiterAmount() {
+        return waiterAmount;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setChefAmount(int chefAmount) {
+        this.chefAmount = chefAmount;
+    }
+
+    public void setCashierAmount(int cashierAmount) {
+        this.cashierAmount = cashierAmount;
+    }
+
+    public void setWaiterAmount(int waiterAmount) {
+        this.waiterAmount = waiterAmount;
+    }
+
+    public String dateToString(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
+        return dateFormat.format(getDate());
+    }
+
+    private int getRoleID(String role_name){
+        int role_id = 0;
+        try {
+            conn = new DBConfig().getConnection();
+            String query = "SELECT `role_id` FROM `role` WHERE `role_name` = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, role_name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                role_id = resultSet.getInt("role_id");
+            }
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
+        }
+
+        return role_id;
+    }
+
+
 
     public Object[][] getAllWS(){
         Object[][] data = null;
@@ -293,9 +324,10 @@ public class WorkSlot {
             int row = preparedStatement.executeUpdate();
             if (row > 0) {
                 // Insert into role_amount table
-                insertRoleAmount(date, CHEF, chefAmount);
-                insertRoleAmount(date, CASHIER, cashierAmount);
-                insertRoleAmount(date, WAITER, waiterAmount);
+
+                insertRoleAmount(date, getRoleID("Chef"), chefAmount);
+                insertRoleAmount(date, getRoleID("Cashier"), cashierAmount);
+                insertRoleAmount(date, getRoleID("Waiter"), waiterAmount);
 
                 return new WorkSlot(date, chefAmount, cashierAmount, waiterAmount);
             }
@@ -361,9 +393,9 @@ public class WorkSlot {
                 WorkSlot workSlot = new WorkSlot();
 
                 workSlot.setDate(resultSet.getDate("date"));
-                workSlot.setChefAmount(getRoleAmount(workSlot.getDate(), CHEF));
-                workSlot.setCashierAmount(getRoleAmount(workSlot.getDate(), CASHIER));
-                workSlot.setWaiterAmount(getRoleAmount(workSlot.getDate(), WAITER));
+                workSlot.setChefAmount(getRoleAmount(workSlot.getDate(), getRoleID("Chef")));
+                workSlot.setCashierAmount(getRoleAmount(workSlot.getDate(), getRoleID("Cashier")));
+                workSlot.setWaiterAmount(getRoleAmount(workSlot.getDate(), getRoleID("Chef")));
                 workSlots.add(workSlot);
             }
         } catch (SQLException e) {

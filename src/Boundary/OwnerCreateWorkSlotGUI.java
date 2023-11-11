@@ -68,10 +68,10 @@ public class OwnerCreateWorkSlotGUI {
         cashierField.setBounds(150, 155, 100, 25);
         panel.add(cashierField);
 
-        // Staff Label
-        JLabel staffLabel = new JLabel("Staff:");
-        staffLabel.setBounds(75, 195, 100, 25);
-        panel.add(staffLabel);
+        // Waiter Label
+        JLabel waiterLabel = new JLabel("Waiter:");
+        waiterLabel.setBounds(75, 195, 100, 25);
+        panel.add(waiterLabel);
 
         // Staff Field
         waiterField = new JTextField(20);
