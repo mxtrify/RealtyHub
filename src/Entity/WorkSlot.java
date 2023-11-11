@@ -11,9 +11,9 @@ import java.util.Vector;
 
 public class WorkSlot {
     private Connection conn;
-    private static final int CHEF = 3;
-    private static final int CASHIER = 2;
-    private static final int WAITER = 1;
+    private final int CHEF = 3;
+    private final int CASHIER = 2;
+    private final int WAITER = 1;
     private Date date;
     private int chefAmount;
     private int cashierAmount;
