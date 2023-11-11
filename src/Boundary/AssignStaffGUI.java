@@ -371,7 +371,7 @@ public class AssignStaffGUI {
 
                 if (confirm == JOptionPane.YES_OPTION){
                     // Process Reject
-                    boolean isSuccess = new rejectBidController().processReject(bid);
+                    boolean isSuccess = new RejectBidController().processReject(bid);
 
                     if (isSuccess){
                         int selectedRow = bids_table.getSelectedRow();

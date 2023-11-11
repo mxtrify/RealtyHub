@@ -304,42 +304,6 @@ public class Bid {
         }
     }
 
-    public Object[][] getUpcomingWork(){
-        Object[][] data = null;
-        try {
-            String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
-                    "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
-                    "AND `date` = ?";
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, getName());
-            preparedStatement.setDate(2, getDate());
-            ResultSet result = preparedStatement.executeQuery();
-
-            if (result.next()){
-                data = new Object[1][3];
-                data[0][0] = result.getInt(1);
-                data[0][1] = dateToString();
-                data[0][2] = result.getString(3);
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        } finally {
-            // Close the connection in a finally block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
-        }
-
-        return data;
-    }
-
     public Object[][] getAllUpcomingWork(){
         Object[][] data = null;
         try {
@@ -378,6 +342,42 @@ public class Bid {
                 data[i] = dataVector.get(i).toArray();
             }
 
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
+        }
+
+        return data;
+    }
+
+    public Object[][] getUpcomingWork(){
+        Object[][] data = null;
+        try {
+            String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
+                    "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
+                    "AND `date` = ?";
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, getName());
+            preparedStatement.setDate(2, getDate());
+            ResultSet result = preparedStatement.executeQuery();
+
+            if (result.next()){
+                data = new Object[1][3];
+                data[0][0] = result.getInt(1);
+                data[0][1] = dateToString();
+                data[0][2] = result.getString(3);
+            }
 
         }catch (SQLException e){
             e.printStackTrace();

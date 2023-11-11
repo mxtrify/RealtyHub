@@ -88,6 +88,8 @@ public class LoginGUI {
                 new CafeManagerGUI(userAccount);
             } else if (userAccount.getUserProfile().getProfileName().equals("Cafe Staff")) {
                 new CafeStaffGUI(userAccount);
+            }else {
+                new OtherProfileGUI(userAccount);
             }
         }
     }

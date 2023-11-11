@@ -1,6 +1,7 @@
 package Entity;
 
 import Config.DBConfig;
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -10,9 +11,9 @@ import java.util.Vector;
 
 public class WorkSlot {
     private Connection conn;
-    public static final int CHEF = 3;
-    public static final int CASHIER = 2;
-    public static final int WAITER = 1;
+    private static final int CHEF = 3;
+    private static final int CASHIER = 2;
+    private static final int WAITER = 1;
     private Date date;
     private int chefAmount;
     private int cashierAmount;
@@ -412,31 +413,55 @@ public class WorkSlot {
         return amount;
     }
 
-    public ArrayList<WorkSlot> getWorkSlotByDate(Date date) {
-        ArrayList<WorkSlot> workSlots = new ArrayList<>();
-        String query = "SELECT * from work_slot WHERE date = ?";
-        try {
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setDate(1, date);
+    public WorkSlot getWorkSlotByDate(Date selectedDate) {
+        String query = "SELECT work_slot.date, role_amount.role_id, role_amount.amount FROM work_slot INNER JOIN role_amount ON work_slot.date = role_amount.date WHERE work_slot.date = ?";
+        try (Connection conn = new DBConfig().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+
+            preparedStatement.setDate(1, selectedDate);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                WorkSlot workSlot = new WorkSlot((Date) resultSet);
-                workSlots.add(workSlot);
+
+            if (resultSet.next()) {
+                WorkSlot workSlot = new WorkSlot();
+                workSlot.setDate(resultSet.getDate("date"));
+
+                do {
+                    int roleId = resultSet.getInt("role_id");
+                    int amount = resultSet.getInt("amount");
+
+                    switch (roleId) {
+                        case 1:
+                            workSlot.setWaiterAmount(amount);
+                            break;
+                        case 2:
+                            workSlot.setCashierAmount(amount);
+                            break;
+                        case 3:
+                            workSlot.setChefAmount(amount);
+                            break;
+                    }
+                } while (resultSet.next());
+
+                return workSlot;
+            } else {
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
             try {
                 if (conn != null) {
                     conn.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                // Handle the SQLException during closing.
             }
         }
-        return workSlots;
     }
+
 
     public boolean updateRoleAmount(Date date, int roleID, int newAmount) {
         String updateRoleAmountQuery = "UPDATE role_amount SET amount = ? WHERE date = ? AND role_id = ?";
