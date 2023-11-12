@@ -23,6 +23,7 @@ public class CafeManagerGUI {
     private DefaultTableCellRenderer centerRenderer;
     private WorkSlot workSlot;
     private String status;
+    private JFrame frame;
     // Constructor
     public CafeManagerGUI(UserAccount u) {
         displayCafeManagerGUI(u);
@@ -30,7 +31,7 @@ public class CafeManagerGUI {
 
     // Display Cafe Manager GUI
     public void displayCafeManagerGUI(UserAccount u) {
-        JFrame frame = new JFrame("Cafe Manager");
+        frame = new JFrame("Cafe Manager");
         frame.setLayout(null);
 
         // Title label
@@ -233,9 +234,13 @@ public class CafeManagerGUI {
 
         // Action for logout button
         logoutButton.addActionListener(e -> {
-            frame.dispose();
-            new LoginGUI();
+            logout();
         });
+    }
+
+    public void logout() {
+        frame.dispose();
+        new LoginGUI();
     }
 }
 

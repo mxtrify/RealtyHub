@@ -191,9 +191,13 @@ public class CafeStaffGUI {
 
         // Action for logout button
         logoutButton.addActionListener(e -> {
-            frame.dispose();
-            new LoginGUI();
+            logout();
         });
+    }
+
+    public void logout() {
+        frame.dispose();
+        new LoginGUI();
     }
 
     public void DisplayWorkSlotTable() {

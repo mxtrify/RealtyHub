@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.sql.Date;
 
 public class CafeOwnerGUI {
+    private JFrame frame;
     private JPanel panel;
     private JTable table;
     private DefaultTableModel model;
@@ -26,7 +27,7 @@ public class CafeOwnerGUI {
 
     // Display cafe owner GUI
     public void displayCafeOwnerGUI(UserAccount u) {
-        JFrame frame = new JFrame("Cafe Owner");
+        frame = new JFrame("Cafe Owner");
         panel = new JPanel();
         panel.setLayout(null);
 
@@ -143,9 +144,15 @@ public class CafeOwnerGUI {
 
         // Action for logout button
         logoutButton.addActionListener(e -> {
-            frame.dispose();
-            new LoginGUI();
+            logout();
+//            frame.dispose();
+//            new LoginGUI();
         });
+    }
+
+    public void logout() {
+        frame.dispose();
+        new LoginGUI();
     }
 
     private void searchWorkSlot(Date selectedDate) {
