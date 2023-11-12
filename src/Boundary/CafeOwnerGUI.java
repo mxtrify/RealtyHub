@@ -103,7 +103,7 @@ public class CafeOwnerGUI {
                 int chefAmount = (int) model.getValueAt(table.getSelectedRow(), 1);
                 int cashierAmount = (int) model.getValueAt(table.getSelectedRow(), 2);
                 int waiterAmount = (int) model.getValueAt(table.getSelectedRow(), 3);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
                 try {
                     java.util.Date utilDate = dateFormat.parse(dateString); // Parse to java.util.Date
                     java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
@@ -173,7 +173,7 @@ public class CafeOwnerGUI {
                 try {
                     model.removeRow(selectedRow);
                     DeleteWorkSlotController deleteWorkSlotController = new DeleteWorkSlotController();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
                     java.util.Date utilDate = dateFormat.parse(dateToDelete);
                     Date sqlDate = new Date(utilDate.getTime());
                     boolean deleteSuccess = deleteWorkSlotController.deleteWorkSlot(sqlDate);
@@ -201,7 +201,7 @@ public class CafeOwnerGUI {
         WorkSlotController workSlotController = new WorkSlotController();
         ArrayList<WorkSlot> workSlotData = workSlotController.getAllWorkSlots();
 
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM, yyyy");
 
         for (WorkSlot workSlot : workSlotData) {
             try {
