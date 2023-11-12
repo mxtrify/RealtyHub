@@ -9,6 +9,7 @@ import java.awt.*;
 public class LoginGUI {
     // Variables declaration
     private JFrame frame;
+    private boolean errorMessageDisplayed;
 
     // Constructor
     public LoginGUI() {
@@ -73,10 +74,13 @@ public class LoginGUI {
         // Check the account username and password / account status / profile status
         if (userAccount == null) {
             JOptionPane.showMessageDialog(frame, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+            errorMessageDisplayed = true;
         } else if (!userAccount.getUserProfile().isProfileStatus()) {
             JOptionPane.showMessageDialog(frame, "This profile is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+            errorMessageDisplayed = true;
         } else if (!userAccount.isStatus()) {
             JOptionPane.showMessageDialog(frame, "This account is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+            errorMessageDisplayed = true;
         } else {
             frame.dispose(); // Close the login window
             // Open the appropriate GUI based on the user's profile
@@ -92,6 +96,15 @@ public class LoginGUI {
                 new OtherProfileGUI(userAccount);
             }
         }
+    }
+
+    // For Testing
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public boolean isErrorMessageDisplayed() {
+        return errorMessageDisplayed;
     }
 
     // Main method to start
