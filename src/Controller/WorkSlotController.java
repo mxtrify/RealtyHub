@@ -4,7 +4,6 @@ import Entity.WorkSlot;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 public class WorkSlotController {
     private WorkSlot workSlot;
@@ -27,7 +26,7 @@ public class WorkSlotController {
 
     public ArrayList<WorkSlot> getAllWorkSlots() {
         WorkSlot workSlot = new WorkSlot();
-        return workSlot.getAllWorkSlots();
+        return workSlot.getAllWorkSlotsMax();
     }
 }
 

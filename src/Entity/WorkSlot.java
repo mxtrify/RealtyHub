@@ -130,7 +130,7 @@ public class WorkSlot {
         return dateFormat.format(getDate());
     }
 
-    private int getRoleID(String role_name){
+    public int getRoleID(String role_name){
         int role_id = 0;
         try {
             conn = new DBConfig().getConnection();
@@ -186,6 +186,7 @@ public class WorkSlot {
                     // Temporary use "data" variable
                     data = ws_row.getWS();
                     row.add(data[0][i]);
+
                 }
 
                 // Store each workslot data to vector
@@ -198,6 +199,8 @@ public class WorkSlot {
             for (int i = 0; i < allDataVector.size(); i++){
                 data[i] = allDataVector.get(i).toArray();
             }
+
+
 
         }catch (SQLException e){
             e.printStackTrace();
@@ -380,11 +383,11 @@ public class WorkSlot {
         }
     }
 
-    public ArrayList<WorkSlot> getAllWorkSlots() {
+    public ArrayList<WorkSlot> getAllWorkSlotsMax() {
         ArrayList<WorkSlot> workSlots = new ArrayList<>();
 
         try {
-            String query = "SELECT * FROM work_slot";
+            String query = "SELECT * FROM `work_slot`";
 
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -395,7 +398,8 @@ public class WorkSlot {
                 workSlot.setDate(resultSet.getDate("date"));
                 workSlot.setChefAmount(getRoleAmount(workSlot.getDate(), getRoleID("Chef")));
                 workSlot.setCashierAmount(getRoleAmount(workSlot.getDate(), getRoleID("Cashier")));
-                workSlot.setWaiterAmount(getRoleAmount(workSlot.getDate(), getRoleID("Chef")));
+                workSlot.setWaiterAmount(getRoleAmount(workSlot.getDate(), getRoleID("Waiter")));
+
                 workSlots.add(workSlot);
             }
         } catch (SQLException e) {
@@ -506,12 +510,7 @@ public class WorkSlot {
             preparedStatement.setInt(3, roleID);
 
             int rowsUpdated = preparedStatement.executeUpdate();
-            System.out.println(newAmount);
-            System.out.println(date);
-            System.out.println(roleID);
 
-            System.out.println("Rows updated: " + rowsUpdated);
-            System.out.println("SQL Query: " + updateRoleAmountQuery);
 
             return rowsUpdated > 0;
         } catch (SQLException e) {
