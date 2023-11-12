@@ -20,11 +20,15 @@ public class LogoutTest {
 
     @Before
     public void setUp() throws Exception {
-        UserAccount u = new UserAccount();
-        this.adminLogout = new SystemAdminGUI(u);
-        this.ownerLogout = new CafeOwnerGUI(u);
-        this.managerLogout = new CafeManagerGUI(u);
-        this.staffLogout = new CafeStaffGUI(u);
+        UserAccount sa = new UserAccount();
+        UserAccount o = new UserAccount();
+        UserAccount m = new UserAccount();
+        UserAccount s = new UserAccount();
+
+        this.adminLogout = new SystemAdminGUI(sa);
+        this.ownerLogout = new CafeOwnerGUI(o);
+        this.managerLogout = new CafeManagerGUI(m);
+        this.staffLogout = new CafeStaffGUI(s);
     }
 
     @After
