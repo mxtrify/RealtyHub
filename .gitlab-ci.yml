@@ -11,7 +11,7 @@ build:
   stage: build
   script: 
       - mkdir -p build
-      - javac -cp $CLASSPATH -d build/ Boundary/*.java Controller/*.java Entity/*.java Config/*.java
+      - javac -cp $CLASSPATH -d build/ src/Boundary/*.java src/Controller/*.java src/Entity/*.java src/Config/*.java
   artifacts:
     paths:
         - build/
