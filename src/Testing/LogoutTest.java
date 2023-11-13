@@ -42,20 +42,24 @@ public class LogoutTest {
     @Test
     public void testAdminLogout() {
         adminLogout.logout();
+        assertFalse(adminLogout.getFrame().isVisible());
     }
 
     @Test
     public void testOwnerLogout() {
         ownerLogout.logout();
+        assertFalse(ownerLogout.getFrame().isVisible());
     }
 
     @Test
     public void testManagerLogout() {
         managerLogout.logout();
+        assertFalse(managerLogout.getFrame().isVisible());
     }
 
     @Test
     public void testStaffLogout() {
         staffLogout.logout();
+        assertFalse(staffLogout.getFrame().isVisible());
     }
 }

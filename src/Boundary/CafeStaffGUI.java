@@ -200,6 +200,10 @@ public class CafeStaffGUI {
         new LoginGUI();
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
     public void DisplayWorkSlotTable() {
         tableComponents = new DefaultTableModel(){
             @Override
