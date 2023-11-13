@@ -148,8 +148,13 @@ public class SystemAdminGUI {
             } else {
                 String username = model.getValueAt(table.getSelectedRow(),0).toString();
                 UserAccount userAccount = new UpdateUserAccountController().getSelectedAccount(username);
-                frame.dispose();
-                new UpdateUserAccountGUI(userAccount);
+                if (userAccount.getUsername().equals(u.getUsername())){
+                    JOptionPane.showMessageDialog(frame, "Please select other users than yourself", "Failed", JOptionPane.ERROR_MESSAGE);
+                }else {
+                    frame.dispose();
+                    new UpdateUserAccountGUI(u, userAccount);
+                }
+
             }
         });
 
