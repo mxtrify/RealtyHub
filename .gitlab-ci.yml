@@ -1,0 +1,23 @@
+image: openjdk:8
+
+stages:
+    - build
+    - test
+
+variables:
+  CLASSPATH: ".:lib/*"
+
+build:
+  stage: build
+  script: 
+      - mkdir -p build
+      - javac -cp $CLASSPATH -d build/ src/Boundary/*.java src/Controller/*.java src/Entity/*.java src/Config/*.java
+  artifacts:
+    paths:
+        - build/
+        - lib/
+
+test:
+  stage: test
+  script:
+      - java -cp build:lib/junit-4.13.2.jar:lib/mysql-connector-j-8.0.31.jar org.junit.runner.JUnitCore LoginTest LogoutTest
