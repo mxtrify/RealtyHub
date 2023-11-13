@@ -96,7 +96,7 @@ public class CreateUserAccountGUI {
             String lastName = lastNameField.getText();
             String email = emailField.getText();
             int profile = profileComboBox.getSelectedIndex() + 1;
-            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile), true);
+            UserAccount newUser = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profile));
             if(username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (new CreateUserAccountController().addAccount(newUser)) {

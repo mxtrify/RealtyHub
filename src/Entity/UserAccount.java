@@ -28,22 +28,13 @@ public class UserAccount {
         this.status = false;
     }
 
-    public UserAccount(String username, String password) {
+    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
         this.username = username;
         this.password = password;
-    }
-
-    public UserAccount(String username, String password, UserProfile userProfile) {
-        this.username = username;
-        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.userProfile = userProfile;
-    }
-
-    public UserAccount(String username, String password, UserProfile userProfile, boolean status) {
-        this.username = username;
-        this.password = password;
-        this.userProfile = userProfile;
-        this.status = status;
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status) {
@@ -53,26 +44,6 @@ public class UserAccount {
         this.lastName = lastName;
         this.userProfile = userProfile;
         this.status = status;
-    }
-
-
-    public UserAccount(String username, String password, UserProfile userProfile, boolean status, int max_slot) {
-        this.username = username;
-        this.password = password;
-        this.userProfile = userProfile;
-        this.status = status;
-        this.max_slot = max_slot;
-
-    }
-
-    public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userProfile = userProfile;
-        this.status = status;
-        this.max_slot = max_slot;
     }
 
     public UserAccount(String username, String password, String firstName, String lastName, UserProfile userProfile, boolean status, int max_slot, int role_id) {
@@ -86,71 +57,9 @@ public class UserAccount {
         this.role_id = role_id;
     }
 
-
-    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userProfile = userProfile;
-    }
-
-    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id, int max_slot) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userProfile = userProfile;
-        this.role_id = role_id;
-        this.max_slot = max_slot;
-    }
-
-    public UserAccount(String username, String firstName, String lastName, UserProfile userProfile, boolean status) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userProfile = userProfile;
-        this.status = status;
-    }
-
-    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userProfile = userProfile;
-        this.status = status;
-    }
-
-    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, int role_id) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userProfile = userProfile;
-        this.role_id = role_id;
-    }
-
-    public UserAccount(String username, String password, String firstName, String lastName, String email, UserProfile userProfile, boolean status, int role_id, int max_slot) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userProfile = userProfile;
-        this.status = status;
-        this.role_id = role_id;
-        this.max_slot = max_slot;
-    }
-
     public String getUsername() {
         return username;
     }
-
 
     public String getPassword() {
         return password;
@@ -328,19 +237,20 @@ public class UserAccount {
     // Read (View)
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
+        String query = "SELECT username, password, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id";
         try {
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
+                String password = resultSet.getString("password");
                 String fName = resultSet.getString("f_name");
                 String lName = resultSet.getString("l_name");
                 String profileName = resultSet.getString("profile_name");
                 boolean status = resultSet.getBoolean("status");
                 UserProfile userProfile = new UserProfile(profileName);
-                UserAccount userAccount = new UserAccount(username, fName, lName, userProfile, status);
+                UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
                 userAccounts.add(userAccount);
             }
             return userAccounts;
@@ -446,7 +356,7 @@ public class UserAccount {
     // Search
     public ArrayList<UserAccount> getUserAccountByUsername(String search) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
+        String query = "SELECT username, password, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE username LIKE ?";
         try {
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -454,12 +364,13 @@ public class UserAccount {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
+                String password = resultSet.getString("password");
                 String fName = resultSet.getString("f_name");
                 String lName = resultSet.getString("l_name");
                 String profileName = resultSet.getString("profile_name");
                 boolean status = resultSet.getBoolean("status");
                 UserProfile userProfile = new UserProfile(profileName);
-                UserAccount userAccount = new UserAccount(username, fName, lName, userProfile, status);
+                UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
                 userAccounts.add(userAccount);
             }
             return userAccounts;
@@ -481,7 +392,7 @@ public class UserAccount {
     // Filter
     public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
+        String query = "SELECT username, password, f_name, l_name, profile_name, status FROM user_account INNER JOIN profile ON user_account.profile_id = profile.profile_id WHERE profile_name = ?";
         try {
             conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -489,12 +400,13 @@ public class UserAccount {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String username = resultSet.getString("username");
+                String password =resultSet.getString("password");
                 String fName = resultSet.getString("f_name");
                 String lName = resultSet.getString("l_name");
                 String profile = resultSet.getString("profile_name");
                 boolean status = resultSet.getBoolean("status");
                 UserProfile userProfile = new UserProfile(profile);
-                UserAccount userAccount = new UserAccount(username, fName, lName, userProfile, status);
+                UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
                 userAccounts.add(userAccount);
             }
             return userAccounts;
@@ -527,18 +439,7 @@ public class UserAccount {
                 String lastName = resultSet.getString("l_name");
                 String email = resultSet.getString("email");
                 int profileID = resultSet.getInt("profile_id");
-                int roleID = resultSet.getInt("role_id");
-                if(profileID == 1) {
-                    userAccount = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profileID));
-                } else if(profileID == 2) {
-                    userAccount = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profileID));
-                } else if(profileID == 3) {
-                    userAccount = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profileID));
-                } else if(profileID == 4) {
-                    userAccount = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profileID), roleID, 0);
-                } else {
-                    userAccount = new UserAccount();
-                }
+                userAccount = new UserAccount(username, password, firstName, lastName, email, new UserProfile(profileID));
             }
             return userAccount;
         } catch (SQLException e) {
