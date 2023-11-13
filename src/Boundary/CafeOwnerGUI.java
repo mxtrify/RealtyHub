@@ -145,11 +145,12 @@ public class CafeOwnerGUI {
         // Action for logout button
         logoutButton.addActionListener(e -> {
             logout();
-//            frame.dispose();
-//            new LoginGUI();
         });
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
     public void logout() {
         frame.dispose();
         new LoginGUI();

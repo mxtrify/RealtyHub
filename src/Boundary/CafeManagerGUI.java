@@ -242,5 +242,9 @@ public class CafeManagerGUI {
         frame.dispose();
         new LoginGUI();
     }
+
+    public JFrame getFrame() {
+        return frame;
+    }
 }
 
