@@ -253,7 +253,7 @@ public class CafeStaffGUI {
                 java.util.Date parsedDate = dateFormat.parse(dateString);
                 Date selectedDate = new Date(parsedDate.getTime());
 
-                int slotLeft = new ViewMonthlySlotLeft().viewMonthlySlotLeft(u,selectedDate);
+                int slotLeft = new ViewMonthlySlotLeftController().viewMonthlySlotLeft(u,selectedDate);
                 if (slotLeft > 0){
                     int confirm = JOptionPane.showConfirmDialog(frame, String.format("Slot left this Month: %d%nAre you sure want to make bid on this date?", slotLeft) , "Make Bid", JOptionPane.YES_NO_OPTION);
 
