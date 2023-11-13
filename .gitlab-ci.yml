@@ -5,7 +5,7 @@ stages:
     - test
 
 variables:
-  CLASSPATH: ".:lib/*
+  CLASSPATH: ".:lib/*"
 
 build:
   stage: build
