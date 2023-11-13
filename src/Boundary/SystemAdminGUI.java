@@ -12,6 +12,7 @@ public class SystemAdminGUI {
     // Variables declaration
     private JFrame frame;
     private DefaultTableModel model;
+    private JTextField searchTextField;
     private final String[] columnNames = {"Username", "First Name", "Last Name", "Profile", "Status"};
     private ArrayList<UserAccount> userAccounts;
 
@@ -34,7 +35,7 @@ public class SystemAdminGUI {
         panel.add(titleLabel);
 
         // Search Field
-        JTextField searchTextField = new JTextField();
+        searchTextField = new JTextField();
         searchTextField.setBounds(50, 135, 180, 36);
         searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
@@ -112,7 +113,7 @@ public class SystemAdminGUI {
         logoutButton.addActionListener(e -> logout());
 
         // Search action button
-        searchButton.addActionListener(e -> searchUserAccount(searchTextField));
+        searchButton.addActionListener(e -> searchUserAccount());
 
         // View profile action
         viewProfileButton.addActionListener(e -> {
@@ -122,11 +123,11 @@ public class SystemAdminGUI {
 
         clearButton.addActionListener(e -> {
             searchTextField.setText("");
-            searchUserAccount(searchTextField);
+            searchUserAccount();
         });
 
         // Press "ENTER" to search
-        searchTextField.addActionListener(e -> searchUserAccount(searchTextField));
+        searchTextField.addActionListener(e -> searchUserAccount());
 
         // Create account action button
         createAccountButton.addActionListener(e -> {
@@ -210,7 +211,7 @@ public class SystemAdminGUI {
         frame.dispose();
         new LoginGUI();
     }
-    public void searchUserAccount(JTextField searchTextField) {
+    public void searchUserAccount() {
         String search = searchTextField.getText();
 
         if(search.isEmpty()) {

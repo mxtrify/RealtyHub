@@ -19,10 +19,6 @@ public class UpdateUserAccountController {
         return userAccount.getProfileByName();
     }
 
-    public ArrayList<String> getRoleList() {
-        return userAccount.getRoleByName();
-    }
-
     public boolean UpdateUserAccount(UserAccount updatedUser) {
         return userAccount.updateUserAccount(updatedUser);
     }
