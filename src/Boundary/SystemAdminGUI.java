@@ -211,6 +211,11 @@ public class SystemAdminGUI {
         frame.dispose();
         new LoginGUI();
     }
+
+    public JFrame getFrame() {
+        return frame;
+    }
+
     public void searchUserAccount() {
         String search = searchTextField.getText();
 
