@@ -304,171 +304,81 @@ public class Bid {
         }
     }
 
-    public Object[][] getAllUpcomingWork(){
+    public Object[][] filterSearchWorkSched(String select){
         Object[][] data = null;
         try {
-            String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
+            if (select.equals("Upcoming")){
+                String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
                     "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
                     "ORDER BY `date`";
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, getName());
+                conn = new DBConfig().getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, getName());
 
-            ResultSet result = preparedStatement.executeQuery();
+                ResultSet result = preparedStatement.executeQuery();
 
-            // Get the ResultSet metadata to determine the number of columns
-            ResultSetMetaData metaData = result.getMetaData();
-            int col = metaData.getColumnCount();
+                // Get the ResultSet metadata to determine the number of columns
+                ResultSetMetaData metaData = result.getMetaData();
+                int col = metaData.getColumnCount();
 
-            // To hold data
-            Vector<Vector<Object>> dataVector = new Vector<>();
+                // To hold data
+                Vector<Vector<Object>> dataVector = new Vector<>();
 
-            // Collect data
-            while (result.next()){
-                Vector<Object> row = new Vector<>();
-                for (int i = 1; i <= col; i++){
-                    if (i == 2){
-                        setDate(result.getDate(i));
-                        row.add(dateToString());
-                    }else{
-                        row.add(result.getObject(i));
+                // Collect data
+                while (result.next()){
+                    Vector<Object> row = new Vector<>();
+                    for (int i = 1; i <= col; i++){
+                        if (i == 2){
+                            setDate(result.getDate(i));
+                            row.add(dateToString());
+                        }else{
+                            row.add(result.getObject(i));
+                        }
                     }
+                    dataVector.add(row);
                 }
-                dataVector.add(row);
-            }
-            // Convert into 2D Object array
-            data = new Object[dataVector.size()][col];
-            for (int i = 0; i < dataVector.size(); i++){
-                data[i] = dataVector.get(i).toArray();
-            }
-
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        } finally {
-            // Close the connection in a finally block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
+                // Convert into 2D Object array
+                data = new Object[dataVector.size()][col];
+                for (int i = 0; i < dataVector.size(); i++){
+                    data[i] = dataVector.get(i).toArray();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
-        }
 
-        return data;
-    }
-
-    public Object[][] getUpcomingWork(){
-        Object[][] data = null;
-        try {
-            String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
-                    "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
-                    "AND `date` = ?";
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, getName());
-            preparedStatement.setDate(2, getDate());
-            ResultSet result = preparedStatement.executeQuery();
-
-            if (result.next()){
-                data = new Object[1][3];
-                data[0][0] = result.getInt(1);
-                data[0][1] = dateToString();
-                data[0][2] = result.getString(3);
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        } finally {
-            // Close the connection in a finally block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
-        }
-
-        return data;
-    }
-
-
-    public Object[][] getPastWork(){
-        Object[][] data = null;
-        try {
-            String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
-                    "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` < CURRENT_DATE "+
-                    "AND `date` = ?";
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, getName());
-            preparedStatement.setDate(2, getDate());
-
-            ResultSet result = preparedStatement.executeQuery();
-
-            if (result.next()){
-                data = new Object[1][3];
-                data[0][0] = result.getInt(1);
-                data[0][1] = dateToString();
-                data[0][2] = String.format("%s / %s", result.getString(3), "Done");
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        } finally {
-            // Close the connection in a finally block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
-        }
-
-        return data;
-    }
-
-    public Object[][] getAllPastWork(){
-        Object[][] data = null;
-        try {
-            String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
+            }else if (select.equals("Past")){
+                String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
                     "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` < CURRENT_DATE "+
                     "ORDER BY `date`";
-            conn = new DBConfig().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, getName());
+                conn = new DBConfig().getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, getName());
 
-            ResultSet result = preparedStatement.executeQuery();
+                ResultSet result = preparedStatement.executeQuery();
 
-            // Get the ResultSet metadata to determine the number of columns
-            ResultSetMetaData metaData = result.getMetaData();
-            int col = metaData.getColumnCount();
+                // Get the ResultSet metadata to determine the number of columns
+                ResultSetMetaData metaData = result.getMetaData();
+                int col = metaData.getColumnCount();
 
-            // To hold data
-            Vector<Vector<Object>> dataVector = new Vector<>();
+                // To hold data
+                Vector<Vector<Object>> dataVector = new Vector<>();
 
-            // Collect data
-            while (result.next()){
-                Vector<Object> row = new Vector<>();
+                // Collect data
+                while (result.next()){
+                    Vector<Object> row = new Vector<>();
 
-                row.add(result.getInt(1));
-                setDate(result.getDate(2));
-                row.add(dateToString());
-                row.add(String.format("%s / %s", result.getString(3), "Done"));
-                dataVector.add(row);
+                    row.add(result.getInt(1));
+                    setDate(result.getDate(2));
+                    row.add(dateToString());
+                    row.add(String.format("%s / %s", result.getString(3), "Done"));
+                    dataVector.add(row);
+                }
+
+                // Convert into 2D Object array
+                data = new Object[dataVector.size()][col];
+                for (int i = 0; i < dataVector.size(); i++){
+                    data[i] = dataVector.get(i).toArray();
+                }
             }
 
-            // Convert into 2D Object array
-            data = new Object[dataVector.size()][col];
-            for (int i = 0; i < dataVector.size(); i++){
-                data[i] = dataVector.get(i).toArray();
-            }
+
         }catch (SQLException e){
             e.printStackTrace();
         } finally {
@@ -485,6 +395,85 @@ public class Bid {
 
         return data;
     }
+
+
+
+
+
+
+
+    public Object[][] searchWorkScheduleByDate(String select){
+        Object[][] data = null;
+        try {
+
+            if (select.equals("Upcoming")){
+
+                if (getDate() == null){
+                    return filterSearchWorkSched(select);
+                }
+
+                String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
+                    "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` >= CURRENT_DATE "+
+                    "AND `date` = ?";
+                conn = new DBConfig().getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, getName());
+                preparedStatement.setDate(2, getDate());
+                ResultSet result = preparedStatement.executeQuery();
+
+                if (result.next()){
+                    data = new Object[1][3];
+                    data[0][0] = result.getInt(1);
+                    data[0][1] = dateToString();
+                    data[0][2] = result.getString(3);
+                }
+
+            }else if (select.equalsIgnoreCase("Past")){
+
+                if (getDate() == null){
+                    return filterSearchWorkSched(select);
+                }
+
+                String query = "SELECT `bid_id`, `date`, `bid_status` FROM `bid` " +
+                    "WHERE `username` = ? AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") AND `date` < CURRENT_DATE "+
+                    "AND `date` = ?";
+                conn = new DBConfig().getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, getName());
+                preparedStatement.setDate(2, getDate());
+
+                ResultSet result = preparedStatement.executeQuery();
+
+                if (result.next()){
+                    data = new Object[1][3];
+                    data[0][0] = result.getInt(1);
+                    data[0][1] = dateToString();
+                    data[0][2] = String.format("%s / %s", result.getString(3), "Done");
+                }
+            }
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            // Close the connection in a finally block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
+        }
+
+        return data;
+
+    }
+
+
+
+
 
     public ArrayList<Bid> getAllBidStatus(String username) {
         ArrayList<Bid> bids = new ArrayList<>();
