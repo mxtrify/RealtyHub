@@ -9,7 +9,7 @@ public class SetRoleController {
         this.userAccount = new UserAccount();
     }
 
-    public void setRole(UserAccount u) {
-        userAccount.setRole(u);
+    public boolean setRole(UserAccount u) {
+        return userAccount.updateUserAccount(u);
     }
 }

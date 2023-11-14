@@ -9,7 +9,7 @@ public class SetMaxSlotController {
         this.userAccount = new UserAccount();
     }
 
-    public void setMaxSlot(UserAccount u) {
-        userAccount.setMaxSlot(u);
+    public boolean setMaxSlot(UserAccount u) {
+        return userAccount.updateUserAccount(u);
     }
 }

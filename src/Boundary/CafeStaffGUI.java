@@ -74,8 +74,9 @@ public class CafeStaffGUI {
                         u.setMax_slot(newMaxSlot);
                         u.setRole_id(roleId);
 
-                        new SetMaxSlotController().setMaxSlot(u);
-                        new SetRoleController().setRole(u);
+                        if(new SetRoleController().setRole(u) && new SetMaxSlotController().setMaxSlot(u)) {
+                            JOptionPane.showMessageDialog(null, "Successfully set the role and max slot");
+                        }
 
                         hasInput = true;
                     } else {

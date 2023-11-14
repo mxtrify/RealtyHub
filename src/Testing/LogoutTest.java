@@ -20,10 +20,10 @@ public class LogoutTest {
 
     @Before
     public void setUp() throws Exception {
-        UserAccount sa = new UserAccount("SystemAdmin", "SystemAdmin", "System", "Admin", null, true);
-        UserAccount o = new UserAccount("CafeOwner", "CafeOwner", "Cafe", "Owner", null, true);
-        UserAccount m = new UserAccount("CafeManager", "CafeManager", "Cafe", "Manager", null, true);
-        UserAccount s = new UserAccount("CafeStaff", "CafeStaff", "Cafe", "Staff", null, true, 5, 2);
+        UserAccount sa = new UserAccount("SystemAdmin", "SystemAdmin", "System", "Admin", "SystemAdmin@Gmail.com", null, true);
+        UserAccount o = new UserAccount("CafeOwner", "CafeOwner", "Cafe", "Owner", "CafeOwner@Gmail.com", null, true);
+        UserAccount m = new UserAccount("CafeManager", "CafeManager", "Cafe", "Manager", "CafeManager@Gmail.com", null, true);
+        UserAccount s = new UserAccount("CafeStaff", "CafeStaff", "Cafe", "Staff", "CafeStaff@gmail.com", null, true, 5, 2);
 
         this.adminLogout = new SystemAdminGUI(sa);
         this.ownerLogout = new CafeOwnerGUI(o);
