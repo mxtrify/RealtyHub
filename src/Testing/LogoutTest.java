@@ -6,6 +6,7 @@ import Boundary.CafeManagerGUI;
 import Boundary.CafeStaffGUI;
 
 import Entity.UserAccount;
+import Entity.UserProfile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class LogoutTest {
         UserAccount sa = new UserAccount();
         UserAccount o = new UserAccount();
         UserAccount m = new UserAccount();
-        UserAccount s = new UserAccount();
+        UserAccount s = new UserAccount("John", "john", "John", "Price", new UserProfile(4), true, 10, 1);
 
         this.adminLogout = new SystemAdminGUI(sa);
         this.ownerLogout = new CafeOwnerGUI(o);
