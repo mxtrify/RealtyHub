@@ -110,7 +110,7 @@ public class OwnerCreateWorkSlotGUI {
                     int numOfWaiter = Integer.parseInt(waiterField.getText());
 
                     if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
-                        JOptionPane.showMessageDialog(frame, "Chef, Cashier or Staff must be more than 0");
+                        JOptionPane.showMessageDialog(frame, "Chef, Cashier or Waiter must be more than 0");
                     } else {
                         JOptionPane.showMessageDialog(frame, "Successfully created!");
                         WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
