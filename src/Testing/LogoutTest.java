@@ -6,7 +6,6 @@ import Boundary.CafeManagerGUI;
 import Boundary.CafeStaffGUI;
 
 import Entity.UserAccount;
-import Entity.UserProfile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,10 +20,10 @@ public class LogoutTest {
 
     @Before
     public void setUp() throws Exception {
-        UserAccount sa = new UserAccount();
-        UserAccount o = new UserAccount();
-        UserAccount m = new UserAccount();
-        UserAccount s = new UserAccount("John", "john", "John", "Price", new UserProfile(4), true, 10, 1);
+        UserAccount sa = new UserAccount("SystemAdmin", "SystemAdmin", "System", "Admin", null, true);
+        UserAccount o = new UserAccount("CafeOwner", "CafeOwner", "Cafe", "Owner", null, true);
+        UserAccount m = new UserAccount("CafeManager", "CafeManager", "Cafe", "Manager", null, true);
+        UserAccount s = new UserAccount("CafeStaff", "CafeStaff", "Cafe", "Staff", null, true, 5, 2);
 
         this.adminLogout = new SystemAdminGUI(sa);
         this.ownerLogout = new CafeOwnerGUI(o);
