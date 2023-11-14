@@ -184,7 +184,7 @@ public class CafeManagerGUI {
         });
 
         // Button for clear filter (Date)
-        JButton clearFilter = new JButton("Clear Filter");
+        JButton clearFilter = new JButton("Clear");
         clearFilter.setBounds(475,145,100, 36);
         frame.add(clearFilter);
         // Implement clear filter

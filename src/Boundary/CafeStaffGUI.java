@@ -56,7 +56,7 @@ public class CafeStaffGUI {
             inputPanel.add(maxSlotField);
 
             // Role components
-            JLabel roleLabel = new JLabel("Select role (Can't change):");
+            JLabel roleLabel = new JLabel("Select role (Permanent):");
             String[] roles = {"Waiter", "Cashier", "Chef"};
             JComboBox<String> roleDropdown = new JComboBox<>(roles);
             inputPanel.add(roleLabel);
@@ -104,6 +104,7 @@ public class CafeStaffGUI {
         JLabel titleLabel = new JLabel("Welcome Staff: " + u.getFullName());
         titleLabel.setBounds(50,20, 500, 25);
         panel.add(titleLabel);
+
 
 
         // Schedule button

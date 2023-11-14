@@ -57,7 +57,7 @@ public class MyScheduleGUI {
         frame.add(searchButton);
 
         // clear filter button
-        JButton clearFilter = new JButton("Clear All");
+        JButton clearFilter = new JButton("Clear");
         clearFilter.setBounds(475,145,100, 36);
         frame.add(clearFilter);
 
