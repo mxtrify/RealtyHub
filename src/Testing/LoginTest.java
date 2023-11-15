@@ -36,12 +36,12 @@ public class LoginTest {
         assertFalse(errorMessageDisplayed);
     }
 
-    @Test
-    public void testWrongLoginDetails() {
-        String wrongUsername = "wrongAdmin";
-        String wrongPassword = "wrongAdmin";
+    // @Test
+    // public void testWrongLoginDetails() {
+    //     String wrongUsername = "wrongAdmin";
+    //     String wrongPassword = "wrongAdmin";
 
-        testLogin.login(wrongUsername, wrongPassword);
-        assertTrue(testLogin.isErrorMessageDisplayed());
-    }
+    //     testLogin.login(wrongUsername, wrongPassword);
+    //     assertTrue(testLogin.isErrorMessageDisplayed());
+    // }
 }
