@@ -166,34 +166,17 @@ public class UserAccount {
                 } else {
                     maxSlot = resultSet.getInt("max_slot");
                 }
-
-//                UserProfile userProfile = new UserProfile(profileName, profileStatus);
-//                if(resultSet.getString("profile_name").equals("System Admin")) {
-//                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
-//                } else if (resultSet.getString("profile_name").equals("Cafe Owner")) {
-//                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
-//                } else if (resultSet.getString("profile_name").equals("Cafe Manager")) {
-//                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
-//                } else if (resultSet.getString("profile_name").equals("Cafe Staff")) {
-//                    return new UserAccount(username, password, fName, lName, email, userProfile, status, maxSlot, roleId);
-//                } else {
-//                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
-//                }
                 UserProfile userProfile = new UserProfile(profileName, profileStatus);
-
-                if (profileName != null) {
-                    switch (profileName) {
-                        case "System Admin":
-                        case "Cafe Owner":
-                        case "Cafe Manager":
-                            return new UserAccount(username, password, fName, lName, email, userProfile, status);
-                        case "Cafe Staff":
-                            return new UserAccount(username, password, fName, lName, email, userProfile, status, maxSlot, roleId);
-                        default:
-                            return new UserAccount(username, password, fName, lName, email, userProfile, status);
-                    }
-                }else {
-                    return null;
+                if(resultSet.getString("profile_name").equals("System Admin")) {
+                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
+                } else if (resultSet.getString("profile_name").equals("Cafe Owner")) {
+                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
+                } else if (resultSet.getString("profile_name").equals("Cafe Manager")) {
+                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
+                } else if (resultSet.getString("profile_name").equals("Cafe Staff")) {
+                    return new UserAccount(username, password, fName, lName, email, userProfile, status, maxSlot, roleId);
+                } else {
+                    return new UserAccount(username, password, fName, lName, email, userProfile, status);
                 }
             } else {
                 return null;
