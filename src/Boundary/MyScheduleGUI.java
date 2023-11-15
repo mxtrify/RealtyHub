@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Date;
 import java.util.Calendar;
 
 public class MyScheduleGUI {
@@ -39,7 +40,7 @@ public class MyScheduleGUI {
         // Return button
         JButton back = new JButton("Back");
         back.setBounds(660, 23, 110, 36);
-        // Implement back button here
+
         frame.add(back);
 
         // Date search bar
@@ -56,7 +57,7 @@ public class MyScheduleGUI {
         frame.add(searchButton);
 
         // clear filter button
-        JButton clearFilter = new JButton("Clear All");
+        JButton clearFilter = new JButton("Clear");
         clearFilter.setBounds(475,145,100, 36);
         frame.add(clearFilter);
 
@@ -67,7 +68,7 @@ public class MyScheduleGUI {
         frame.add(dropdown);
 
         // Table
-        data = new ViewAllUpcomingController().getAllUpcoming(userAccount);
+        data = new FilterWorkScheduleController().getFilterWorkSchedule("Upcoming", userAccount);
         String[] columnNames = {"ID", "Date", "Status"};
         model = new DefaultTableModel(data, columnNames){
             @Override
@@ -114,20 +115,13 @@ public class MyScheduleGUI {
             if (select.equals("Upcoming")){
                 date_search.setMinSelectableDate(current.getTime());
                 date_search.setMaxSelectableDate(null);
-
-                // Get data from database
-                // Display all upcoming work
-                data = new ViewAllUpcomingController().getAllUpcoming(userAccount);
             }else if (select.equals("Past")){
                 date_search.setMinSelectableDate(null);
                 current.add(Calendar.DAY_OF_MONTH, -1);
                 date_search.setMaxSelectableDate(current.getTime());
-
-                // Get data from database
-                // Display all Past work
-                data = new ViewAllPastController().getAllPast(userAccount);
             }
 
+            data = new FilterWorkScheduleController().getFilterWorkSchedule(select, userAccount);
             // Set data into model
             model.setDataVector(data, columnNames);
             table.setModel(model);
@@ -163,30 +157,15 @@ public class MyScheduleGUI {
             // Get selected date
             java.util.Date d = date_search.getDate();
 
-            if (dropdown.getSelectedItem().toString().equals("Upcoming")){
-                // Get data from database
-                if (d == null){
-                    // Search nothing
-                    // Display all upcoming work
-                    data = new ViewAllUpcomingController().getAllUpcoming(userAccount);
-                }else {
-                    // Search for an upcoming work
-                    java.sql.Date selectedDate = new java.sql.Date(d.getTime());
-                    data = new ViewUpcomingController().getUpcoming(userAccount, selectedDate);
-                }
-
-            } else if (dropdown.getSelectedItem().toString().equals("Past")) {
-                // Get data from database
-                if (d == null){
-                    // Search nothing
-                    // Display all past work
-                    data = new ViewAllPastController().getAllPast(userAccount);
-                }else {
-                    // Search for a past work
-                    java.sql.Date selectedDate = new java.sql.Date(d.getTime());
-                    data = new ViewPastWorkController().getPast(userAccount, selectedDate);
-                }
+            if (d == null){
+                data = new SearchScheduleByDate().getScheduleByDate(dropdown.getSelectedItem().toString(), userAccount, null);
+            }else{
+                java.sql.Date selectedDate = new java.sql.Date(d.getTime());
+                data = new SearchScheduleByDate().getScheduleByDate(dropdown.getSelectedItem().toString(), userAccount, selectedDate);
             }
+
+
+
 
             // Set data into model
             model.setDataVector(data, columnNames);
@@ -223,8 +202,8 @@ public class MyScheduleGUI {
             date_search.setMinSelectableDate(current.getTime());
 
             // Get data from database
-            // Display all upcoming work
-            data = new ViewAllUpcomingController().getAllUpcoming(userAccount);
+            data = new FilterWorkScheduleController().getFilterWorkSchedule("Upcoming", userAccount);
+
 
             // Set data into model
             model.setDataVector(data, columnNames);

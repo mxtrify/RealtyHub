@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class ViewUserProfileGUI {
     private JFrame frame;
     private DefaultTableModel model;
+    private JTextField searchTextField;
     private ArrayList<UserProfile> userProfiles;
     private String[] columnNames = {"Profile Name", "Description", "Status"};
 
@@ -52,7 +53,7 @@ public class ViewUserProfileGUI {
         frame.add(scrollPane);
 
         // Search Field
-        JTextField searchTextField = new JTextField();
+        searchTextField = new JTextField();
         searchTextField.setBounds(50, 135, 200, 36);
         searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
@@ -100,16 +101,16 @@ public class ViewUserProfileGUI {
 
         clearButton.addActionListener(e -> {
             searchTextField.setText("");
-            searchUserProfile(searchTextField, model);
+            searchUserProfile();
         });
 
-        searchButton.addActionListener(e -> searchUserProfile(searchTextField, model));
+        searchButton.addActionListener(e -> searchUserProfile());
 
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchUserProfile(searchTextField, model);
+                    searchUserProfile();
                 }
             }
         });
@@ -190,8 +191,8 @@ public class ViewUserProfileGUI {
         }
     }
 
-    public void searchUserProfile(JTextField searchField, DefaultTableModel model) {
-        String search = searchField.getText();
+    public void searchUserProfile() {
+        String search = searchTextField.getText();
 
         if(search.isEmpty()) {
             getProfileList();

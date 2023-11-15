@@ -56,7 +56,7 @@ public class CafeStaffGUI {
             inputPanel.add(maxSlotField);
 
             // Role components
-            JLabel roleLabel = new JLabel("Select role (Can't change):");
+            JLabel roleLabel = new JLabel("Select role (Permanent):");
             String[] roles = {"Waiter", "Cashier", "Chef"};
             JComboBox<String> roleDropdown = new JComboBox<>(roles);
             inputPanel.add(roleLabel);
@@ -74,8 +74,9 @@ public class CafeStaffGUI {
                         u.setMax_slot(newMaxSlot);
                         u.setRole_id(roleId);
 
-                        new SetMaxSlotController().setMaxSlot(u);
-                        new SetRoleController().setRole(u);
+                        if(new SetRoleController().setRole(u) && new SetMaxSlotController().setMaxSlot(u)) {
+                            JOptionPane.showMessageDialog(null, "Successfully set the role and max slot");
+                        }
 
                         hasInput = true;
                     } else {
@@ -103,6 +104,7 @@ public class CafeStaffGUI {
         JLabel titleLabel = new JLabel("Welcome Staff: " + u.getFullName());
         titleLabel.setBounds(50,20, 500, 25);
         panel.add(titleLabel);
+
 
 
         // Schedule button
@@ -257,7 +259,7 @@ public class CafeStaffGUI {
                 java.util.Date parsedDate = dateFormat.parse(dateString);
                 Date selectedDate = new Date(parsedDate.getTime());
 
-                int slotLeft = new ViewMonthlySlotLeft().viewMonthlySlotLeft(u,selectedDate);
+                int slotLeft = new ViewMonthlySlotLeftController().viewMonthlySlotLeft(u,selectedDate);
                 if (slotLeft > 0){
                     int confirm = JOptionPane.showConfirmDialog(frame, String.format("Slot left this Month: %d%nAre you sure want to make bid on this date?", slotLeft) , "Make Bid", JOptionPane.YES_NO_OPTION);
 
