@@ -98,8 +98,8 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('cashier22', 'cashier22', 'Floris', 'Mc-Ilrath', 'cashier22@gmail.com', 15, 4, 2, TRUE),
     ('cashier23', 'cashier23', 'Vincenzo', 'Cassano', 'cashier23@gmail.com', 16, 4, 2, TRUE),
     ('cashier24', 'cashier24', 'Anne', 'Bard', 'cashier24@gmail.com', 20, 4, 2, TRUE),
-    ('cashier25', 'cashier25', 'Paolo', 'Robertus', 'cashier25@gmail.com', 22, 4, 2, TRUE),
-;
+    ('cashier25', 'cashier25', 'Paolo', 'Robertus', 'cashier25@gmail.com', 22, 4, 2, TRUE);
+
 
 INSERT into `work_slot`(`date`) VALUES
     ("2023-12-01"),
@@ -201,11 +201,10 @@ INSERT into `work_slot`(`date`) VALUES
     ("2024-03-07"),
     ("2024-03-08"),
     ("2024-03-09"),
-    ("2024-03-10"),
-;
+    ("2024-03-10");
 
 INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES
-    ("2023-12-01", 1, 20),
+--    ("2023-12-01", 1, 20),
     ("2023-12-02", 1, 20),
     ("2023-12-03", 1, 20),
     ("2023-12-04", 1, 20),
@@ -504,8 +503,7 @@ INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES
     ("2024-03-07", 3, 20),
     ("2024-03-08", 3, 20),
     ("2024-03-09", 3, 20),
-    ("2024-03-10", 3, 20),
-;
+    ("2024-03-10", 3, 20);
 
 INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES
     ("Pending", "chef1", "2023-12-01"),
@@ -607,5 +605,4 @@ INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES
     ("Pending", "waiter22", "2024-01-22"),
     ("Pending", "waiter23", "2024-01-23"),
     ("Pending", "waiter24", "2024-01-24"),
-    ("Pending", "waiter25", "2024-01-25"),
-;
+    ("Pending", "waiter25", "2024-01-25");
