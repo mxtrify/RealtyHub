@@ -21,6 +21,7 @@ public class LoginTest {
         this.testLogin = new LoginGUI();
         errorMessageDisplayed = false;
         System.setProperty("java.awt.headless", "true");
+        GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
 
     @After
