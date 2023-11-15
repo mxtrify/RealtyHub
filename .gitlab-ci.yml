@@ -20,9 +20,9 @@ build:
 test:
   stage: test
   script:
-      - export JAVA_OPTS="-Djava.awt.headless=true"
-      - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LogoutTest
+      - java -cp build:lib/junit-4.13.2.jar:lib/mysql-connector-j-8.0.31.jar org.junit.runner.JUnitCore Testing.LoginTest Testing.LogoutTest
   parallel: 2
+  
 
 
       
