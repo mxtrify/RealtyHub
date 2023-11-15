@@ -77,9 +77,9 @@ public class SystemAdminGUI {
         editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(editButton);
 
-        // Delete profile button
+        // Suspend profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(590, 250, 120, 36);
+        suspendButton.setBounds(600, 250, 100, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         suspendButton.setEnabled(false);
         panel.add(suspendButton);

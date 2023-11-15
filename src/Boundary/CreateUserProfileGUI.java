@@ -18,7 +18,7 @@ public class CreateUserProfileGUI {
         panel.setLayout(null);
 
         JLabel titleLabel = new JLabel("Create User Profile");
-        titleLabel.setBounds(300, 30,235, 36);
+        titleLabel.setBounds(350, 30,300, 36);
         titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         panel.add(titleLabel);
 
@@ -55,7 +55,7 @@ public class CreateUserProfileGUI {
 
         backButton.addActionListener(e -> {
             frame.dispose();
-            new SystemAdminGUI(u);
+            new ViewUserProfileGUI(u);
         });
 
         createButton.addActionListener(e -> {

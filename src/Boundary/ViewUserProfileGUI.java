@@ -49,7 +49,7 @@ public class ViewUserProfileGUI {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 525, 350);
+        scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
 
         // Search Field
@@ -78,7 +78,7 @@ public class ViewUserProfileGUI {
 
         // Delete profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(590, 250, 120, 36);
+        suspendButton.setBounds(600, 250, 100, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(suspendButton);
         suspendButton.setEnabled(false);
