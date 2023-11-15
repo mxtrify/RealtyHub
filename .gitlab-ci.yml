@@ -20,7 +20,8 @@ build:
 test:
   stage: test
   script:
-       - java -cp build:lib/* org.junit.runner.JUnitCore Testing.LoginTest Testing.LogoutTest
+       - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LoginTest
+       - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LogoutTest
   parallel: 2
   
 
