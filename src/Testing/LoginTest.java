@@ -40,7 +40,8 @@ public class LoginTest {
     public void testWrongLoginDetails() {
         String wrongUsername = "wrongAdmin";
         String wrongPassword = "wrongAdmin";
-        assertNull(testLogin.login(wrongUsername, wrongPassword));
+
+        assertEquals(null, testLogin.login(wrongUsername, wrongPassword));
 
     }
 }
