@@ -29,6 +29,8 @@ public class LogoutTest {
         this.ownerLogout = new CafeOwnerGUI(o);
         this.managerLogout = new CafeManagerGUI(m);
         this.staffLogout = new CafeStaffGUI(s);
+
+        System.setProperty("java.awt.headless", "true");
     }
 
     @After

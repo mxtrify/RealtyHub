@@ -20,6 +20,7 @@ public class LoginTest {
     public void setUp() throws Exception {
         this.testLogin = new LoginGUI();
         errorMessageDisplayed = false;
+        System.setProperty("java.awt.headless", "true");
     }
 
     @After
