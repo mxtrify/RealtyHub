@@ -160,7 +160,7 @@ public class CafeOwnerGUI {
         model.setRowCount(0);
         WorkSlot workSlot = new SearchWorkSlotController().searchDate(selectedDate);
         if (workSlot != null) {
-            model.addRow(new Object[]{workSlot.getDate(), workSlot.getChefAmount(), workSlot.getCashierAmount(), workSlot.getWaiterAmount()});
+            model.addRow(new Object[]{workSlot.dateToString(), workSlot.getChefAmount(), workSlot.getCashierAmount(), workSlot.getWaiterAmount()});
         }
     }
 
