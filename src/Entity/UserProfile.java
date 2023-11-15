@@ -80,15 +80,19 @@ public class UserProfile {
 
     // Create
     public boolean createUserProfile(String profileName, String profileDesc) {
-        String query = "INSERT INTO profile (profile_name, profile_desc, profile_status) VALUES (?, ?, ?)";
+
         try {
             conn = new DBConfig().getConnection();
+
+
+            String query = "INSERT INTO profile (profile_name, profile_desc, profile_status) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             preparedStatement.setString(2, profileDesc);
             preparedStatement.setBoolean(3, true);
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
