@@ -13,10 +13,7 @@ public class LoginGUI {
 
     // Constructor
     public LoginGUI() {
-        if(!GraphicsEnvironment.isHeadless()){
-            displayLogin(); // Call the login GUI method
-        }
-        
+        displayLogin(); // Call the login GUI method
     }
 
     // Method to display the login GUI
