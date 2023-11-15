@@ -20,9 +20,10 @@ build:
 test:
   stage: test
   script:
-      - export JAVA_OPTS="-Djava.awt.headless=true"
-      - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LogoutTest
+       - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LoginTest
+       - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LogoutTest
   parallel: 2
+  
 
 
       
