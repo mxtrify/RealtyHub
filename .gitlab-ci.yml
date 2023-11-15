@@ -21,8 +21,7 @@ test:
   stage: test
   script:
       #- java -cp build:lib/junit-4.13.2.jar:lib/mysql-connector-j-8.0.31.jar org.junit.runner.JUnitCore Testing.LoginTest Testing.LogoutTest
-      - java -cp "build:lib/*" org.junit.runner.JUnitCore --select-class Testing.LoginTest
-      - java -cp "build:lib/*" org.junit.runner.JUnitCore --select-class Testing.LogoutTest
+      - java -cp "build:lib/*" org.junit.runner.JUnitCore Testing.LoginTest Testing.LogoutTest
 
 
       
