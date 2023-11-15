@@ -16,14 +16,10 @@ import static org.junit.Assert.*;
 public class LoginTest {
     private LoginController testLogin;
     private JFrame frame;
-    //private boolean errorMessageDisplayed;
 
     @Before
     public void setUp() throws Exception {
         this.testLogin = new LoginController();
-        //errorMessageDisplayed = false;
-        //System.setProperty("java.awt.headless", "true");
-        //GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
 
     @After
