@@ -272,7 +272,7 @@ public class AssignStaffGUI {
                     }
                 }
             }else {
-                JOptionPane.showMessageDialog(frame, "Please select a workslot", "Select Workslot", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please select a Staff", "Select Staff", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -280,7 +280,7 @@ public class AssignStaffGUI {
         approve.addActionListener(e->{
             if(bid == null){
                 // Error message when no bid is selected
-                JOptionPane.showMessageDialog(frame, "Please select a workslot", "Select Workslot", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please select a bid", "Select Bid", JOptionPane.WARNING_MESSAGE);
             }else{
                 int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to approve this bid?", "Approve Bid", JOptionPane.YES_NO_OPTION);
 
@@ -364,7 +364,7 @@ public class AssignStaffGUI {
         reject.addActionListener(e->{
             if(bid == null){
                 // Error message when no bid is selected
-                JOptionPane.showMessageDialog(frame, "Please select a workslot", "Select Workslot", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Please select a bid", "Select Bid", JOptionPane.WARNING_MESSAGE);
             }else{
                 // Show confirmation message
                 int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to reject this bid?", "Reject Bid", JOptionPane.YES_NO_OPTION);
