@@ -99,10 +99,6 @@ public class LoginGUI {
     }
 
     // For Testing
-    public JFrame getFrame() {
-        return frame;
-    }
-
     public boolean isErrorMessageDisplayed() {
         return errorMessageDisplayed;
     }
