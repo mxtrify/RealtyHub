@@ -77,12 +77,13 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('waiter', 'waiter', 'Tom', 'Brooklyn', 'waiter@gmail.com', 5, 4, 1, TRUE)
 ;
 
-INSERT into `work_slot`(`date`) VALUES ("2023-12-01");
-
-INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 1, 3);
-INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 2, 2);
-INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 3, 1);
-
-INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "chef", "2023-12-01");
-INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "cashier", "2023-12-01");
-INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "waiter", "2023-12-01");
+-- Commented out because will insert during dataSet.sql
+--INSERT into `work_slot`(`date`) VALUES ("2023-12-01");
+--
+--INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 1, 3);
+--INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 2, 2);
+--INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 3, 1);
+--
+--INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "chef", "2023-12-01");
+--INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "cashier", "2023-12-01");
+--INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "waiter", "2023-12-01");

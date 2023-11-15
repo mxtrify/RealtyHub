@@ -13,7 +13,10 @@ public class LoginGUI {
 
     // Constructor
     public LoginGUI() {
-        displayLogin(); // Call the login GUI method
+        if(!GraphicsEnvironment.isHeadless()){
+            displayLogin(); // Call the login GUI method
+        }
+        
     }
 
     // Method to display the login GUI
@@ -99,10 +102,6 @@ public class LoginGUI {
     }
 
     // For Testing
-    public JFrame getFrame() {
-        return frame;
-    }
-
     public boolean isErrorMessageDisplayed() {
         return errorMessageDisplayed;
     }

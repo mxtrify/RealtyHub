@@ -20,13 +20,13 @@ public class LoginTest {
     public void setUp() throws Exception {
         this.testLogin = new LoginGUI();
         errorMessageDisplayed = false;
-//        SwingUtilities.invokeLater(() -> frame.setVisible(true));
+        System.setProperty("java.awt.headless", "true");
+        GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
 
     @After
     public void tearDown() throws Exception {
         testLogin = null;
-//        SwingUtilities.invokeLater(() -> frame.setVisible(false));
     }
 
     @Test
@@ -34,7 +34,6 @@ public class LoginTest {
         String correctUsername = "admin";
         String correctPassword = "admin";
         testLogin.login(correctUsername, correctPassword);
-//        assertFalse(frame.isVisible());
         assertFalse(errorMessageDisplayed);
     }
 
