@@ -68,7 +68,7 @@ public class MyScheduleGUI {
         frame.add(dropdown);
 
         // Table
-        data = new FilterWorkScheduleController().getFilterWorkSchedule("Upcoming", userAccount);
+        data = new ViewAllUpcomingController().getAllUpcoming("Upcoming", userAccount);
         String[] columnNames = {"ID", "Date", "Status"};
         model = new DefaultTableModel(data, columnNames){
             @Override
