@@ -204,7 +204,7 @@ INSERT into `work_slot`(`date`) VALUES
     ("2024-03-10");
 
 INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES
---    ("2023-12-01", 1, 20),
+    ("2023-12-01", 1, 20),
     ("2023-12-02", 1, 20),
     ("2023-12-03", 1, 20),
     ("2023-12-04", 1, 20),
