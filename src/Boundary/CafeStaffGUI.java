@@ -273,7 +273,7 @@ public class CafeStaffGUI {
                         }
                     }
                 } else if (slotLeft == 0) {
-                    JOptionPane.showMessageDialog(frame, String.format("Slot limit reached!%nSlot left this Month: %d", slotLeft), "Limit Reached", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, String.format("Slot limit reached!%nSlot left this month: %d", slotLeft), "Limit Reached", JOptionPane.WARNING_MESSAGE);
                 }else {
                     JOptionPane.showMessageDialog(frame, "Issue while approving bid, please try again!", "Exception Occurs", JOptionPane.WARNING_MESSAGE);
                 }
