@@ -24,53 +24,53 @@ public class CreateUserAccountGUI {
         panel.add(createAccountLabel);
 
         JLabel usernameLabel = new JLabel("Username");
-        usernameLabel.setBounds(200, 100, 235, 50);
+        usernameLabel.setBounds(225, 125, 235, 50);
         panel.add(usernameLabel);
 
         JTextField usernameField = new JTextField();
-        usernameField.setBounds(300, 100, 235, 50);
+        usernameField.setBounds(325, 125, 235, 50);
         panel.add(usernameField);
 
         JLabel passwordLabel = new JLabel("Password");
-        passwordLabel.setBounds(200, 150, 235, 50);
+        passwordLabel.setBounds(225, 175, 235, 50);
         panel.add(passwordLabel);
 
         JPasswordField passwordField = new JPasswordField();
-        passwordField.setBounds(300, 150, 235, 50);
+        passwordField.setBounds(325, 175, 235, 50);
         panel.add(passwordField);
 
         JLabel firstNameLabel = new JLabel("First Name");
-        firstNameLabel.setBounds(200, 200, 235, 50);
+        firstNameLabel.setBounds(225, 225, 235, 50);
         panel.add(firstNameLabel);
 
         JTextField firstNameField = new JTextField();
-        firstNameField.setBounds(300, 200, 235, 50);
+        firstNameField.setBounds(325, 225, 235, 50);
         panel.add(firstNameField);
 
         JLabel lastNameLabel = new JLabel("Last Name");
-        lastNameLabel.setBounds(200, 250, 235, 50);
+        lastNameLabel.setBounds(225, 275, 235, 50);
         panel.add(lastNameLabel);
 
         JTextField lastNameField = new JTextField();
-        lastNameField.setBounds(300, 250, 235, 50);
+        lastNameField.setBounds(325, 275, 235, 50);
         panel.add(lastNameField);
 
         JLabel emailLabel = new JLabel("Email");
-        emailLabel.setBounds(200, 300, 235, 50);
+        emailLabel.setBounds(225, 325, 235, 50);
         panel.add(emailLabel);
 
         JTextField emailField = new JTextField();
-        emailField.setBounds(300, 300, 235, 50);
+        emailField.setBounds(325, 325, 235, 50);
         panel.add(emailField);
 
         JLabel profileLabel = new JLabel("Profile");
-        profileLabel.setBounds(200, 350, 235, 50);
+        profileLabel.setBounds(225, 375, 235, 50);
         panel.add(profileLabel);
 
         ArrayList<String> profileList = new CreateUserAccountController().getProfileList();
         DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(profileList.toArray(new String[0]));
         JComboBox<String> profileComboBox = new JComboBox<>(profileComboModel);
-        profileComboBox.setBounds(300, 350, 235,50);
+        profileComboBox.setBounds(325, 375, 235,50);
         panel.add(profileComboBox);
 
         JButton backButton = new JButton("Back");

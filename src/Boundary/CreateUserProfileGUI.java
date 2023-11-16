@@ -18,24 +18,24 @@ public class CreateUserProfileGUI {
         panel.setLayout(null);
 
         JLabel titleLabel = new JLabel("Create User Profile");
-        titleLabel.setBounds(350, 30,300, 36);
+        titleLabel.setBounds(230, 30,350, 36);
         titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         panel.add(titleLabel);
 
         JLabel profileNameLabel = new JLabel("Profile Name");
-        profileNameLabel.setBounds(100, 100, 235, 50);
+        profileNameLabel.setBounds(215, 125, 235, 50);
         panel.add(profileNameLabel);
 
         JTextField profileNameField = new JTextField();
-        profileNameField.setBounds(200, 100, 235, 50);
+        profileNameField.setBounds(315, 125, 235, 50);
         panel.add(profileNameField);
 
         JLabel descLabel = new JLabel("Description");
-        descLabel.setBounds(100, 150, 235, 50);
+        descLabel.setBounds(215, 185, 235, 50);
         panel.add(descLabel);
 
         JTextArea profileDescArea = new JTextArea();
-        profileDescArea.setBounds(200, 150, 235, 50);
+        profileDescArea.setBounds(315, 185, 235, 75);
         profileDescArea.setLineWrap(true);
         profileDescArea.setWrapStyleWord(true);
         panel.add(profileDescArea);

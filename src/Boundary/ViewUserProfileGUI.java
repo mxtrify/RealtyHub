@@ -34,7 +34,7 @@ public class ViewUserProfileGUI {
 
         // View profile button
         JButton viewUserAccountButton = new JButton("View Account");
-        viewUserAccountButton.setBounds(585, 135, 135, 36);
+        viewUserAccountButton.setBounds(580, 135, 135, 36);
         viewUserAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(viewUserAccountButton);
 
@@ -72,13 +72,13 @@ public class ViewUserProfileGUI {
 
         // Edit profile button
         JButton editButton = new JButton("Edit");
-        editButton.setBounds(600, 200, 100, 36);
+        editButton.setBounds(590, 200, 110, 36);
         editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(editButton);
 
         // Delete profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(600, 250, 100, 36);
+        suspendButton.setBounds(590, 250, 110, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(suspendButton);
         suspendButton.setEnabled(false);

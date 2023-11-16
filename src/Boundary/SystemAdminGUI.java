@@ -31,7 +31,7 @@ public class SystemAdminGUI {
         // Display welcome message for the logged-in user
         JLabel titleLabel = new JLabel("Welcome, " + u.getFullName());
         titleLabel.setBounds(50,75, 500, 36);
-        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,28));
         panel.add(titleLabel);
 
         // Search Field
@@ -73,13 +73,13 @@ public class SystemAdminGUI {
 
         // Edit profile button
         JButton editButton = new JButton("Edit");
-        editButton.setBounds(600, 200, 100, 36);
+        editButton.setBounds(600, 200, 110, 36);
         editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(editButton);
 
         // Suspend profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(600, 250, 100, 36);
+        suspendButton.setBounds(600, 250, 110, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         suspendButton.setEnabled(false);
         panel.add(suspendButton);

@@ -31,14 +31,14 @@ public class UpdateBidGUI {
 
         // Title
         JLabel titleLabel = new JLabel("Update Bid");
-        titleLabel.setBounds(350, 30, 415, 58);
-        titleLabel.setFont(new Font("Jost", Font.BOLD, 30));
+        titleLabel.setBounds(300, 30, 415, 58);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         frame.add(titleLabel);
 
         // Label
-        JLabel currentDateLabel = new JLabel("Current date : ");
-        currentDateLabel.setBounds(50, 110, 415, 36);
-        currentDateLabel.setFont(new Font("Jost", Font.BOLD, 18));
+        JLabel currentDateLabel = new JLabel("Current date");
+        currentDateLabel.setBounds(75, 110, 415, 36);
+        currentDateLabel.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(currentDateLabel);
 
         // DateChooser
@@ -46,14 +46,14 @@ public class UpdateBidGUI {
         dateChooser.setDate(Calendar.getInstance().getTime());
         AtomicReference<Calendar> currentDate = new AtomicReference<>(Calendar.getInstance());
         dateChooser.setMinSelectableDate(currentDate.get().getTime());
-        dateChooser.setBounds(225,110, 175,36);
+        dateChooser.setBounds(250,110, 175,36);
         dateChooser.setEnabled(false);
         frame.add(dateChooser);
 
         // Label
-        JLabel newDate = new JLabel("Choose new date : ");
-        newDate.setBounds(50, 150, 415, 36);
-        newDate.setFont(new Font("Jost", Font.BOLD, 18));
+        JLabel newDate = new JLabel("Choose new date");
+        newDate.setBounds(75, 150, 415, 36);
+        newDate.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(newDate);
 
         // Table
@@ -68,7 +68,7 @@ public class UpdateBidGUI {
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(225,150, 450, 250);
+        scrollPane.setBounds(250,150, 450, 250);
         frame.add(scrollPane);
 
         // Back button
@@ -92,56 +92,61 @@ public class UpdateBidGUI {
         });
 
         saveButton.addActionListener(e -> {
-            String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
-                Date sqlDate = new Date(utilDate.getTime()); // Convert to java.sql.Date
-                if(userAccount.getRole_id() == 1) { // Waiter
-                    int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),3);
-                    if(chefAmountLeft != 0) {
-                        UpdateBidController updateBidController = new UpdateBidController();
-                        if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
-                            JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
-                            frame.dispose();
-                            new BidStatusGUI(userAccount);
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                String dateString = model.getValueAt(table.getSelectedRow(), 0).toString();
+                SimpleDateFormat format = new SimpleDateFormat("dd MMM, yyyy");
+                try {
+                    java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
+                    Date sqlDate = new Date(utilDate.getTime()); // Convert to java.sql.Date
+                    if(userAccount.getRole_id() == 1) { // Waiter
+                        int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),3);
+                        if(chefAmountLeft != 0) {
+                            UpdateBidController updateBidController = new UpdateBidController();
+                            if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                                JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                                frame.dispose();
+                                new BidStatusGUI(userAccount);
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                            }
                         } else {
-                            JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
-                    }
-                } else if (userAccount.getRole_id() == 2) { // Cashier
-                    int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),2);
-                    if(chefAmountLeft != 0) {
-                        UpdateBidController updateBidController = new UpdateBidController();
-                        if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
-                            JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
-                            frame.dispose();
-                            new BidStatusGUI(userAccount);
+                    } else if (userAccount.getRole_id() == 2) { // Cashier
+                        int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),2);
+                        if(chefAmountLeft != 0) {
+                            UpdateBidController updateBidController = new UpdateBidController();
+                            if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                                JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                                frame.dispose();
+                                new BidStatusGUI(userAccount);
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                            }
                         } else {
-                            JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
-                    }
-                } else if (userAccount.getRole_id() == 3) { // Chef
-                    int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),1);
-                    if(chefAmountLeft != 0) {
-                        UpdateBidController updateBidController = new UpdateBidController();
-                        if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
-                            JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
-                            frame.dispose();
-                            new BidStatusGUI(userAccount);
+                    } else if (userAccount.getRole_id() == 3) { // Chef
+                        int chefAmountLeft = (int) model.getValueAt(table.getSelectedRow(),1);
+                        if(chefAmountLeft != 0) {
+                            UpdateBidController updateBidController = new UpdateBidController();
+                            if(updateBidController.updateBid(bid.getBidId(), userAccount.getUsername(), sqlDate)) {
+                                JOptionPane.showMessageDialog(frame, "Successfully Update bid", "Success", JOptionPane.PLAIN_MESSAGE);
+                                frame.dispose();
+                                new BidStatusGUI(userAccount);
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                            }
                         } else {
-                            JOptionPane.showMessageDialog(frame, "You already submitted bid for this date", "Failed", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Work slot is full for your role", "Failed", JOptionPane.PLAIN_MESSAGE);
                     }
+                } catch (ParseException d) {
+                    d.printStackTrace();
                 }
-            } catch (ParseException d) {
-                d.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a row to update.");
             }
         });
     }

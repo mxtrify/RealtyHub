@@ -35,19 +35,21 @@ public class CafeManagerGUI {
         frame.setLayout(null);
 
         // Title label
-        JLabel titleLabel = new JLabel("Welcome, "+u.getUsername());
-        titleLabel.setFont(new Font("Jost", Font.BOLD, 36));
-        titleLabel.setBounds(30,83, 413, 55);
+        JLabel titleLabel = new JLabel("Welcome, " + u.getFullName());
+        titleLabel.setBounds(50,75, 500, 36);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,28));
         frame.add(titleLabel);
 
         // Logout button
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(660, 23, 110, 36);
+        logoutButton.setBounds(650, 50, 100, 36);
+        logoutButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(logoutButton);
 
         // Assign Button
         JButton assignButton = new JButton("Assign");
-        assignButton.setBounds(660, 200, 110, 36);
+        assignButton.setBounds(600, 200, 110, 36);
+        assignButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(assignButton);
 
         // Assign Button implementation
@@ -72,12 +74,13 @@ public class CafeManagerGUI {
         Calendar current = Calendar.getInstance();
         // Prevent selecting past dates
         date_search.setMinSelectableDate(current.getTime());
-        date_search.setBounds(30,145, 350,36);
+        date_search.setBounds(50, 135, 360, 36);
         frame.add(date_search);
 
         // Search button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(385,145,80, 36);
+        searchButton.setBounds(410, 135, 90, 36);
+        searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(searchButton);
 
         // Table
@@ -106,7 +109,7 @@ public class CafeManagerGUI {
 
         // Add table to scroll pane
         scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(30,200, 550, 316);
+        scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
 
         // Get data from table after selecting
@@ -174,7 +177,7 @@ public class CafeManagerGUI {
 
             // Add table to scroll pane
             scrollPane = new JScrollPane(table);
-            scrollPane.setBounds(30,200, 550, 316);
+            scrollPane.setBounds(50,175, 510, 350);
             // Add to frame
             frame.add(scrollPane);
 
@@ -185,7 +188,8 @@ public class CafeManagerGUI {
 
         // Button for clear filter (Date)
         JButton clearFilter = new JButton("Clear");
-        clearFilter.setBounds(475,145,100, 36);
+        clearFilter.setBounds(500, 135, 60, 36);
+        clearFilter.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(clearFilter);
         // Implement clear filter
         clearFilter.addActionListener(e->{
@@ -218,7 +222,7 @@ public class CafeManagerGUI {
 
             // Add table to scroll pane
             scrollPane = new JScrollPane(table);
-            scrollPane.setBounds(30,200, 550, 316);
+            scrollPane.setBounds(50,175, 510, 350);
             // Add to frame
             frame.add(scrollPane);
 

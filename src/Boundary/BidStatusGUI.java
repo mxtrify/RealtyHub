@@ -33,20 +33,21 @@ public class BidStatusGUI {
 
         // Title
         JLabel titleLabel = new JLabel("Bid Status");
-        titleLabel.setBounds(45, 42, 415, 58);
-        titleLabel.setFont(new Font("Jost", Font.BOLD, 30));
+        titleLabel.setBounds(50,75, 550, 36);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,28));
         frame.add(titleLabel);
 
         // Back button
         JButton backButton = new JButton("Back");
-        backButton.setBounds(650, 20, 100, 25);
+        backButton.setBounds(650, 50, 100, 36);
+        backButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(backButton);
 
         // DateChooser
         JDateChooser dateChooser = new JDateChooser();
         AtomicReference<Calendar> currentDate = new AtomicReference<>(Calendar.getInstance());
         dateChooser.setMinSelectableDate(currentDate.get().getTime());
-        dateChooser.setBounds(50,135, 175,36);
+        dateChooser.setBounds(50, 135, 180, 36);
         frame.add(dateChooser);
 
         // Search Button
@@ -78,7 +79,7 @@ public class BidStatusGUI {
         // Dropdown filter
         String[] options = {"Pending", "Approved", "Rejected"};
         JComboBox<String> dropdown = new JComboBox<>(options);
-        dropdown.setBounds(380, 135, 125, 36);
+        dropdown.setBounds(380, 135, 180, 36);
         dropdown.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(dropdown);
 

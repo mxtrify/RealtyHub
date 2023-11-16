@@ -33,13 +33,14 @@ public class MyScheduleGUI {
 
         // Title
         JLabel title = new JLabel("My Schedule");
-        title.setBounds(45, 42, 415, 58);
-        title.setFont(new Font("Jost", Font.BOLD, 30));
+        title.setBounds(50,75, 550, 36);
+        title.setFont(new Font("Helvetica", Font.PLAIN,28));
         frame.add(title);
 
         // Return button
         JButton back = new JButton("Back");
-        back.setBounds(660, 23, 110, 36);
+        back.setBounds(650, 50, 100, 36);
+        back.setFont(new Font("Helvetica", Font.PLAIN,18));
 
         frame.add(back);
 
@@ -48,23 +49,26 @@ public class MyScheduleGUI {
         current = Calendar.getInstance();
         // Prevent selecting past dates
         date_search.setMinSelectableDate(current.getTime());
-        date_search.setBounds(30,145, 350,36);
+        date_search.setBounds(50, 135, 180, 36);
         frame.add(date_search);
 
         // Search button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(385,145,80, 36);
+        searchButton.setBounds(230, 135, 90, 36);
+        searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(searchButton);
 
         // clear filter button
         JButton clearFilter = new JButton("Clear");
-        clearFilter.setBounds(475,145,100, 36);
+        clearFilter.setBounds(320, 135, 60, 36);
+        clearFilter.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(clearFilter);
 
         // Dropdown filter
         String[] options = {"Upcoming", "Past"};
         JComboBox<String > dropdown = new JComboBox<>(options);
-        dropdown.setBounds(585, 145, 100, 36);
+        dropdown.setBounds(380, 135, 180, 36);
+        dropdown.setFont(new Font("Helvetica", Font.PLAIN,18));
         frame.add(dropdown);
 
         // Table
@@ -92,7 +96,7 @@ public class MyScheduleGUI {
 
         // Add table to scroll pane
         scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(30,200, 650, 316);
+        scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
 
         // Dropdown button implementation
@@ -137,7 +141,7 @@ public class MyScheduleGUI {
 
             // Add table to scroll pane
             scrollPane = new JScrollPane(table);
-            scrollPane.setBounds(30,200, 650, 316);
+            scrollPane.setBounds(50,175, 510, 350);
             // Add to frame
             frame.add(scrollPane);
 
@@ -182,7 +186,7 @@ public class MyScheduleGUI {
 
             // Add table to scroll pane
             scrollPane = new JScrollPane(table);
-            scrollPane.setBounds(30,200, 650, 316);
+            scrollPane.setBounds(50,175, 510, 350);
             // Add to frame
             frame.add(scrollPane);
 
