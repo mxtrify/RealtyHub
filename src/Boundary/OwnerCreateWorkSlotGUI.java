@@ -105,18 +105,28 @@ public class OwnerCreateWorkSlotGUI {
 
                 // If any of the fields is empty, prompt user to enter valid amount
                 if(!chefField.getText().isEmpty() && !cashierField.getText().isEmpty() && !waiterField.getText().isEmpty()) {
-                    int numOfChef = Integer.parseInt(chefField.getText());
-                    int numOfCashier = Integer.parseInt(cashierField.getText());
-                    int numOfWaiter = Integer.parseInt(waiterField.getText());
+                    try{
 
-                    if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
-                        JOptionPane.showMessageDialog(frame, "Chef, Cashier or Waiter must be more than 0");
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Successfully created!");
-                        WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
-                        frame.dispose();
-                        new CafeOwnerGUI(u);
+                        int numOfChef = Integer.parseInt(chefField.getText());
+                        int numOfCashier = Integer.parseInt(cashierField.getText());
+                        int numOfWaiter = Integer.parseInt(waiterField.getText());
+
+                        if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
+                            JOptionPane.showMessageDialog(frame, "Chef, Cashier or Waiter must be more than 0");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Successfully created!");
+                            new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
+                            frame.dispose();
+                            new CafeOwnerGUI(u);
+                        }
+
+                    }catch (NumberFormatException nfe){
+                        JOptionPane.showMessageDialog(frame, "Please enter valid value (numbers)");
+
                     }
+
+
+
                 } else {
                     JOptionPane.showMessageDialog(frame, "Fields must be filled");
                 }

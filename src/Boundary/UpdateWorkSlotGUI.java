@@ -70,38 +70,37 @@ public class UpdateWorkSlotGUI {
 
         // Action for the save button
         saveButton.addActionListener(e -> {
-            if(chefField.getText().isEmpty() || cashierField.getText().isEmpty() || waiterField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Failed", JOptionPane.WARNING_MESSAGE);
-            } else if (Integer.parseInt(chefField.getText()) < 1 || Integer.parseInt(cashierField.getText()) < 1 || Integer.parseInt(waiterField.getText()) < 1) {
-                JOptionPane.showMessageDialog(frame, "Must be greater than 0", "Failed", JOptionPane.WARNING_MESSAGE);
-            } else {
-                UpdateWorkSlotController updateWorkSlotController = new UpdateWorkSlotController(workSlot.getDate());
+            try {
+                if(chefField.getText().isEmpty() || cashierField.getText().isEmpty() || waiterField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Please don't leave any empty field", "Failed", JOptionPane.WARNING_MESSAGE);
+                } else if (Integer.parseInt(chefField.getText()) < 1 || Integer.parseInt(cashierField.getText()) < 1 || Integer.parseInt(waiterField.getText()) < 1) {
+                    JOptionPane.showMessageDialog(frame, "Must be greater than 0", "Failed", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    UpdateWorkSlotController updateWorkSlotController = new UpdateWorkSlotController(workSlot.getDate());
 
-                // Update chef
-                if (!updateWorkSlotController.updateRoleAmount(3, Integer.parseInt(chefField.getText()))){
-                    JOptionPane.showMessageDialog(frame, "New number must not less than the number of assigned/approved Chef on this date", "Failed", JOptionPane.WARNING_MESSAGE);
-                }else{
-                    // Update Cashier
-                    if (!updateWorkSlotController.updateRoleAmount(2, Integer.parseInt(cashierField.getText()))){
-                        JOptionPane.showMessageDialog(frame, "New number must not less than the number of assigned/approved Cashier on this date", "Failed", JOptionPane.WARNING_MESSAGE);
+                    // Update chef
+                    if (!updateWorkSlotController.updateRoleAmount(3, Integer.parseInt(chefField.getText()))){
+                        JOptionPane.showMessageDialog(frame, "New number must not less than the number of assigned/approved Chef on this date", "Failed", JOptionPane.WARNING_MESSAGE);
                     }else{
-                        // Update Waiter
-                        if (!updateWorkSlotController.updateRoleAmount( 1, Integer.parseInt(waiterField.getText()))){
-                            JOptionPane.showMessageDialog(frame, "New number must not less than the number of assigned/approved Waiter on this date", "Failed", JOptionPane.WARNING_MESSAGE);
+                        // Update Cashier
+                        if (!updateWorkSlotController.updateRoleAmount(2, Integer.parseInt(cashierField.getText()))){
+                            JOptionPane.showMessageDialog(frame, "New number must not less than the number of assigned/approved Cashier on this date", "Failed", JOptionPane.WARNING_MESSAGE);
                         }else{
-                            // Done, return to cafe owner GUI
-                            frame.dispose();
-                            new CafeOwnerGUI(userAccount);
+                            // Update Waiter
+                            if (!updateWorkSlotController.updateRoleAmount( 1, Integer.parseInt(waiterField.getText()))){
+                                JOptionPane.showMessageDialog(frame, "New number must not less than the number of assigned/approved Waiter on this date", "Failed", JOptionPane.WARNING_MESSAGE);
+                            }else{
+                                // Done, return to cafe owner GUI
+                                frame.dispose();
+                                new CafeOwnerGUI(userAccount);
+                            }
                         }
                     }
                 }
-
-
-
-
-
-
+            }catch (NumberFormatException nfe){
+                JOptionPane.showMessageDialog(frame, "Please enter valid value (numbers)");
             }
+
         });
 
 
