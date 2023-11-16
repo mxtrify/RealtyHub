@@ -621,15 +621,18 @@ public class WorkSlot {
                     "    AND YEAR(`bid`.`date`) = ? " +
                     "    AND MONTH(`bid`.`date`) = ? " +
                     "    AND (`bid`.`bid_status` = \"Pending\" OR `bid`.`bid_status` = \"Rejected\") " +
+                    "    AND `user_account`.`status` = 1 "+
                     "LEFT JOIN `profile` ON `user_account`.`profile_id` = `profile`.`profile_id`  " +
                     "LEFT JOIN `role` ON `user_account`.`role_id` = `role`.`role_id` " +
                     "WHERE `profile`.`profile_name` = \"Cafe Staff\" " +
                     "AND `user_account`.`username` NOT IN ( " +
-                    "    SELECT `username` FROM `bid` " +
-                    "    WHERE YEAR(`date`) = ? " +
-                    "    AND MONTH(`date`) = ? " +
-                    "    AND (`bid_status` = \"Approved\" OR `bid_status` = \"Assigned\") " +
-                    "    AND `date` = ? " +
+                    "    SELECT `bid`.`username` FROM `bid` " +
+                    "    JOIN `user_account` ON `bid`.`username` = `user_account`.`username` " +
+                    "    WHERE YEAR(`bid`.`date`) = ? " +
+                    "    AND MONTH(`bid`.`date`) = ? " +
+                    "    AND (`bid`.`bid_status` = \"Approved\" OR `bid`.`bid_status` = \"Assigned\") " +
+                    "    AND `bid`.`date` = ? " +
+                    "    AND `user_account`.`status` = 0 " +
                     ") " +
                     "GROUP BY `user_account`.`username` " +
                     "HAVING `num` < `max` " +

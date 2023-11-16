@@ -84,17 +84,27 @@ public class UserProfile {
         try {
             conn = new DBConfig().getConnection();
 
-
-            String query = "INSERT INTO profile (profile_name, profile_desc, profile_status) VALUES (?, ?, ?)";
+            String query = "SELECT * FROM profile WHERE profile_name = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
-            preparedStatement.setString(2, profileDesc);
-            preparedStatement.setBoolean(3, true);
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                return false;
+            }else {
+                query = "INSERT INTO profile (profile_name, profile_desc, profile_status) VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, profileName);
+                preparedStatement.setString(2, profileDesc);
+                preparedStatement.setBoolean(3, true);
+                int rowsAffected = preparedStatement.executeUpdate();
+                return rowsAffected > 0;
+            }
+
+
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException();
         } finally {
             // Close the connection in a finally block to ensure it happens even if an exception occurs.
             try {
