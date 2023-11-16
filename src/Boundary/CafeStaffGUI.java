@@ -35,11 +35,6 @@ public class CafeStaffGUI {
                 displayCafeStaffGUI(u);
             }
         }
-
-
-
-
-
     }
 
     public boolean askMaxSlotAndRole(UserAccount u) {
@@ -101,30 +96,33 @@ public class CafeStaffGUI {
         panel.setLayout(null);
 
         // Title label
-        JLabel titleLabel = new JLabel("Welcome Staff: " + u.getFullName());
-        titleLabel.setBounds(50,20, 500, 25);
+        JLabel titleLabel = new JLabel("Welcome, " + u.getFullName());
+        titleLabel.setBounds(50,75, 550, 36);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,28));
         panel.add(titleLabel);
-
-
 
         // Schedule button
         JButton scheduleButton = new JButton("Schedule");
-        scheduleButton.setBounds(600, 100, 100, 25);
+        scheduleButton.setBounds(600, 200, 110, 36);
+        scheduleButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(scheduleButton);
 
         // Bid Status button
         JButton bidStatusButton = new JButton("Bid Status");
-        bidStatusButton.setBounds(600, 150, 100, 25);
+        bidStatusButton.setBounds(600, 250, 110, 36);
+        bidStatusButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(bidStatusButton);
 
         // Bid Button
         JButton bid = new JButton("Bid");
-        bid.setBounds(600,200, 100, 25);
+        bid.setBounds(600, 300, 110, 36);
+        bid.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(bid);
 
         // Search Button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(250, 100, 100, 25);
+        searchButton.setBounds(410, 135, 90, 36);
+        searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchButton);
 
         // Search Bar
@@ -132,17 +130,19 @@ public class CafeStaffGUI {
         searchDate.setDateFormatString("dd MMM, yyyy");
         current = Calendar.getInstance();
         searchDate.setMinSelectableDate(current.getTime());
-        searchDate.setBounds(50,100, 150,25);
+        searchDate.setBounds(50, 135, 360, 36);
         panel.add(searchDate);
 
         // Clear search
         JButton clearSearchButton = new JButton("Clear");
-        clearSearchButton.setBounds(350, 100, 100, 25);
+        clearSearchButton.setBounds(500, 135, 60, 36);
+        clearSearchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearSearchButton);
 
         // Logout button
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(650, 20, 100, 25);
+        logoutButton.setBounds(650, 50, 100, 36);
+        logoutButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(logoutButton);
 
         // Display All Work Slots Table
@@ -226,7 +226,7 @@ public class CafeStaffGUI {
         tableComponents.setDataVector(workSlotData, tableTitle);
 
         scrollPane = new JScrollPane(workSlotTable);
-        scrollPane.setBounds(50, 150, 500, 300);
+        scrollPane.setBounds(50,175, 510, 350);
         panel.add(scrollPane);
     }
 

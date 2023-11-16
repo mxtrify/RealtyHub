@@ -79,7 +79,7 @@ public class AssignStaffGUI {
         // Label for cashier amount
         cashierAmt = new JLabel("Cashier: " + workSlot.getCashierAmount());
         cashierAmt.setFont(new Font("Jost", Font.PLAIN, 20));
-        cashierAmt.setBounds(275, 5, 100, 36);
+        cashierAmt.setBounds(275, 5, 120, 36);
         amountPanel.add(cashierAmt);
 
         // Label for cashier amount

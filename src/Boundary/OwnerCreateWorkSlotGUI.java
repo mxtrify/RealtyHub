@@ -6,6 +6,7 @@ import Entity.UserAccount;
 import Entity.WorkSlot;
 import com.toedter.calendar.JDateChooser;
 
+import java.awt.*;
 import java.util.Calendar;
 import java.util.List;
 import javax.swing.*;
@@ -32,12 +33,13 @@ public class OwnerCreateWorkSlotGUI {
 
         // Title Label
         JLabel titleLabel = new JLabel("Create Work Slot");
-        titleLabel.setBounds(100, 10, 500, 25);
+        titleLabel.setBounds(250, 30,350, 50);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
         panel.add(titleLabel);
 
         // Date Label
-        JLabel dateLabel = new JLabel("Date:");
-        dateLabel.setBounds(75, 75, 100, 25);
+        JLabel dateLabel = new JLabel("Date");
+        dateLabel.setBounds(225, 125, 235, 50);
         panel.add(dateLabel);
 
         // Date Field
@@ -45,47 +47,47 @@ public class OwnerCreateWorkSlotGUI {
         dateChooser.setDateFormatString("dd/MM/yyyy");
         current = Calendar.getInstance();
         dateChooser.setMinSelectableDate(current.getTime());
-        dateChooser.setBounds(150, 75, 175, 25);
+        dateChooser.setBounds(325, 125, 235, 50);
         panel.add(dateChooser);
 
         // Chef Label
-        JLabel chefLabel = new JLabel("Chef:");
-        chefLabel.setBounds(75, 115, 100, 25);
+        JLabel chefLabel = new JLabel("Chef");
+        chefLabel.setBounds(225, 175, 235, 50);
         panel.add(chefLabel);
 
         // Chef Field
         chefField = new JTextField(20);
-        chefField.setBounds(150, 115, 100, 25);
+        chefField.setBounds(325, 175, 235, 50);
         panel.add(chefField);
 
         // Cashier Label
-        JLabel cashierLabel = new JLabel("Cashier:");
-        cashierLabel.setBounds(75, 155, 100, 25);
+        JLabel cashierLabel = new JLabel("Cashier");
+        cashierLabel.setBounds(225, 225, 235, 50);
         panel.add(cashierLabel);
 
         // Cashier Field
         cashierField = new JTextField(20);
-        cashierField.setBounds(150, 155, 100, 25);
+        cashierField.setBounds(325, 225, 235, 50);
         panel.add(cashierField);
 
         // Waiter Label
-        JLabel waiterLabel = new JLabel("Waiter:");
-        waiterLabel.setBounds(75, 195, 100, 25);
+        JLabel waiterLabel = new JLabel("Waiter");
+        waiterLabel.setBounds(225, 275, 235, 50);
         panel.add(waiterLabel);
 
         // Staff Field
         waiterField = new JTextField(20);
-        waiterField.setBounds(150, 195, 100, 25);
+        waiterField.setBounds(325, 275, 235, 50);
         panel.add(waiterField);
 
         // Create Button
         createButton = new JButton("Create");
-        createButton.setBounds(300, 300, 100, 25);
+        createButton.setBounds(500, 500, 235, 30);
         panel.add(createButton);
 
         // Back Button
         backButton = new JButton("Back");
-        backButton.setBounds(20, 300, 100, 25);
+        backButton.setBounds(100, 500, 235, 30);
         panel.add(backButton);
 
         // Action for create button
@@ -105,18 +107,28 @@ public class OwnerCreateWorkSlotGUI {
 
                 // If any of the fields is empty, prompt user to enter valid amount
                 if(!chefField.getText().isEmpty() && !cashierField.getText().isEmpty() && !waiterField.getText().isEmpty()) {
-                    int numOfChef = Integer.parseInt(chefField.getText());
-                    int numOfCashier = Integer.parseInt(cashierField.getText());
-                    int numOfWaiter = Integer.parseInt(waiterField.getText());
+                    try{
 
-                    if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
-                        JOptionPane.showMessageDialog(frame, "Chef, Cashier or Waiter must be more than 0");
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Successfully created!");
-                        WorkSlot workSlot = new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
-                        frame.dispose();
-                        new CafeOwnerGUI(u);
+                        int numOfChef = Integer.parseInt(chefField.getText());
+                        int numOfCashier = Integer.parseInt(cashierField.getText());
+                        int numOfWaiter = Integer.parseInt(waiterField.getText());
+
+                        if(numOfCashier < 1 || numOfChef < 1 || numOfWaiter < 1) {
+                            JOptionPane.showMessageDialog(frame, "Chef, Cashier or Waiter must be more than 0");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Successfully created!");
+                            new CreateWorkSlotController().createWorkSlot(date, numOfChef, numOfCashier, numOfWaiter);
+                            frame.dispose();
+                            new CafeOwnerGUI(u);
+                        }
+
+                    }catch (NumberFormatException nfe){
+                        JOptionPane.showMessageDialog(frame, "Please enter valid value (numbers)");
+
                     }
+
+
+
                 } else {
                     JOptionPane.showMessageDialog(frame, "Fields must be filled");
                 }
@@ -132,7 +144,7 @@ public class OwnerCreateWorkSlotGUI {
         });
 
         frame.add(panel);
-        frame.setSize(500, 400);
+        frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

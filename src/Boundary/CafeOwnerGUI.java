@@ -7,6 +7,7 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,18 +33,21 @@ public class CafeOwnerGUI {
         panel.setLayout(null);
 
         // Title Label
-        JLabel titleLabel = new JLabel("Welcome, Cafe Owner");
-        titleLabel.setBounds(50, 50, 500, 25);
+        JLabel titleLabel = new JLabel("Welcome, " + u.getFullName());
+        titleLabel.setBounds(50,75, 500, 36);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,28));
         panel.add(titleLabel);
 
         // Logout Button
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(650, 20, 100, 25);
+        logoutButton.setBounds(650, 50, 100, 36);
+        logoutButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(logoutButton);
 
         // Search Button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(250, 100, 100, 25);
+        searchButton.setBounds(375, 135, 90, 36);
+        searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchButton);
 
         // Search Bar
@@ -51,17 +55,19 @@ public class CafeOwnerGUI {
         searchDate.setDateFormatString("dd/MM/yyyy");
         Calendar current = Calendar.getInstance();
         searchDate.setMinSelectableDate(current.getTime());
-        searchDate.setBounds(50,100, 150,25);
+        searchDate.setBounds(50, 135, 325, 36);
         frame.add(searchDate);
 
         // Clear Search
         JButton clearSearchButton = new JButton("Clear");
-        clearSearchButton.setBounds(350, 100, 100, 25);
+        clearSearchButton.setBounds(465, 135, 60, 36);
+        clearSearchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearSearchButton);
 
         // Create workSlot button
         JButton createWorkSlotButton = new JButton("+");
-        createWorkSlotButton.setBounds(650, 100, 50, 25);
+        createWorkSlotButton.setBounds(525, 135, 36, 36);
+        createWorkSlotButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(createWorkSlotButton);
 
         model = new DefaultTableModel() {
@@ -77,12 +83,13 @@ public class CafeOwnerGUI {
         WorkSlotTable();
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50, 150, 500, 300);
+        scrollPane.setBounds(50,175, 510, 350);
         panel.add(scrollPane);
 
         // Delete Button
         JButton deleteButton = new JButton("Delete");
-        deleteButton.setBounds(600, 250, 100, 25);
+        deleteButton.setBounds(600, 250, 110, 36);
+        deleteButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(deleteButton);
         deleteButton.addActionListener(e -> deleteSelectedRow());
 
@@ -93,7 +100,8 @@ public class CafeOwnerGUI {
 
         // Edit Button
         JButton editButton = new JButton("Edit");
-        editButton.setBounds(600, 200, 100, 25);
+        editButton.setBounds(600, 200, 110, 36);
+        editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(editButton);
 
 

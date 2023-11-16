@@ -34,7 +34,7 @@ public class ViewUserProfileGUI {
 
         // View profile button
         JButton viewUserAccountButton = new JButton("View Account");
-        viewUserAccountButton.setBounds(585, 135, 135, 36);
+        viewUserAccountButton.setBounds(580, 135, 135, 36);
         viewUserAccountButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(viewUserAccountButton);
 
@@ -49,18 +49,18 @@ public class ViewUserProfileGUI {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(50,175, 525, 350);
+        scrollPane.setBounds(50,175, 510, 350);
         frame.add(scrollPane);
 
         // Search Field
         searchTextField = new JTextField();
-        searchTextField.setBounds(50, 135, 200, 36);
+        searchTextField.setBounds(50, 135, 355, 36);
         searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
 
         // Search Button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(250, 135, 100, 36);
+        searchButton.setBounds(410, 135, 90, 36);
         searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchButton);
 
@@ -72,20 +72,20 @@ public class ViewUserProfileGUI {
 
         // Edit profile button
         JButton editButton = new JButton("Edit");
-        editButton.setBounds(600, 200, 100, 36);
+        editButton.setBounds(590, 200, 110, 36);
         editButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(editButton);
 
         // Delete profile button
         JButton suspendButton = new JButton("Suspend");
-        suspendButton.setBounds(590, 250, 120, 36);
+        suspendButton.setBounds(590, 250, 110, 36);
         suspendButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(suspendButton);
         suspendButton.setEnabled(false);
 
         // Clear button
         JButton clearButton = new JButton("Clear");
-        clearButton.setBounds(350, 135, 60, 36);
+        clearButton.setBounds(500, 135, 60, 36);
         clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearButton);
 
