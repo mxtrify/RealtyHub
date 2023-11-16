@@ -54,13 +54,13 @@ public class ViewUserProfileGUI {
 
         // Search Field
         searchTextField = new JTextField();
-        searchTextField.setBounds(50, 135, 200, 36);
+        searchTextField.setBounds(50, 135, 355, 36);
         searchTextField.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchTextField);
 
         // Search Button
         JButton searchButton = new JButton("Search");
-        searchButton.setBounds(250, 135, 100, 36);
+        searchButton.setBounds(410, 135, 90, 36);
         searchButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(searchButton);
 
@@ -85,7 +85,7 @@ public class ViewUserProfileGUI {
 
         // Clear button
         JButton clearButton = new JButton("Clear");
-        clearButton.setBounds(350, 135, 60, 36);
+        clearButton.setBounds(500, 135, 60, 36);
         clearButton.setFont(new Font("Helvetica", Font.PLAIN,18));
         panel.add(clearButton);
 
