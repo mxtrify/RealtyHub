@@ -43,7 +43,7 @@ public class UpdateBidGUI {
 
         // DateChooser
         JDateChooser dateChooser = new JDateChooser(bid.getDate());
-        dateChooser.setDate(Calendar.getInstance().getTime());
+        //dateChooser.setDate(Calendar.getInstance().getTime());
         AtomicReference<Calendar> currentDate = new AtomicReference<>(Calendar.getInstance());
         dateChooser.setMinSelectableDate(currentDate.get().getTime());
         dateChooser.setBounds(250,110, 175,36);
