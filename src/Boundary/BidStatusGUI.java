@@ -135,6 +135,7 @@ public class BidStatusGUI {
             int bidId = (int) model.getValueAt(table.getSelectedRow(), 0);
             String dateString = model.getValueAt(table.getSelectedRow(), 1).toString();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
             try {
                 java.util.Date utilDate = format.parse(dateString); // Parse to java.util.Date
                 java.sql.Date date = new java.sql.Date(utilDate.getTime()); // Convert to java.sql.Date
