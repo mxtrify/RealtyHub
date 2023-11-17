@@ -11,7 +11,8 @@ public class LoginController {
 
     // Checking username and password
     public UserAccount login(String username, String password) {
-        // Return true if match
+        // Return user account object if correct
+        // else, return null
         return userAccount.validateLogin(username, password);
     }
 }

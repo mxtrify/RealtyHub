@@ -29,9 +29,10 @@ public class LoginTest {
 
     @Test
     public void testCorrectLoginDetails() {
-        String correctUsername = "admin";
-        String correctPassword = "admin";
+        String correctUsername = "admin1";
+        String correctPassword = "admin1";
 
+        // testLogin.login() will return UserName Object
         assertEquals(correctPassword, testLogin.login(correctUsername, correctPassword).getUsername());
         assertEquals(correctPassword, testLogin.login(correctUsername, correctPassword).getPassword());
     }
