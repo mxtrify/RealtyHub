@@ -49,6 +49,7 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('chef23', 'chef23', 'Gratia', 'Hammerton', 'chef23@gmail.com', 16, 4, 3, TRUE),
     ('chef24', 'chef24', 'Tallia', 'Barbrick', 'chef24@gmail.com', 20, 4, 3, TRUE),
     ('chef25', 'chef25', 'Cristionna', 'Marchi', 'chef25@gmail.com', 21, 4, 3, TRUE),
+    ('chef26', 'chef26', 'Cristian', 'March', 'chef26@gmail.com', NULL, 4, NULL, TRUE),
     ('waiter1', 'waiter1', 'Judi', 'Rowling', 'waiter1@gmail.com', 15, 4, 1, TRUE),
     ('waiter2', 'waiter2', 'Kare', 'Tott', 'waiter2@gmail.com', 16, 4, 1, TRUE),
     ('waiter3', 'waiter3', 'Tamqrah', 'Lille', 'waiter3@gmail.com', 17, 4, 1, TRUE),
@@ -74,6 +75,7 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('waiter23', 'waiter23', 'Franklyn', 'Brumpton', 'waiter23@gmail.com', 16, 4, 1, TRUE),
     ('waiter24', 'waiter24', 'Lorine', 'Brister', 'waiter24@gmail.com', 20, 4, 1, TRUE),
     ('waiter25', 'waiter25', 'Mendy', 'Paulich', 'waiter25@gmail.com', 21, 4, 1, TRUE),
+    ('waiter26', 'waiter26', 'May', 'Paul', 'waiter26@gmail.com', NULL, 4, NULL, TRUE),
     ('cashier1', 'cashier1', 'Egbert', 'Viello', 'cashier1@gmail.com', 15, 4, 2, TRUE),
     ('cashier2', 'cashier2', 'Milena', 'Sibbe', 'cashier2@gmail.com', 16, 4, 2, TRUE),
     ('cashier3', 'cashier3', 'Roland', 'Dahler', 'cashier3@gmail.com', 17, 4, 2, TRUE),
@@ -98,8 +100,8 @@ INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, p
     ('cashier22', 'cashier22', 'Floris', 'Mc-Ilrath', 'cashier22@gmail.com', 15, 4, 2, TRUE),
     ('cashier23', 'cashier23', 'Vincenzo', 'Cassano', 'cashier23@gmail.com', 16, 4, 2, TRUE),
     ('cashier24', 'cashier24', 'Anne', 'Bard', 'cashier24@gmail.com', 20, 4, 2, TRUE),
-    ('cashier25', 'cashier25', 'Paolo', 'Robertus', 'cashier25@gmail.com', 22, 4, 2, TRUE);
-
+    ('cashier25', 'cashier25', 'Paolo', 'Robertus', 'cashier25@gmail.com', 22, 4, 2, TRUE),
+    ('cashier26', 'cashier26', 'Grace', 'Gellan', 'cashier26@gmail.com', NULL, 4, NULL, TRUE);
 
 INSERT into `work_slot`(`date`) VALUES
     ("2023-12-01"),

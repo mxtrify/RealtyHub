@@ -67,23 +67,3 @@ INSERT INTO `profile`(profile_name, profile_desc, profile_status) VALUES
     ('Cafe Owner', 'Make work slot', TRUE),
     ('Cafe Manager', 'Manage bids', TRUE),
     ('Cafe Staff', 'Make bids', TRUE);
-
-INSERT INTO user_account (username, password, f_name, l_name, email, max_slot, profile_id, role_id, status) VALUES
-    ('admin', 'admin', 'Fadmin', 'Ladmin', 'admin@gmail.com', NULL, 1, NULL, TRUE),
-    ('owner', 'owner', 'Fowner', 'Lowner', 'owner@gmail.com', NULL, 2, NULL, TRUE),
-    ('manager', 'manager', 'Fanager', 'Lanager', 'manager@gmail.com', NULL, 3, NULL, TRUE),
-    ('chef', 'chef', 'Gordon', 'Ramsay', 'chef@gmail.com', 5, 4, 3, TRUE),
-    ('cashier', 'cashier', 'Jerry', 'Ma', 'cashier@gmail.com', 5, 4, 2, TRUE),
-    ('waiter', 'waiter', 'Tom', 'Brooklyn', 'waiter@gmail.com', 5, 4, 1, TRUE)
-;
-
--- Commented out because will insert during dataSet.sql
--- INSERT into `work_slot`(`date`) VALUES ("2023-12-01");
---
--- INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 1, 3);
--- INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 2, 2);
--- INSERT into `role_amount`(`date`, `role_id`, `amount`) VALUES ("2023-12-01", 3, 1);
---
--- INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "chef", "2023-12-01");
--- INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "cashier", "2023-12-01");
--- INSERT INTO `bid`(`bid_status`, `username`, `date`) VALUES ("Pending", "waiter", "2023-12-01");
