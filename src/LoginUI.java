@@ -2,16 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class LoginUI extends JFrame {
-    private LoginControl loginControl;
 
     public LoginUI(LoginControl loginControl) {
-        this.loginControl = loginControl;
 
         setTitle("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
