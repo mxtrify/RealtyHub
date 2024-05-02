@@ -2,74 +2,79 @@ package Controller;
 
 import Entity.UserProfile;
 import Entity.UserAccount;
+
 import javax.swing.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class SysAdminControl {
-    // Methods related to user profiles
-    public void createUserProfile(String username, String password) {
+
+    // Methods related to UserProfile operations
+    public void addUserProfile(String username, String password) {
         try {
             UserProfile.addUserProfile(username, password);
-            JOptionPane.showMessageDialog(null, "User profile created successfully.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to create user profile: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
         }
     }
 
     public void updateUserProfile(String userId, String username, String password) {
         try {
             UserProfile.updateUserProfile(userId, username, password);
-            JOptionPane.showMessageDialog(null, "User profile updated successfully.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to update user profile: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
         }
     }
 
     public void suspendUserProfile(String userId, boolean isActive) {
         try {
             UserProfile.suspendUserProfile(userId, isActive);
-            String status = isActive ? "reactivated" : "suspended";
-            JOptionPane.showMessageDialog(null, "User profile has been " + status + ".");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to suspend user profile: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
         }
     }
 
-    public void searchUserProfiles(String criteria) {
-        // Implementation of search should update the UI based on the result set.
-        // For now, it's a placeholder.
-    }
-
-    // Methods related to user accounts
-    public void createUserAccount(String firstName, String lastName, String accountType, String accountStatus) {
+    public ResultSet searchUserProfiles(String criteria) {
         try {
-            UserAccount.addUserAccount(firstName, lastName, accountType, accountStatus);
-            JOptionPane.showMessageDialog(null, "User account created successfully.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to create user account: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return UserProfile.searchUserProfiles(criteria);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
+            return null;
         }
     }
 
-    public void updateUserAccount(String userId, String firstName, String lastName, String accountType, String accountStatus) {
+    // Methods related to UserAccount operations
+    public List<UserAccount> searchUserAccounts(String criteria) {
         try {
-            UserAccount.updateUserAccount(userId, firstName, lastName, accountType, accountStatus);
-            JOptionPane.showMessageDialog(null, "User account updated successfully.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to update user account: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return UserAccount.searchUserAccounts(criteria);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
+            return null;
         }
     }
 
-    public void suspendUserAccount(String userId, boolean isActive) {
+    /*public void addUserAccount(String userId, String fname, String lname, String accType, String accStatus) {
         try {
-            UserAccount.suspendUserAccount(userId, isActive);
-            String status = isActive ? "reactivated" : "suspended";
-            JOptionPane.showMessageDialog(null, "User account has been " + status + ".");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to suspend user account: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            UserAccount.addUserAccount(userId, fname, lname, accType, accStatus);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
         }
     }
 
-    public void searchUserAccounts(String criteria) {
-        // Implementation of search should update the UI based on the result set.
-        // For now, it's a placeholder.
+    public void updateUserAccount(String userId, String fname, String lname, String accType, String accStatus) {
+        try {
+            UserAccount.updateUserAccount(userId, fname, lname, accType, accStatus);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
+        }
     }
+
+    public void deleteUserAccount(String userId) {
+        try {
+            UserAccount.deleteUserAccount(userId);
+        } catch (SQLException ex) {
+            System.out.println("SQL Exception: " + ex.getMessage());
+        }
+    }*/
 }

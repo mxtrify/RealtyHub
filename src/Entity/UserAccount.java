@@ -1,10 +1,13 @@
 package Entity;
 
+import Database.DBConn;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Database.DBConn;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAccount {
     private String userId;
@@ -13,7 +16,6 @@ public class UserAccount {
     private String accountType;
     private String accountStatus;
 
-    // Constructor
     public UserAccount(String userId, String firstName, String lastName, String accountType, String accountStatus) {
         this.userId = userId;
         this.firstName = firstName;
@@ -22,7 +24,6 @@ public class UserAccount {
         this.accountStatus = accountStatus;
     }
 
-    // Getters and Setters
     public String getUserId() {
         return userId;
     }
@@ -64,49 +65,25 @@ public class UserAccount {
     }
 
     // Database operations
-    public static void addUserAccount(String firstName, String lastName, String accountType, String accountStatus) throws SQLException {
-        String sql = "INSERT INTO user (first_name, last_name, account_type, account_status) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, firstName);
-            pstmt.setString(2, lastName);
-            pstmt.setString(3, accountType);
-            pstmt.setString(4, accountStatus);
-            pstmt.executeUpdate();
-        }
-    }
-
-    public static void updateUserAccount(String userId, String firstName, String lastName, String accountType, String accountStatus) throws SQLException {
-        String sql = "UPDATE user SET first_name = ?, last_name = ?, account_type = ?, account_status = ? WHERE userid = ?";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, firstName);
-            pstmt.setString(2, lastName);
-            pstmt.setString(3, accountType);
-            pstmt.setString(4, accountStatus);
-            pstmt.setString(5, userId);
-            pstmt.executeUpdate();
-        }
-    }
-
-    public static void suspendUserAccount(String userId, boolean isActive) throws SQLException {
-        String sql = "UPDATE user SET account_status = ? WHERE userid = ?";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, isActive ? "active" : "suspended");
-            pstmt.setString(2, userId);
-            pstmt.executeUpdate();
-        }
-    }
-
-    public static ResultSet searchUserAccounts(String criteria) throws SQLException {
-        String sql = "SELECT * FROM user WHERE first_name LIKE ? OR last_name LIKE ? OR userid LIKE ?";
+    public static List<UserAccount> searchUserAccounts(String criteria) throws SQLException {
+        List<UserAccount> accounts = new ArrayList<>();
+        String sql = "SELECT userid, fname, lname, accType, accStatus FROM user_accounts WHERE fname LIKE ? OR lname LIKE ? OR userid LIKE ?";
         try (Connection conn = DBConn.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + criteria + "%");
             pstmt.setString(2, "%" + criteria + "%");
             pstmt.setString(3, "%" + criteria + "%");
-            return pstmt.executeQuery();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    accounts.add(new UserAccount(
+                            rs.getString("userid"),
+                            rs.getString("fname"),
+                            rs.getString("lname"),
+                            rs.getString("accType"),
+                            rs.getString("accStatus")));
+                }
+            }
         }
+        return accounts;
     }
 }

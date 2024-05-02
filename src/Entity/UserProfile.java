@@ -1,24 +1,23 @@
 package Entity;
 
+import Database.DBConn;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import Database.DBConn;
 
 public class UserProfile {
     private String userId;
     private String username;
     private String password;
 
-    // Constructor
     public UserProfile(String userId, String username, String password) {
         this.userId = userId;
         this.username = username;
         this.password = password;
     }
 
-    // Getters and Setters
     public String getUserId() {
         return userId;
     }
