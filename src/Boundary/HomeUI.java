@@ -7,9 +7,9 @@ import java.awt.event.ActionListener;
 
 public class HomeUI extends JFrame {
     public HomeUI() {
-        setTitle("Home Page");
+        setTitle("System Admin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(900, 600);
         setLocationRelativeTo(null); // Center the window on the screen
 
         // Create a panel with a GridBagLayout

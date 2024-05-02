@@ -20,7 +20,7 @@ public class LoginUI extends JFrame {
     private void setupUI() {
         setTitle("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 600);
+        setSize(1200, 800);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -34,7 +34,7 @@ public class LoginUI extends JFrame {
     }
 
     private void addHeader(JPanel panel, GridBagConstraints constraints) {
-        JLabel headerLabel = new JLabel("Welcome to Realty Hub!");
+        JLabel headerLabel = new JLabel("Welcome to RealtyHub!");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 30));
         constraints.gridx = 0;
         constraints.gridy = 0;

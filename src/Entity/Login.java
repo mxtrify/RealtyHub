@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserManager {
+public class Login {
     public String authenticate(String username, String password) {
         String query = "SELECT account_type FROM user WHERE username=? AND password=?";
         try (Connection connection = DBConn.getConnection();

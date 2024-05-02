@@ -2,19 +2,19 @@ package Controller;
 
 import javax.swing.JOptionPane;
 import Boundary.LoginUI;
-import Entity.UserManager;
+import Entity.Login;
 
 public class LoginControl {
-    private UserManager userManager;
+    private Login login;
     private LoginUI loginUI;
 
     public LoginControl(LoginUI loginUI) {
         this.loginUI = loginUI;
-        this.userManager = new UserManager();
+        this.login = new Login();
     }
 
     public void processLogin(String username, String password) {
-        String accountType = userManager.authenticate(username, password);
+        String accountType = login.authenticate(username, password);
         if (accountType != null) {
             loginSuccessful(accountType);
         } else {
@@ -27,8 +27,7 @@ public class LoginControl {
         loginUI.dispose(); // Close the LoginUI window
 
         if ("System Admin".equals(accountType)) {
-            // new SysAdminUI();
-            new Boundary.HomeUI();
+            new Boundary.SysAdminUI();
         } else if ("Real Estate Agent".equals(accountType)) {
             // new AgentUI();
             new Boundary.HomeUI();
