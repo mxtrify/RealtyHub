@@ -1,4 +1,4 @@
-package Boundary;
+/*package Boundary;
 
 import Database.DBConn;
 import Controller.SysAdminControl;
@@ -220,7 +220,7 @@ public class SysAdminUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "No user accounts found matching criteria.");
                 } else {
                     for (UserAccount account : accounts) {
-                        Object[] row = {account.getUserId(), account.getFirstName(), account.getLastName(), account.getAccountType(), account.getAccountStatus()};
+                        Object[] row = {account.getUserId(), account.getfName(), account.getlName(), account.getAccountType(), account.getAccountStatus()};
                         tableModel.addRow(row);
                     }
                 }
@@ -340,4 +340,4 @@ public class SysAdminUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(SysAdminUI::new);
     }
-}
+}*/

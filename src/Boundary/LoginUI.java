@@ -1,19 +1,23 @@
 package Boundary;
 
+import Controller.LoginControl;
+import Entity.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import Controller.LoginControl;
+import java.util.*;
 
 public class LoginUI extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
     private LoginControl loginControl;
+    private boolean errorMessageDisplayed;  // To keep track of error messages
 
     public LoginUI() {
-        loginControl = new LoginControl(this);
+        loginControl = new LoginControl();  // Corrected constructor
         setupUI();
     }
 
@@ -41,13 +45,10 @@ public class LoginUI extends JFrame {
         constraints.gridwidth = 2;
         constraints.anchor = GridBagConstraints.CENTER;
         panel.add(headerLabel, constraints);
-
-        // Reset constraints to default for the next components
         constraints.gridwidth = 1;
     }
 
     private void addLoginForm(JPanel panel, GridBagConstraints constraints) {
-        // Add vertical spacing between rows
         constraints.insets = new Insets(10, 0, 10, 10);
 
         JLabel usernameLabel = new JLabel("Username:");
@@ -71,7 +72,6 @@ public class LoginUI extends JFrame {
         loginButton = new JButton("Login");
         constraints.gridx = 1;
         constraints.gridy = 3;
-        constraints.gridwidth = 1;
         panel.add(loginButton, constraints);
 
         loginButton.addActionListener(new ActionListener() {
@@ -79,7 +79,46 @@ public class LoginUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
-                loginControl.processLogin(username, password);
+                UserAccount userAccount = loginControl.processLogin(username, password);
+
+                if (userAccount == null) {
+                    JOptionPane.showMessageDialog(LoginUI.this, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+                    errorMessageDisplayed = true;
+                } else if (!userAccount.getUserProfile().isProfileStatus()) {
+                    JOptionPane.showMessageDialog(LoginUI.this, "This profile is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+                    errorMessageDisplayed = true;
+                } else if (!userAccount.isStatus()) {
+                    JOptionPane.showMessageDialog(LoginUI.this, "This account is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+                    errorMessageDisplayed = true;
+                } else {
+                    dispose();
+                    openAppropriateGUI(userAccount);
+                }
+            }
+
+            private void openAppropriateGUI(UserAccount userAccount) {
+                switch (userAccount.getUserProfile().getProfileType()) {
+                    case "System Admin":
+                        //new SysAdminUI();
+                        System.out.println("SysAdmin");
+                        break;
+                    case "Real Estate Agent":
+                        //new AgentUI(userAccount);
+                        System.out.println("Agent");
+                        break;
+                    case "Buyer":
+                        //new BuyerUI(userAccount);
+                        System.out.println("Buyer");
+                        break;
+                    case "Seller":
+                        //new SellerUI(userAccount);
+                        System.out.println("Seller");
+                        break;
+                    default:
+                        //new OtherProfileUI(userAccount);
+                        System.out.println("Others");
+                        break;
+                }
             }
         });
     }
@@ -87,7 +126,7 @@ public class LoginUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new LoginUI();  // Create and show the GUI
+                new LoginUI();
             }
         });
     }

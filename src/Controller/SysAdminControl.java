@@ -1,4 +1,4 @@
-package Controller;
+/*package Controller;
 
 import Entity.UserProfile;
 import Entity.UserAccount;
@@ -54,7 +54,7 @@ public class SysAdminControl {
         }
     }
 
-    /*public void addUserAccount(String userId, String fname, String lname, String accType, String accStatus) {
+    public void addUserAccount(String userId, String fname, String lname, String accType, String accStatus) {
         try {
             UserAccount.addUserAccount(userId, fname, lname, accType, accStatus);
         } catch (SQLException ex) {
@@ -76,5 +76,5 @@ public class SysAdminControl {
         } catch (SQLException ex) {
             System.out.println("SQL Exception: " + ex.getMessage());
         }
-    }*/
-}
+    }
+}*/

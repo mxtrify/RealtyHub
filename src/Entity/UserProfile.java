@@ -2,85 +2,252 @@ package Entity;
 
 import Database.DBConn;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class UserProfile {
-    private String userId;
-    private String username;
-    private String password;
+    private Connection conn;
 
-    public UserProfile(String userId, String username, String password) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
+    private int profileID;
+    private String profileType;
+    private boolean profileStatus;
+    private String profileInfo;
+
+    public UserProfile() {
+        this.profileID = 0;
+        this.profileType = "";
+        this.profileStatus = false;
+        this.profileInfo = "";
     }
 
-    public String getUserId() {
-        return userId;
+    public UserProfile(int profileID) {
+        this.profileID = profileID;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public UserProfile(String profileType) {
+        this.profileType = profileType;
     }
 
-    public String getUsername() {
-        return username;
+    public UserProfile(String profileType, boolean status) {
+        this.profileType = profileType;
+        this.profileStatus = status;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public UserProfile(String profileType, boolean status, String profileInfo) {
+        this.profileType = profileType;
+        this.profileStatus = status;
+        this.profileInfo = profileInfo;
     }
 
-    public String getPassword() {
-        return password;
+    public UserProfile(int profileID, String profileType, boolean status, String profileInfo) {
+        this.profileID = profileID;
+        this.profileType = profileType;
+        this.profileStatus = status;
+        this.profileInfo = profileInfo;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public int getProfileID() {
+        return profileID;
     }
 
-    // Database operations
-    public static void addUserProfile(String username, String password) throws SQLException {
-        String sql = "INSERT INTO user (username, password) VALUES (?, ?)";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.executeUpdate();
+    public String getProfileType() {
+        return profileType;
+    }
+
+    public void setProfileID(int profileID) {
+        this.profileID = profileID;
+    }
+
+    public void setProfileType(String profileType) {
+        this.profileType = profileType;
+    }
+
+    public boolean isProfileStatus() {
+        return profileStatus;
+    }
+
+    public void setProfileStatus(boolean status) {
+        this.profileStatus = status;
+    }
+
+    public String getProfileInfo() {
+        return profileInfo;
+    }
+
+    public void setProfileInfo(String profileInfo) {
+        this.profileInfo = profileInfo;
+    }
+
+    // Create User Profile
+    public boolean createUserProfile(String profileType, String profileInfo) {
+        try {
+            conn = new DBConn().getConnection();
+
+            String query = "SELECT * FROM user_profile WHERE profileType = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileType);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                return false;
+            }else {
+                query = "INSERT INTO user_profile (profileType, profileStatus, profileInfo) VALUES (?, ?, ?)";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, profileType);
+                preparedStatement.setBoolean(2, true);
+                preparedStatement.setString(3, profileInfo);
+                int rowsAffected = preparedStatement.executeUpdate();
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        } finally {
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
-    public static void updateUserProfile(String userId, String username, String password) throws SQLException {
-        String sql = "UPDATE user SET username = ?, password = ? WHERE userid = ?";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.setString(3, userId);
-            pstmt.executeUpdate();
+    // View User Profile
+    public ArrayList<UserProfile> selectAllProfile() {
+        ArrayList<UserProfile> userProfiles = new ArrayList<>();
+        String query = "SELECT * FROM user_profile";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                int profileID = resultSet.getInt("profileID");
+                String profileType = resultSet.getString("profileType");
+                boolean profileStatus = resultSet.getBoolean("profileStatus");
+                String profileInfo = resultSet.getString("profileInfo");
+                UserProfile userProfile = new UserProfile(profileID, profileType, profileStatus, profileInfo);
+                userProfiles.add(userProfile);
+            }
+            return userProfiles;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
-    public static void suspendUserProfile(String userId, boolean isActive) throws SQLException {
-        String sql = "UPDATE user SET account_status = ? WHERE userid = ?";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, isActive ? "active" : "suspended");
-            pstmt.setString(2, userId);
-            pstmt.executeUpdate();
+    // Update User Profile
+    public boolean updateUserProfile(String profileType, String newProfileInfo) {
+        String query = "UPDATE user_profile SET profileInfo = ? WHERE profileType = ?";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, newProfileInfo);
+            preparedStatement.setString(2, profileType);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
-    public static ResultSet searchUserProfiles(String criteria) throws SQLException {
-        String sql = "SELECT * FROM user WHERE username LIKE ? OR userid LIKE ?";
-        try (Connection conn = DBConn.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, "%" + criteria + "%");
-            pstmt.setString(2, "%" + criteria + "%");
-            return pstmt.executeQuery();
+    // Suspend User Profile
+    public boolean suspendUserProfile(String profileType) {
+        String query = "UPDATE user_profile SET profileStatus = 0 WHERE profileType = ?";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileType);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
+        }
+    }
+
+    // Activate
+    public boolean activateUserProfile(String profileType) {
+        String query = "UPDATE user_profile SET profileStatus = 1 WHERE profileType = ?";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, profileType);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
+        }
+    }
+
+    // Search User Profile
+    public ArrayList<UserProfile> searchProfiles(String search) {
+        ArrayList<UserProfile> userProfiles = new ArrayList<>();
+        String query = "SELECT profileType, profileStatus, profileInfo FROM user_profile WHERE profileType LIKE ?";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, search + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String profileType = resultSet.getString("profileType");
+                boolean profileStatus = resultSet.getBoolean("profileStatus");
+                String profileInfo = resultSet.getString("profileInfo");
+                UserProfile userProfile = new UserProfile(profileType, profileStatus, profileInfo);
+                userProfiles.add(userProfile);
+            }
+            return userProfiles;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 }
