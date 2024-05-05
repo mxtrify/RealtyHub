@@ -1,13 +1,12 @@
 package Boundary;
 
 import Controller.LoginControl;
-import Entity.*;
+import Entity.UserAccount;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
 
 public class LoginUI extends JFrame {
     private JTextField usernameField;
@@ -16,11 +15,13 @@ public class LoginUI extends JFrame {
     private LoginControl loginControl;
     private boolean errorMessageDisplayed;  // To keep track of error messages
 
+    // Initializes the login control and sets up the UI components
     public LoginUI() {
         loginControl = new LoginControl();  // Corrected constructor
         setupUI();
     }
 
+    // Sets up the main UI components of the login window
     private void setupUI() {
         setTitle("Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +38,7 @@ public class LoginUI extends JFrame {
         setVisible(true);
     }
 
+    // Adds a header to the panel
     private void addHeader(JPanel panel, GridBagConstraints constraints) {
         JLabel headerLabel = new JLabel("Welcome to RealtyHub!");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 30));
@@ -48,9 +50,11 @@ public class LoginUI extends JFrame {
         constraints.gridwidth = 1;
     }
 
+    // Adds login form components to the panel
     private void addLoginForm(JPanel panel, GridBagConstraints constraints) {
         constraints.insets = new Insets(10, 0, 10, 10);
 
+        // Add username label and field
         JLabel usernameLabel = new JLabel("Username:");
         constraints.gridx = 0;
         constraints.gridy = 1;
@@ -60,6 +64,7 @@ public class LoginUI extends JFrame {
         constraints.gridx = 1;
         panel.add(usernameField, constraints);
 
+        // Add password label and field
         JLabel passwordLabel = new JLabel("Password:");
         constraints.gridx = 0;
         constraints.gridy = 2;
@@ -69,6 +74,7 @@ public class LoginUI extends JFrame {
         constraints.gridx = 1;
         panel.add(passwordField, constraints);
 
+        // Add login button and set its action
         loginButton = new JButton("Login");
         constraints.gridx = 1;
         constraints.gridy = 3;
@@ -77,6 +83,11 @@ public class LoginUI extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                loginUser();
+            }
+
+            // Handles login logic and navigation based on user authentication and status
+            public void loginUser() {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 UserAccount userAccount = loginControl.processLogin(username, password);
@@ -92,11 +103,12 @@ public class LoginUI extends JFrame {
                     errorMessageDisplayed = true;
                 } else {
                     dispose();
-                    openAppropriateGUI(userAccount);
+                    openGUI(userAccount);
                 }
             }
 
-            private void openAppropriateGUI(UserAccount userAccount) {
+            // Determines the appropriate GUI to open based on the user's profile type
+            private void openGUI(UserAccount userAccount) {
                 switch (userAccount.getUserProfile().getProfileType()) {
                     case "System Admin":
                         //new SysAdminUI();
@@ -123,6 +135,7 @@ public class LoginUI extends JFrame {
         });
     }
 
+    // Main method to launch the login UI
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

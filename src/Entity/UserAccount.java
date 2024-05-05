@@ -1,7 +1,6 @@
 package Entity;
 
 import Database.DBConn;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -14,6 +13,7 @@ public class UserAccount {
     private UserProfile userProfile;
     private boolean status;
 
+    // Default constructor: Initializes a new user account with empty or default values.
     public UserAccount() {
         this.username = "";
         this.password = "";
@@ -23,6 +23,7 @@ public class UserAccount {
         this.status = false;
     }
 
+    // Parameterized constructor: Initializes a new user account with specific values for basic user information and profile.
     public UserAccount(String username, String password, String fName, String lName, UserProfile userProfile) {
         this.username = username;
         this.password = password;
@@ -31,6 +32,7 @@ public class UserAccount {
         this.userProfile = userProfile;
     }
 
+    // Extended parameterized constructor: Includes account status along with basic user and profile information.
     public UserAccount(String username, String password, String fName, String lName, UserProfile userProfile, boolean status) {
         this.username = username;
         this.password = password;
@@ -40,56 +42,26 @@ public class UserAccount {
         this.status = status;
     }
 
-    public String getUsername() {
-        return username;
+    // Getters and setters: Provide access and update capabilities for the user account properties.
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public String getfName() { return fName; }
+    public String getlName() { return lName; }
+    public UserProfile getUserProfile() { return userProfile; }
+    public boolean isStatus() { return status; }
+    public void setUsername(String username) { this.username = username; }
+    public void setPassword(String password) { this.password = password; }
+    public void setfName(String fName) { this.fName = fName; }
+    public void setlName(String lName) { this.lName = lName; }
+    public void setUserProfile(UserProfile userProfile) { this.userProfile = userProfile; }
+    public void setStatus(boolean status) { this.status = status; }
+
+    // Combines and returns the full name of the user.
+    public String getFullName() {
+        return String.format("%s %s", getfName(), getlName());
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getfName() {
-        return fName;
-    }
-
-    public String getlName() {
-        return lName;
-    }
-    public String getFullName() {return String.format("%s %s", getfName(), getlName());}
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    // Login Validation
+    // Validates login credentials against the database and returns the corresponding user account if successful.
     public UserAccount validateLogin(String username, String password) {
         String query = "SELECT username, password, fName, lName, profileType, accountStatus, profileStatus FROM user_account INNER JOIN user_profile ON  user_account.profileID = user_profile.profileID WHERE username = ? AND password = ?";
         try {
@@ -124,19 +96,11 @@ public class UserAccount {
             e.printStackTrace();
             return null;
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
-    // Create User Account
+    // Inserts a new user account into the database if the username does not already exist.
     public boolean insertAccount(UserAccount newUser) {
         try {
             conn = new DBConn().getConnection();
@@ -163,19 +127,11 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
-    // View User Account
+    // Retrieves all user accounts from the database.
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
         String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID";
@@ -198,19 +154,11 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
-    // Update User Account
+    // Updates details for an existing user account in the database.
     public boolean updateUserAccount(UserAccount updatedUser) {
         Connection conn = null;
         try {
@@ -228,15 +176,7 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Ensure the connection is closed even if an exception occurs
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -252,15 +192,7 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -276,15 +208,7 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -312,15 +236,7 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -348,15 +264,7 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -379,15 +287,7 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -409,15 +309,18 @@ public class UserAccount {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
+            closeConnection(); // Ensure connection is closed after operation.
+        }
+    }
+
+    // Closes the database connection to release resources.
+    private void closeConnection() {
+        try {
+            if (conn != null) {
+                conn.close();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
