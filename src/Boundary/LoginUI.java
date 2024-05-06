@@ -74,65 +74,68 @@ public class LoginUI extends JFrame {
         constraints.gridx = 1;
         panel.add(passwordField, constraints);
 
+        // Create an ActionListener for login action
+        ActionListener loginAction = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loginUser();
+            }
+        };
+
         // Add login button and set its action
         loginButton = new JButton("Login");
         constraints.gridx = 1;
         constraints.gridy = 3;
         panel.add(loginButton, constraints);
+        loginButton.addActionListener(loginAction);
 
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loginUser();
-            }
+        // Set the same action for the password field to handle "Enter" key press
+        passwordField.addActionListener(loginAction);
+    }
 
-            // Handles login logic and navigation based on user authentication and status
-            public void loginUser() {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                UserAccount userAccount = loginControl.processLogin(username, password);
+    // Handles login logic and navigation based on user authentication and status
+    public void loginUser() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+        UserAccount userAccount = loginControl.processLogin(username, password);
 
-                if (userAccount == null) {
-                    JOptionPane.showMessageDialog(LoginUI.this, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
-                    errorMessageDisplayed = true;
-                } else if (!userAccount.getUserProfile().isProfileStatus()) {
-                    JOptionPane.showMessageDialog(LoginUI.this, "This profile is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
-                    errorMessageDisplayed = true;
-                } else if (!userAccount.isStatus()) {
-                    JOptionPane.showMessageDialog(LoginUI.this, "This account is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
-                    errorMessageDisplayed = true;
-                } else {
-                    dispose();
-                    openGUI(userAccount);
-                }
-            }
+        if (userAccount == null) {
+            JOptionPane.showMessageDialog(LoginUI.this, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+            errorMessageDisplayed = true;
+        } else if (!userAccount.getUserProfile().isProfileStatus()) {
+            JOptionPane.showMessageDialog(LoginUI.this, "This profile is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+            errorMessageDisplayed = true;
+        } else if (!userAccount.isStatus()) {
+            JOptionPane.showMessageDialog(LoginUI.this, "This account is suspended", "Login Error", JOptionPane.ERROR_MESSAGE);
+            errorMessageDisplayed = true;
+        } else {
+            dispose();
+            openGUI(userAccount);
+        }
+    }
 
-            // Determines the appropriate GUI to open based on the user's profile type
-            private void openGUI(UserAccount userAccount) {
-                switch (userAccount.getUserProfile().getProfileType()) {
-                    case "System Admin":
-                        //new SysAdminUI();
-                        System.out.println("SysAdmin");
-                        break;
-                    case "Real Estate Agent":
-                        //new AgentUI(userAccount);
-                        System.out.println("Agent");
-                        break;
-                    case "Buyer":
-                        //new BuyerUI(userAccount);
-                        System.out.println("Buyer");
-                        break;
-                    case "Seller":
-                        //new SellerUI(userAccount);
-                        System.out.println("Seller");
-                        break;
-                    default:
-                        //new OtherProfileUI(userAccount);
-                        System.out.println("Others");
-                        break;
-                }
-            }
-        });
+    // Determines the appropriate GUI to open based on the user's profile type
+    private void openGUI(UserAccount userAccount) {
+        switch (userAccount.getUserProfile().getProfileType()) {
+            case "System Admin":
+                new SysAdminUI(userAccount);
+                break;
+            case "Real Estate Agent":
+                //new AgentUI(userAccount);
+                System.out.println("Agent");
+                break;
+            case "Buyer":
+                //new BuyerUI(userAccount);
+                System.out.println("Buyer");
+                break;
+            case "Seller":
+                //new SellerUI(userAccount);
+                System.out.println("Seller");
+                break;
+            default:
+                //new OtherProfileUI(userAccount);
+                System.out.println("Others");
+                break;
+        }
     }
 
     // Main method to launch the login UI
