@@ -7,9 +7,9 @@ import java.sql.SQLException;
 // Database Connector
 public class DBConfig {
     // Database url, user and password
-    String DB_URL = "jdbc:mysql://localhost:3306/buddies";
+    String DB_URL = "jdbc:mysql://localhost:3306/realtyhub";
     String DB_USER = "root";
-    String DB_PASSWORD = "";
+    String DB_PASSWORD = "root";
 
     public Connection getConnection() {
         try {
