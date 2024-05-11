@@ -1,4 +1,4 @@
-package Controller;
+package Controller.UserProfile;
 
 import Entity.UserProfile;
 
@@ -9,8 +9,8 @@ public class CreateUserProfileControl {
         this.userProfile = new UserProfile();
     }
 
-    public boolean createUserProfile(String profileName, String profileDesc) {
-        return userProfile.createUserProfile(profileName, profileDesc);
+    public boolean createUserProfile(String profileName, String profileInfo) {
+        return userProfile.createUserProfile(profileName, profileInfo);
     }
 
 }

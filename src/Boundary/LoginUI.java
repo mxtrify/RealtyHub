@@ -17,7 +17,7 @@ public class LoginUI extends JFrame {
 
     // Initializes the login control and sets up the UI components
     public LoginUI() {
-        loginControl = new LoginControl();  // Corrected constructor
+        loginControl = new LoginControl();
         setupUI();
     }
 

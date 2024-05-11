@@ -10,14 +10,14 @@ public class UserProfile {
 
     private int profileID;
     private String profileType;
-    private boolean profileStatus;
     private String profileInfo;
+    private boolean profileStatus;
 
     public UserProfile() {
         this.profileID = 0;
         this.profileType = "";
-        this.profileStatus = false;
         this.profileInfo = "";
+        this.profileStatus = false;
     }
 
     public UserProfile(int profileID) {
@@ -33,13 +33,13 @@ public class UserProfile {
         this.profileStatus = status;
     }
 
-    public UserProfile(String profileType, boolean status, String profileInfo) {
+    public UserProfile(String profileType, String profileInfo, boolean status) {
         this.profileType = profileType;
         this.profileStatus = status;
         this.profileInfo = profileInfo;
     }
 
-    public UserProfile(int profileID, String profileType, boolean status, String profileInfo) {
+    public UserProfile(int profileID, String profileType, String profileInfo, boolean status) {
         this.profileID = profileID;
         this.profileType = profileType;
         this.profileStatus = status;
@@ -50,16 +50,24 @@ public class UserProfile {
         return profileID;
     }
 
-    public String getProfileType() {
-        return profileType;
-    }
-
     public void setProfileID(int profileID) {
         this.profileID = profileID;
     }
 
+    public String getProfileType() {
+        return profileType;
+    }
+
     public void setProfileType(String profileType) {
         this.profileType = profileType;
+    }
+
+    public String getProfileInfo() {
+        return profileInfo;
+    }
+
+    public void setProfileInfo(String profileInfo) {
+        this.profileInfo = profileInfo;
     }
 
     public boolean isProfileStatus() {
@@ -70,13 +78,7 @@ public class UserProfile {
         this.profileStatus = status;
     }
 
-    public String getProfileInfo() {
-        return profileInfo;
-    }
 
-    public void setProfileInfo(String profileInfo) {
-        this.profileInfo = profileInfo;
-    }
 
     // Create User Profile
     public boolean createUserProfile(String profileType, String profileInfo) {
@@ -91,26 +93,18 @@ public class UserProfile {
             if (resultSet.next()){
                 return false;
             }else {
-                query = "INSERT INTO user_profile (profileType, profileStatus, profileInfo) VALUES (?, ?, ?)";
+                query = "INSERT INTO user_profile (profileType, profileInfo, profileStatus) VALUES (?, ?, ?)";
                 preparedStatement = conn.prepareStatement(query);
                 preparedStatement.setString(1, profileType);
-                preparedStatement.setBoolean(2, true);
-                preparedStatement.setString(3, profileInfo);
+                preparedStatement.setString(2, profileInfo);
+                preparedStatement.setBoolean(3, true);
                 int rowsAffected = preparedStatement.executeUpdate();
                 return rowsAffected > 0;
             }
         } catch (SQLException e) {
             throw new RuntimeException();
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -125,24 +119,16 @@ public class UserProfile {
             while(resultSet.next()) {
                 int profileID = resultSet.getInt("profileID");
                 String profileType = resultSet.getString("profileType");
-                boolean profileStatus = resultSet.getBoolean("profileStatus");
                 String profileInfo = resultSet.getString("profileInfo");
-                UserProfile userProfile = new UserProfile(profileID, profileType, profileStatus, profileInfo);
+                boolean profileStatus = resultSet.getBoolean("profileStatus");
+                UserProfile userProfile = new UserProfile(profileID, profileType, profileInfo, profileStatus);
                 userProfiles.add(userProfile);
             }
             return userProfiles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -159,15 +145,7 @@ public class UserProfile {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -183,15 +161,7 @@ public class UserProfile {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -207,15 +177,7 @@ public class UserProfile {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
-            }
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
@@ -230,24 +192,27 @@ public class UserProfile {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String profileType = resultSet.getString("profileType");
-                boolean profileStatus = resultSet.getBoolean("profileStatus");
                 String profileInfo = resultSet.getString("profileInfo");
-                UserProfile userProfile = new UserProfile(profileType, profileStatus, profileInfo);
+                boolean profileStatus = resultSet.getBoolean("profileStatus");
+                UserProfile userProfile = new UserProfile(profileType, profileInfo, profileStatus);
                 userProfiles.add(userProfile);
             }
             return userProfiles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            // Close the connection in a final block to ensure it happens even if an exception occurs.
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the SQLException during closing.
+            closeConnection(); // Ensure connection is closed after operation.
+        }
+    }
+
+    // Closes the database connection to release resources.
+    private void closeConnection() {
+        try {
+            if (conn != null) {
+                conn.close();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

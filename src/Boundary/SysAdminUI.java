@@ -1,10 +1,10 @@
 package Boundary;
 
 import Controller.SysAdminControl;
-import Controller.ViewUserProfileControl;
-import Controller.SearchUserProfileControl;
-import Controller.ActivateUserProfileControl;
-import Controller.SuspendUserProfileControl;
+import Controller.UserProfile.ViewUserProfileControl;
+import Controller.UserProfile.SearchUserProfileControl;
+import Controller.UserProfile.ActivateUserProfileControl;
+import Controller.UserProfile.SuspendUserProfileControl;
 
 import Entity.UserAccount;
 import Entity.UserProfile;
@@ -32,10 +32,10 @@ public class SysAdminUI extends JFrame {
 
     public SysAdminUI(UserAccount u) {
         control = new SysAdminControl(u);
-        initializeUI();
+        initializeUI(u);
     }
 
-    private void initializeUI() {
+    private void initializeUI(UserAccount u) {
         setTitle("System Administrator Console");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
@@ -44,7 +44,7 @@ public class SysAdminUI extends JFrame {
         tabbedPane = new JTabbedPane();
 
         landingPanel = createLandingPanel();
-        userProfilePanel = userProfilePanel();
+        userProfilePanel = userProfilePanel(u);
         userAccPanel = userAccPanel();
 
         tabbedPane.addTab("Welcome", landingPanel);
@@ -91,7 +91,7 @@ public class SysAdminUI extends JFrame {
     }
 
     // SysAdmin User Profile Panel
-    private JPanel userProfilePanel() {
+    private JPanel userProfilePanel(UserAccount u) {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Initialize the searchTextField here if not initialized in initializeUI
@@ -176,7 +176,7 @@ public class SysAdminUI extends JFrame {
         // Listener to open Create User Profile UI
         createProfileButton.addActionListener(e -> {
             dispose();
-            //new CreateUserProfileUI(u);
+            new CreateUserProfileUI(u);
         });
 
         // Listener to open Edit User Profile UI
@@ -187,7 +187,7 @@ public class SysAdminUI extends JFrame {
                 dispose();
                 String profileType = model.getValueAt(table.getSelectedRow(),0).toString();
                 String profileInfo = model.getValueAt(table.getSelectedRow(),1).toString();
-                //new UpdateUserProfileUI(u, profileType, profileInfo);
+                new UpdateUserProfileUI(u, profileType, profileInfo);
             }
         });
 
@@ -220,16 +220,15 @@ public class SysAdminUI extends JFrame {
                 } else {
                     if(new ActivateUserProfileControl().activateUserProfile(profileName)) {
                         getProfileList();
-                        JOptionPane.showMessageDialog(userProfilePanel, "Successfully unsuspend profile", "Success", JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(userProfilePanel, "Successfully activate profile", "Success", JOptionPane.PLAIN_MESSAGE);
                         suspendButton.setEnabled(false);
                     } else {
-                        JOptionPane.showMessageDialog(userProfilePanel, "Failed to unsuspend profile", "Failed", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(userProfilePanel, "Failed to activate profile", "Failed", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else {
                 JOptionPane.showMessageDialog(userProfilePanel, "Can't suspend System Admin", "Failed", JOptionPane.ERROR_MESSAGE);
             }
-
         });
         return panel;
     }
@@ -279,25 +278,7 @@ public class SysAdminUI extends JFrame {
     // SysAdmin User Account Panel
     private JPanel userAccPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-
         return panel;
-    }
-
-    private JPanel createHeaderPanel(String title) {
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel(title, JLabel.LEFT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-
-        JButton logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(e -> performLogout());
-
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        rightPanel.add(logoutButton);
-
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-        headerPanel.add(rightPanel, BorderLayout.EAST);
-
-        return headerPanel;
     }
 
     private JTable createProfileTable(DefaultTableModel model) {
@@ -311,7 +292,6 @@ public class SysAdminUI extends JFrame {
         // Create a scroll pane for the table
         return new JScrollPane(table);
     }
-
 
     // Logout Procedure
     private void performLogout() {
