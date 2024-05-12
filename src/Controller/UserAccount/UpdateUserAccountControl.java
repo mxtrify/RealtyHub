@@ -16,7 +16,7 @@ public class UpdateUserAccountControl {
     }
 
     public ArrayList<String> getProfileList() {
-        return userAccount.getProfileByName();
+        return userAccount.getProfileByType();
     }
 
     public boolean UpdateUserAccount(UserAccount updatedUser) {

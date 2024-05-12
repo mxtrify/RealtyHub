@@ -4,17 +4,16 @@ import Entity.UserAccount;
 
 import java.util.ArrayList;
 
-public class CreateUserAccountControl {
+public class FilterUserAccountControl {
     private UserAccount userAccount;
 
-    public CreateUserAccountControl() {
+    public FilterUserAccountControl() {
         this.userAccount = new UserAccount();
     }
     public ArrayList<String> getProfileList() {
         return userAccount.getProfileByType();
     }
-
-    public boolean addAccount(UserAccount newUser) {
-        return userAccount.insertAccount(newUser);
+    public ArrayList<UserAccount> FilterUserAccount(String profileType) {
+        return userAccount.selectByProfileType(profileType);
     }
 }

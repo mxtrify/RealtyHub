@@ -10,6 +10,7 @@ import Entity.UserProfile;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -327,6 +328,16 @@ public class SysAdminUI extends JFrame {
         searchButton.addActionListener(e -> searchUserAccount());
         searchAndButtonsPanel.add(searchButton);
         searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+
+        // Profile list dropdown
+        DefaultComboBoxModel<String> profileComboModel = new DefaultComboBoxModel<>(getProfileTypeList().toArray(new String[0]));
+        JComboBox<String> profileFilter = new JComboBox<>(profileComboModel);
+        profileFilter.setFont(new Font("Arial", Font.PLAIN, 15));
+        Dimension buttonSize = searchButton.getPreferredSize();
+        profileFilter.setPreferredSize(new Dimension(profileFilter.getPreferredSize().width, buttonSize.height));
+        searchAndButtonsPanel.add(profileFilter);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(e -> {
             searchAccount.setText("");
@@ -366,6 +377,13 @@ public class SysAdminUI extends JFrame {
         JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
         logoutPanel.add(logoutButton);
         panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        // Listener for Profile Filter
+        profileFilter.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                profileFilter((String) profileFilter.getSelectedItem());
+            }
+        });
 
         // Listener to open Create User Account UI
         createAccountButton.addActionListener(e -> {
@@ -438,6 +456,30 @@ public class SysAdminUI extends JFrame {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return table;
+    }
+
+    public ArrayList<String> getProfileTypeList() {
+        return new FilterUserAccountControl().getProfileList();
+    }
+
+    public void profileFilter(String profileName) {
+        accountModel.setRowCount(0);
+        userAccounts = new FilterUserAccountControl().FilterUserAccount(profileName);
+        for (UserAccount userAccount : userAccounts) {
+            String status;
+            if(userAccount.isStatus()) {
+                status = "Active";
+            } else {
+                status = "Suspended";
+            }
+            accountModel.addRow(new Object[]{
+                    userAccount.getUsername(),
+                    userAccount.getfName(),
+                    userAccount.getlName(),
+                    userAccount.getUserProfile().getProfileType(),
+                    status
+            });
+        }
     }
 
     public void getAccountList() {

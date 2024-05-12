@@ -49,12 +49,6 @@ public class UserAccount {
     public String getlName() { return lName; }
     public UserProfile getUserProfile() { return userProfile; }
     public boolean isStatus() { return status; }
-    public void setUsername(String username) { this.username = username; }
-    public void setPassword(String password) { this.password = password; }
-    public void setfName(String fName) { this.fName = fName; }
-    public void setlName(String lName) { this.lName = lName; }
-    public void setUserProfile(UserProfile userProfile) { this.userProfile = userProfile; }
-    public void setStatus(boolean status) { this.status = status; }
 
     // Combines and returns the full name of the user.
     public String getFullName() {
@@ -241,9 +235,9 @@ public class UserAccount {
     }
 
     // Filter User Accounts
-    public ArrayList<UserAccount> selectByProfileName(String profileName) {
+    public ArrayList<UserAccount> selectByProfileType(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID WHERE profile_name = ?";
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID WHERE profileType = ?";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -292,7 +286,7 @@ public class UserAccount {
     }
 
     // Profile dropdown
-    public ArrayList<String> getProfileByName() {
+    public ArrayList<String> getProfileByType() {
         String query = "SELECT profileType FROM user_profile";
         ArrayList<String> profileTypeList = new ArrayList<>();
 
