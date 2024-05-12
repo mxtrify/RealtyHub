@@ -134,7 +134,7 @@ public class UserAccount {
     // Retrieves all user accounts from the database.
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID";
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -182,7 +182,7 @@ public class UserAccount {
 
     // Suspend User Account
     public boolean suspendUserAccount(String username) {
-        String query = "UPDATE user_account SET status = 0 WHERE username = ?";
+        String query = "UPDATE user_account SET accountStatus = 0 WHERE username = ?";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -198,7 +198,7 @@ public class UserAccount {
 
     // Activate
     public boolean activateUserAccount(String username) {
-        String query = "UPDATE user_account SET status = 1 WHERE username = ?";
+        String query = "UPDATE user_account SET accountStatus = 1 WHERE username = ?";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -215,7 +215,7 @@ public class UserAccount {
     // Search User Account
     public ArrayList<UserAccount> getUserAccountByUsername(String search) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, f_name, l_name, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID WHERE username LIKE ?";
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID WHERE username LIKE ?";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -227,7 +227,7 @@ public class UserAccount {
                 String fName = resultSet.getString("fName");
                 String lName = resultSet.getString("lName");
                 String profileType = resultSet.getString("profileType");
-                boolean status = resultSet.getBoolean("status");
+                boolean status = resultSet.getBoolean("accountStatus");
                 UserProfile userProfile = new UserProfile(profileType);
                 UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
                 userAccounts.add(userAccount);
@@ -243,7 +243,7 @@ public class UserAccount {
     // Filter User Accounts
     public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, f_name, l_name, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID WHERE profile_name = ?";
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID WHERE profile_name = ?";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -293,7 +293,7 @@ public class UserAccount {
 
     // Profile dropdown
     public ArrayList<String> getProfileByName() {
-        String query = "SELECT profileType FROM profile";
+        String query = "SELECT profileType FROM user_profile";
         ArrayList<String> profileTypeList = new ArrayList<>();
 
         try {

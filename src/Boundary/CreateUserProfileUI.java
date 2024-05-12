@@ -81,8 +81,8 @@ public class CreateUserProfileUI extends JFrame {
         backButton.setPreferredSize(new Dimension(buttonWidth, 25));
         createButton.setPreferredSize(new Dimension(buttonWidth, 25));
 
-        buttonPanel.add(createButton);
         buttonPanel.add(backButton);
+        buttonPanel.add(createButton);
         pane.add(buttonPanel, gbc);
 
         setupActionListeners(userAccount);
