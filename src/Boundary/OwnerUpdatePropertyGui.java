@@ -2,33 +2,30 @@ package Boundary;
 
 import Controller.PropertyController;
 import Controller.WorkSlotController;
-import Controller.CreateWorkSlotController;
 import Entity.Property;
 import Entity.UserAccount;
-import Entity.WorkSlot;
-import com.toedter.calendar.JDateChooser;
 
+import javax.swing.*;
 import java.awt.*;
+import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
-import javax.swing.*;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 
-public class OwnerCreateWorkSlotGUI {
+public class OwnerUpdatePropertyGui {
     private Calendar current;
     private JButton backButton;
     private JButton createButton;
+    private JTextField idTield;
     private JTextField titleTield;
     private JTextField priceField;
     private JTextField describField;
     private JTextField sellerField;
     private JTextField locationField;
-    public OwnerCreateWorkSlotGUI(UserAccount u){
+    public OwnerUpdatePropertyGui(Property u){
         displayCreateWorkSlotGUI(u);
     }
 
-    public void displayCreateWorkSlotGUI(UserAccount u){
+    public void displayCreateWorkSlotGUI(Property u){
         JFrame frame = new JFrame("Create Property");
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -43,6 +40,16 @@ public class OwnerCreateWorkSlotGUI {
 
 
 
+        JLabel id = new JLabel("id");
+        id.setBounds(225, 425, 235, 50);
+        panel.add(id);
+        idTield= new JTextField(20);
+        idTield.setBounds(325, 425, 235, 50);
+        idTield.setFont(new Font("Helvetica", Font.PLAIN,36));
+        idTield.setText(u.getId()+"");
+        panel.add(idTield);
+
+
 
 
 
@@ -52,6 +59,8 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(propertytitle);
         titleTield = new JTextField(20);
         titleTield.setBounds(325, 175, 235, 50);
+        titleTield.setFont(new Font("Helvetica", Font.PLAIN,36));
+        titleTield.setText(u.getPropertytitle());
         panel.add(titleTield);
 
         //seller
@@ -60,6 +69,8 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(seller);
         sellerField = new JTextField(20);
         sellerField.setBounds(325, 225, 235, 50);
+        sellerField.setFont(new Font("Helvetica", Font.PLAIN,36));
+        sellerField.setText(u.getSeller());
         panel.add(sellerField);
 
 
@@ -67,7 +78,9 @@ public class OwnerCreateWorkSlotGUI {
         describe.setBounds(225, 275, 235, 50);
         panel.add(describe);
         describField = new JTextField(20);
-                describField.setBounds(325, 275, 400, 50);
+        describField.setBounds(325, 275, 400, 50);
+        describField.setFont(new Font("Helvetica", Font.PLAIN,36));
+        describField.setText(u.getDescribe());
         panel.add(describField);
 
 
@@ -77,6 +90,8 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(price);
         priceField = new JTextField(20);
         priceField.setBounds(325, 325, 235, 50);
+        priceField.setFont(new Font("Helvetica", Font.PLAIN,36));
+        priceField.setText(u.getPrice()+"");
         panel.add(priceField);
 
         //locatiom
@@ -85,6 +100,8 @@ public class OwnerCreateWorkSlotGUI {
         panel.add(location);
         locationField = new JTextField(20);
         locationField.setBounds(325, 375, 235, 50);
+        locationField.setFont(new Font("Helvetica", Font.PLAIN,36));
+        locationField.setText(u.getLocation());
         panel.add(locationField);
 
 
@@ -121,7 +138,7 @@ public class OwnerCreateWorkSlotGUI {
 
 
         // Create Button
-        createButton = new JButton("Create");
+        createButton = new JButton("update");
         createButton.setBounds(500, 500, 235, 30);
         panel.add(createButton);
 
@@ -180,7 +197,7 @@ public class OwnerCreateWorkSlotGUI {
             String description="";
             String priceText="";
             String loc="";
-
+            String id1="";
             //if(null!=titleTield.getText()&&"".equals(titleTield.getText())){
               title=titleTield.getText();
               //JOptionPane.showMessageDialog(frame, "title must be filled");
@@ -189,14 +206,17 @@ public class OwnerCreateWorkSlotGUI {
                 description=describField.getText();
                 priceText=priceField.getText();
                 loc=locationField.getText();
-            new PropertyController().insertProperty(new Property(title,sellerName,description,Integer.parseInt(priceText),loc,"1"));
+                id1=idTield.getText();
+                Property p=new Property(title,sellerName,description,Double.parseDouble(priceText),loc,"1");
+                p.setId(Integer.parseInt(id1));
+            new PropertyController().updateProperty(p);
 
         });
 
         // Action for back button
         backButton.addActionListener(e -> {
             frame.dispose();
-            new RealEstateAgent(u);
+            //new RealEstateAgent(u);
         });
 
         frame.add(panel);
