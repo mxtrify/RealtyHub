@@ -7,7 +7,7 @@ public class Property {
     private String location;
     private double price;
     private PropertyStatus status;
-    private Date soldDate;
+    private Date soldDate; 
 
     // Constructor for unsold properties
     public Property(String name, String location, double price, PropertyStatus status) {
@@ -46,7 +46,6 @@ public class Property {
     public double getPrice() {
         return price;
     }
-
     public void setPrice(double price) {
         this.price = price;
     }
