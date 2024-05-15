@@ -190,7 +190,7 @@ public class UserAccount {
         }
     }
 
-    // Activate
+    // Activate User Account
     public boolean activateUserAccount(String username) {
         String query = "UPDATE user_account SET accountStatus = 1 WHERE username = ?";
         try {
@@ -207,30 +207,34 @@ public class UserAccount {
     }
 
     // Search User Account
-    public ArrayList<UserAccount> getUserAccountByUsername(String search) {
+    public ArrayList<UserAccount> getUserAccountsBySearch(String search) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID WHERE username LIKE ?";
-        try {
-            conn = new DBConn().getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, search + "%");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
-                String username = resultSet.getString("username");
-                String password = resultSet.getString("password");
-                String fName = resultSet.getString("fName");
-                String lName = resultSet.getString("lName");
-                String profileType = resultSet.getString("profileType");
-                boolean status = resultSet.getBoolean("accountStatus");
-                UserProfile userProfile = new UserProfile(profileType);
-                UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
-                userAccounts.add(userAccount);
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus " +
+                "FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID " +
+                "WHERE username LIKE ? OR fName LIKE ? OR lName LIKE ?";
+        try (Connection conn = new DBConn().getConnection(); // Use try-with-resources for connection and prepared statement
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            // Set the same search string for username, first name, and last name
+            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(2, "%" + search + "%");
+            preparedStatement.setString(3, "%" + search + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) { // Use try-with-resources for result set
+                while (resultSet.next()) {
+                    String username = resultSet.getString("username");
+                    String password = resultSet.getString("password");
+                    String fName = resultSet.getString("fName");
+                    String lName = resultSet.getString("lName");
+                    String profileType = resultSet.getString("profileType");
+                    boolean status = resultSet.getBoolean("accountStatus");
+                    UserProfile userProfile = new UserProfile(profileType);
+                    UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
+                    userAccounts.add(userAccount);
+                }
             }
             return userAccounts;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            closeConnection(); // Ensure connection is closed after operation.
+            // Handle or log the SQLException appropriately
+            throw new RuntimeException("Failed to retrieve user accounts by search criteria", e);
         }
     }
 
