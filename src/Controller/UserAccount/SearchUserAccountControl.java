@@ -12,6 +12,6 @@ public class SearchUserAccountControl {
     }
 
     public ArrayList<UserAccount> searchUserAccount(String search) {
-        return userAccount.getUserAccountByUsername(search);
+        return userAccount.getUserAccountsBySearch(search);
     }
 }
