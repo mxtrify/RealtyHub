@@ -1,7 +1,9 @@
 package Boundary;
 
+import Controller.AgentController;
 import Controller.PropertyController;
 import Controller.SoldPropertyController;
+import Entity.AgentDetails;
 import Entity.Property;
 import Entity.PropertyStatus;
 import Entity.RealEstateAgent;
@@ -41,11 +43,12 @@ public class BuyerUI extends JFrame {
     private ArrayList<Property> properties;
     private ArrayList<Property> soldProperties;
     private ArrayList<RealEstateAgent> agents;
+    ArrayList<AgentDetails> agent;
     private ArrayList<Property> favouriteProperties;
 
     private String[] propertyColumnNames = {"Property Name", "Location", "Price", "Status"};
-    private String[] soldPropertyColumnNames = {"Property Name", "Location", "Price", "Sold Date"};
-    private String[] agentRatingColumnNames = {"Agent Name", "Rating", "Review"};
+    private String[] soldPropertyColumnNames = {"Property Name", "Location", "Price", "Status"};
+    private String[] agentRatingColumnNames = {"Agent Id", "Agent Name"};
     private String[] favouritesColumnNames = {"Property Name", "Location", "Price", "Status"};
     private String searchText = "";
     public BuyerUI(UserAccount u) {
@@ -151,6 +154,13 @@ public class BuyerUI extends JFrame {
     
         // Create the table
         JTable propertyTable = createTable(propertyTableModel);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
     
         // Add favorite button and its functionality
         JButton favoriteButton = new JButton("Add to Favorites");
@@ -231,6 +241,13 @@ public class BuyerUI extends JFrame {
         searchButton.addActionListener(e -> searchSoldProperties());
         searchPanel.add(searchTextField);
         searchPanel.add(searchButton);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
     
         JPanel combinedPanel = new JPanel(new BorderLayout());
         combinedPanel.add(headerPanel, BorderLayout.NORTH);
@@ -272,8 +289,104 @@ public class BuyerUI extends JFrame {
     
         return panel;
     }
-    
     private JPanel createAgentRatingPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Initialize the searchTextField here if not initialized in initializeUI
+        searchTextField = new JTextField(20); // Ensure it is instantiated here
+        searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
+        searchTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchAgentRatings();
+                }
+            }
+        });
+
+        // Create header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JLabel headerLabel = new JLabel("Agent Ratings & Reviews", JLabel.LEFT);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+
+        // Button Panel configured with BorderLayout
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+
+        // Panel to view the number of people who view the properties
+        JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton rateReviewButton = new JButton("Rate and Review Agent");
+        actionButtonPanel.add(rateReviewButton);
+
+        // Search and Buttons Panel
+        JPanel searchAndButtonsPanel = new JPanel();
+        searchAndButtonsPanel.setLayout(new BoxLayout(searchAndButtonsPanel, BoxLayout.LINE_AXIS));
+        searchAndButtonsPanel.add(searchTextField);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> searchProperties());
+        searchAndButtonsPanel.add(searchButton);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(e -> {
+            searchTextField.setText("");
+            searchProperties();
+        });
+        searchAndButtonsPanel.add(clearButton);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+
+        // Add panels to buttonPanel
+        buttonPanel.add(actionButtonPanel, BorderLayout.WEST);
+        buttonPanel.add(searchAndButtonsPanel, BorderLayout.EAST);
+
+        // Combine header and buttons in a single panel
+        JPanel combinedPanel = new JPanel(new BorderLayout());
+        combinedPanel.add(headerPanel, BorderLayout.NORTH);
+        combinedPanel.add(buttonPanel, BorderLayout.CENTER);
+        panel.add(combinedPanel, BorderLayout.NORTH);
+
+        // Create a table model with non-editable cells
+        agentRatingTableModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        agentRatingTableModel.setColumnIdentifiers(agentRatingColumnNames);
+        getAgentRatings();
+
+        // Create the table
+        JTable agentRatingTable = createTable(agentRatingTableModel);
+        // Add the table to a scroll pane
+        JScrollPane scrollPane = createScrollPane(agentRatingTable);
+        // Add components to the main panel
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        // Listener to open Rate and Review UI
+        rateReviewButton.addActionListener(e -> {
+            if (agentRatingTable.getSelectedRow() == -1){
+                Component createAgentRatingPanel = null;
+                JOptionPane.showMessageDialog(createAgentRatingPanel, "Please select a profile to edit", "Error", JOptionPane.ERROR_MESSAGE);
+            } else{
+                dispose();
+                int agentID = Integer.parseInt(agentRatingTableModel.getValueAt(agentRatingTable.getSelectedRow(),0).toString());
+                String agentName = agentRatingTableModel.getValueAt(agentRatingTable.getSelectedRow(),1).toString();
+                new RateAndReviewUI();
+            }
+
+        });
+
+        return panel;
+    }
+    
+/*     private JPanel createAgentRatingPanel() {
         JPanel panel = new JPanel(new BorderLayout());
     
         // Initialize the searchTextField here if not initialized in initializeUI
@@ -327,7 +440,7 @@ public class BuyerUI extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
     
         return panel;
-    }
+    } */
     private void searchAgentRatings() {
         // Clear the existing table data
         agentRatingTableModel.setRowCount(0);
@@ -428,6 +541,13 @@ public class BuyerUI extends JFrame {
     
         // Add the table to a scroll pane
         JScrollPane scrollPane = createScrollPane(favoritesTable);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
 
         // Add remove button and its functionality
         JButton removeButton = new JButton("Remove from Favorites");
@@ -537,9 +657,7 @@ public class BuyerUI extends JFrame {
         }   
     }
     private void getSoldProperties() {
-        // Assuming you have a method in your controller or service layer to retrieve sold properties
-        // This method may vary depending on how you fetch data in your application architecture
-        
+   
         // Example: Fetch sold properties from a controller
         SoldPropertyController soldPropertyController = new SoldPropertyController();
         soldProperties = soldPropertyController.getSoldProperties();
@@ -559,22 +677,22 @@ public class BuyerUI extends JFrame {
             }
         }
     }
-    private void getAgentRatings() {
-        // Clear existing data in the table model
-        agentRatingTableModel.setRowCount(0);
-    
+        private void getAgentRatings() {
+        AgentController agentcontroller = new AgentController();
+
+
         // Fetch agent ratings from the database or any other data source
-        agents = new ArrayList<>(); // Assuming agents are fetched from a data source
-    
+        agent = agentcontroller.getAgentFromDatabase(); // Assuming agents are fetched from a data source
+
+        agentRatingTableModel.setRowCount(0);
+
         // Iterate through the list of agents
-        for (RealEstateAgent agent : agents) {
+        for (AgentDetails agentdetails : agent) {
             // Extract agent information
-            String agentName = agent.getName();
-            double rating = agent.getRating();
-            String review = agent.getReview(); // Assuming the review is stored as a String
-    
-            // Add agent information to the table model
-            agentRatingTableModel.addRow(new Object[]{agentName, rating, review});
+            agentRatingTableModel.addRow(new Object[]{
+                    agentdetails.getId(),
+                    agentdetails.getName()
+            });
         }
     }
      // Method to add property to favourites

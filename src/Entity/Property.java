@@ -1,6 +1,11 @@
 package Entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+
+import javax.swing.table.DefaultTableModel;
+
+import Controller.PropertyController;
 
 public class Property {
     private String name;
