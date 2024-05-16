@@ -311,68 +311,6 @@ public class AgentUI extends JFrame {
         }
     }
 
-    // Real Estate Agent Ratings Panel
-    private JPanel createRatingPanel(UserAccount u) {
-        JPanel panel = new JPanel(new BorderLayout());
-
-        // Create header panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel("Agent's Ratings", JLabel.LEFT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headerPanel.add(headerLabel, BorderLayout.NORTH);
-
-        // Create a table profileModel with non-editable cells
-        ratingsModel = new DefaultTableModel() {
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make all cells non-editable
-            }
-        };
-
-        ratingsModel.setColumnIdentifiers(ratingsColumnNames);
-        getRatingList();
-
-        // Create the table using the extracted method
-        JTable table = createRatingTable(ratingsModel);
-        JScrollPane scrollPane = createTableScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // Add the logout button
-        JButton logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(e -> performLogout());
-        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
-        logoutPanel.add(logoutButton);
-        panel.add(logoutPanel, BorderLayout.SOUTH);
-
-        return panel;
-    }
-
-    // Ratings Methods
-    private JTable createRatingTable(DefaultTableModel model) {
-        JTable table = new JTable(model);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        return table;
-    }
-
-    public void getRatingList() {
-        ratingsModel.setRowCount(0);
-        agentRatings = new ViewRatingsControl().getRatingsList();
-        for (RealEstateAgent realEstateAgent : agentRatings) {
-            String status;
-            if(realEstateAgent.isStatus()) {
-                status = "Active";
-            } else {
-                status = "Suspended";
-            }
-            ratingsModel.addRow(new Object[]{
-                    realEstateAgent.getUsername(),
-                    realEstateAgent.getfName(),
-                    realEstateAgent.getlName(),
-                    realEstateAgent.getUserProfile().getProfileType(),
-                    status
-            });
-        }
-    }
-
     // Global Methods
     // Create a scroll pane for the table
     private JScrollPane createTableScrollPane(JTable table) {
