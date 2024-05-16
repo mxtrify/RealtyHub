@@ -5,16 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
 import Config.DBConfig;
 import Entity.AgentDetails;
 
 
 public class AgentController {
-    private ArrayList<AgentDetails> agent;
+    private ArrayList<AgentDetails> agents;
     private DBConfig dbConfig;
 
     public AgentController() {
-        agent = new ArrayList<>();
+        this.agents = new ArrayList<>();
         dbConfig = new DBConfig();
     }
 
@@ -34,5 +36,15 @@ public class AgentController {
             e.printStackTrace();
 }
         return agentFromDB;
+    }
+    // Method to search for an agent by name
+    public ArrayList<AgentDetails> searchAgentsByName(String name) {
+        ArrayList<AgentDetails> searchResults = new ArrayList<>();
+        for (AgentDetails agent : agents) {
+            if (agent.getName().equalsIgnoreCase(name)) {
+                searchResults.add(agent);
+            }
+        }
+        return searchResults;
     }
 }

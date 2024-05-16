@@ -42,8 +42,8 @@ public class BuyerUI extends JFrame {
 
     private ArrayList<Property> properties;
     private ArrayList<Property> soldProperties;
-    private ArrayList<RealEstateAgent> agents;
-    ArrayList<AgentDetails> agent;
+    //private ArrayList<RealEstateAgent> agents;
+    private ArrayList<AgentDetails> agents;
     private ArrayList<Property> favouriteProperties;
 
     private String[] propertyColumnNames = {"Property Name", "Location", "Price", "Status"};
@@ -51,6 +51,8 @@ public class BuyerUI extends JFrame {
     private String[] agentRatingColumnNames = {"Agent Id", "Agent Name"};
     private String[] favouritesColumnNames = {"Property Name", "Location", "Price", "Status"};
     private String searchText = "";
+    private String searchText2 = "";
+    private String searchText3 = "";
     public BuyerUI(UserAccount u) {
         initializeUI();
     }
@@ -218,16 +220,16 @@ public class BuyerUI extends JFrame {
                 char typedChar = e.getKeyChar();
                 if (typedChar == '\b') { // Backspace key
                     // If backspace is pressed, remove the last character from searchText
-                    if (!searchText.isEmpty()) {
-                        searchText = searchText.substring(0, searchText.length() - 1);
+                    if (!searchText2.isEmpty()) {
+                        searchText2 = searchText2.substring(0, searchText2.length() - 1);
                     }else {
-                        searchText="";
+                        searchText2="";
                     }
                 } else {
                     // Append typed character to searchText
-                    searchText += typedChar;
+                    searchText2 += typedChar;
                 }
-                System.out.println("Search text: " + searchText);
+                System.out.println("Search text2: " + searchText2);
             }
         });
     
@@ -295,12 +297,40 @@ public class BuyerUI extends JFrame {
         // Initialize the searchTextField here if not initialized in initializeUI
         searchTextField = new JTextField(20); // Ensure it is instantiated here
         searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
+        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                searchAgentRatings();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                searchAgentRatings();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                searchAgentRatings();
+            }
+        });
+
+        // Add key listener to capture typed characters
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchAgentRatings();
+            public void keyTyped(KeyEvent e) {
+                char typedChar = e.getKeyChar();
+                if (typedChar == '\b') { // Backspace key
+                    // If backspace is pressed, remove the last character from searchText
+                    if (!searchText3.isEmpty()) {
+                        searchText3 = searchText3.substring(0, searchText3.length() - 1);
+                    }else {
+                        searchText3="";
+                    }
+                } else {
+                    // Append typed character to searchText
+                    searchText3 += typedChar;
                 }
+                System.out.println("Search text3: " + searchText3);
             }
         });
 
@@ -385,62 +415,7 @@ public class BuyerUI extends JFrame {
 
         return panel;
     }
-    
-/*     private JPanel createAgentRatingPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-    
-        // Initialize the searchTextField here if not initialized in initializeUI
-        searchTextField = new JTextField(20); // Ensure it is instantiated here
-        searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
-        searchTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchAgentRatings();
-                }
-            }
-        });
-    
-        // Create header panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel("Agent Ratings", JLabel.LEFT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-    
-        // Search panel
-        JPanel searchPanel = new JPanel();
-        searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> searchAgentRatings());
-        searchPanel.add(searchTextField);
-        searchPanel.add(searchButton);
-    
-        // Combine header and search in a single panel
-        JPanel combinedPanel = new JPanel(new BorderLayout());
-        combinedPanel.add(headerPanel, BorderLayout.NORTH);
-        combinedPanel.add(searchPanel, BorderLayout.CENTER);
-    
-        // Create a table model with non-editable cells
-        agentRatingTableModel = new DefaultTableModel() {
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make all cells non-editable
-            }
-        };
-    
-        agentRatingTableModel.setColumnIdentifiers(agentRatingColumnNames);
-        getAgentRatings();
-    
-        // Create the table
-        JTable agentRatingTable = createTable(agentRatingTableModel);
-    
-        // Add the table to a scroll pane
-        JScrollPane scrollPane = createScrollPane(agentRatingTable);
-    
-        // Add components to the main panel
-        panel.add(combinedPanel, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-    
-        return panel;
-    } */
+/* 
     private void searchAgentRatings() {
         // Clear the existing table data
         agentRatingTableModel.setRowCount(0);
@@ -460,7 +435,37 @@ public class BuyerUI extends JFrame {
                 });
             }
         }
+    } */
+    private void searchAgentRatings() {
+        if (searchText3=="") {
+            // If the search query is empty, display all agent ratings
+            getAgentRatings();
+            System.out.println("Search query is empty, displaying all agent ratings.");
+        } else {
+            // If there is a search query, clear the table model
+            agentRatingTableModel.setRowCount(0);
+    
+            // Filter agents based on the search query
+            ArrayList<AgentDetails> filteredAgents = new ArrayList<>();
+            String searchTextLowerCase = searchText3.toLowerCase(); // Convert search query to lowercase for case-insensitive comparison
+            for (AgentDetails agent : agents) {
+                // Check if the agent name contains the search query (case-insensitive)
+                if (agent.getName().toLowerCase().contains(searchTextLowerCase)) {
+                    filteredAgents.add(agent);
+                }
+            }
+    
+            // Add filtered agents to the table model
+            for (AgentDetails agent : filteredAgents) {
+                agentRatingTableModel.addRow(new Object[]{
+                    agent.getId(),
+                    agent.getName()
+                    // Add other agent details as needed
+                });
+            }
+        }
     }
+    
     private JPanel createMortgageCalculatorPanel() {
         JPanel panel = new JPanel(new BorderLayout());
     
@@ -575,7 +580,7 @@ public class BuyerUI extends JFrame {
 
     private void searchProperties() {
 
-        if (searchText=="") {
+        if (searchText.isEmpty()) {
             // If the search query is empty, display all properties
             getProperties();
             System.out.println("Search query is empty, displaying all properties.");
@@ -608,7 +613,7 @@ public class BuyerUI extends JFrame {
     
     private void searchSoldProperties() {
         
-        if (searchText=="") {
+        if (searchText2.isEmpty()) {
             getSoldProperties();
             System.out.println("Search query is empty, displaying all SOLD properties.");
         } else {
@@ -617,8 +622,8 @@ public class BuyerUI extends JFrame {
             // Assuming soldProperties is a list of Property objects containing sold properties
             for (Property property : soldProperties) {
                 // Perform search based on property attributes like name, location, etc.
-                if (property.getPropertyName().toLowerCase().contains(searchText) ||
-                    property.getLocation().toLowerCase().contains(searchText)) {
+                if (property.getPropertyName().toLowerCase().contains(searchText2) ||
+                    property.getLocation().toLowerCase().contains(searchText2)) {
                     filteredProperties.add(property);
                 }
             }
@@ -682,12 +687,12 @@ public class BuyerUI extends JFrame {
 
 
         // Fetch agent ratings from the database or any other data source
-        agent = agentcontroller.getAgentFromDatabase(); // Assuming agents are fetched from a data source
+        agents = agentcontroller.getAgentFromDatabase(); // Assuming agents are fetched from a data source
 
         agentRatingTableModel.setRowCount(0);
 
         // Iterate through the list of agents
-        for (AgentDetails agentdetails : agent) {
+        for (AgentDetails agentdetails : agents) {
             // Extract agent information
             agentRatingTableModel.addRow(new Object[]{
                     agentdetails.getId(),
