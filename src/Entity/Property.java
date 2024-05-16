@@ -65,4 +65,5 @@ public class Property {
     public void setSoldDate(Date soldDate) {
         this.soldDate = soldDate;
     }
+    
 }

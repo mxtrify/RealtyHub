@@ -8,17 +8,18 @@ import Entity.RealEstateAgent;
 import Entity.UserAccount;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
+
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 public class BuyerUI extends JFrame {
     // Declare Variables
@@ -46,7 +47,7 @@ public class BuyerUI extends JFrame {
     private String[] soldPropertyColumnNames = {"Property Name", "Location", "Price", "Sold Date"};
     private String[] agentRatingColumnNames = {"Agent Name", "Rating", "Review"};
     private String[] favouritesColumnNames = {"Property Name", "Location", "Price", "Status"};
-
+    private String searchText = "";
     public BuyerUI(UserAccount u) {
         initializeUI();
     }
@@ -81,15 +82,43 @@ public class BuyerUI extends JFrame {
         // Initialize the searchTextField here if not initialized in initializeUI
         searchTextField = new JTextField(20); // Ensure it is instantiated here
         searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
-        searchTextField.addKeyListener(new KeyAdapter() {
+    
+        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchProperties();
-                }
+            public void insertUpdate(DocumentEvent e) {
+                searchProperties();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                searchProperties();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                searchProperties();
             }
         });
-    
+
+        // Add key listener to capture typed characters
+        searchTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char typedChar = e.getKeyChar();
+                if (typedChar == '\b') { // Backspace key
+                    // If backspace is pressed, remove the last character from searchText
+                    if (!searchText.isEmpty()) {
+                        searchText = searchText.substring(0, searchText.length() - 1);
+                    }else {
+                        searchText="";
+                    }
+                } else {
+                    // Append typed character to searchText
+                    searchText += typedChar;
+                }
+                System.out.println("Search text: " + searchText);
+            }
+        });
         // Create header panel
         JPanel headerPanel = new JPanel(new BorderLayout());
         JLabel headerLabel = new JLabel("New Properties", JLabel.LEFT);
@@ -155,12 +184,40 @@ public class BuyerUI extends JFrame {
     
         searchTextField = new JTextField(20);
         searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
+        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                searchSoldProperties();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                searchSoldProperties();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                searchSoldProperties();
+            }
+        });
+
+        // Add key listener to capture typed characters
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchSoldProperties();
+            public void keyTyped(KeyEvent e) {
+                char typedChar = e.getKeyChar();
+                if (typedChar == '\b') { // Backspace key
+                    // If backspace is pressed, remove the last character from searchText
+                    if (!searchText.isEmpty()) {
+                        searchText = searchText.substring(0, searchText.length() - 1);
+                    }else {
+                        searchText="";
+                    }
+                } else {
+                    // Append typed character to searchText
+                    searchText += typedChar;
                 }
+                System.out.println("Search text: " + searchText);
             }
         });
     
@@ -171,7 +228,7 @@ public class BuyerUI extends JFrame {
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Use FlowLayout with left alignment
         searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> searchProperties());
+        searchButton.addActionListener(e -> searchSoldProperties());
         searchPanel.add(searchTextField);
         searchPanel.add(searchButton);
     
@@ -394,24 +451,25 @@ public class BuyerUI extends JFrame {
         headerPanel.add(removeButton, BorderLayout.EAST);
     
         return panel;
-    }    
-   /*  
+    }  
+
     private void searchProperties() {
-        String searchQuery = searchTextField.getText().trim(); // Get the search query from the text field
-    
-        if (searchQuery.isEmpty()) {
+
+        if (searchText=="") {
             // If the search query is empty, display all properties
             getProperties();
+            System.out.println("Search query is empty, displaying all properties.");
+            
         } else {
             // If there is a search query, clear the table model
             propertyTableModel.setRowCount(0);
-    
+  
             // Filter properties based on the search query
             ArrayList<Property> filteredProperties = new ArrayList<>();
             for (Property property : properties) {
                 // Check if the property name or location contains the search query (case-insensitive)
-                if (property.getPropertyName().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                    property.getLocation().toLowerCase().contains(searchQuery.toLowerCase())) {
+                if (property.getPropertyName().toLowerCase().contains(searchText) ||
+                    property.getLocation().toLowerCase().contains(searchText)) {
                     filteredProperties.add(property);
                 }
             }
@@ -425,54 +483,22 @@ public class BuyerUI extends JFrame {
                         property.getStatus()
                 });
             }
-        }
-    } */
-    private void searchProperties() {
-        String searchQuery = searchTextField.getText().trim(); // Get the search query from the text field
-    
-        if (searchQuery.isEmpty()) {
-            // If the search query is empty, display all properties
-            getProperties();
-        } else {
-            // If there is a search query, clear the table model
-            propertyTableModel.setRowCount(0);
-    
-            // Filter properties based on the search query
-            ArrayList<Property> filteredProperties = new ArrayList<>();
-            for (Property property : properties) {
-                // Check if the property name or location contains the search query (case-insensitive)
-                if (property.getPropertyName().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                    property.getLocation().toLowerCase().contains(searchQuery.toLowerCase())) {
-                    filteredProperties.add(property);
-                }
-            }
-            // Add filtered properties to the table model
-            for (Property property : filteredProperties) {
-                propertyTableModel.addRow(new Object[]{
-                        property.getPropertyName(),
-                        property.getLocation(),
-                        property.getPrice(),
-                        property.getStatus()
-                });
-            }
-    
-    
         }
     }
     
     private void searchSoldProperties() {
-        String searchQuery = searchTextField.getText().trim(); // Get the search query from the text field
         
-        if (searchQuery.isEmpty()) {
+        if (searchText=="") {
             getSoldProperties();
+            System.out.println("Search query is empty, displaying all SOLD properties.");
         } else {
             soldPropertyTableModel.setRowCount(0); // Clear existing rows
             ArrayList<Property> filteredProperties = new ArrayList<>();
             // Assuming soldProperties is a list of Property objects containing sold properties
             for (Property property : soldProperties) {
                 // Perform search based on property attributes like name, location, etc.
-                if (property.getPropertyName().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                    property.getLocation().toLowerCase().contains(searchQuery.toLowerCase())) {
+                if (property.getPropertyName().toLowerCase().contains(searchText) ||
+                    property.getLocation().toLowerCase().contains(searchText)) {
                     filteredProperties.add(property);
                 }
             }
@@ -482,7 +508,7 @@ public class BuyerUI extends JFrame {
                         property.getPropertyName(),
                         property.getLocation(),
                         property.getPrice(),
-                        property.getSoldDate()
+                        property.getStatus()
                 });
             }
         }
