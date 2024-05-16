@@ -1,6 +1,5 @@
 package Boundary;
 
-import Controller.UserAccount.CreateUserAccountControl;
 import Controller.UserAccount.UpdateUserAccountControl;
 import Entity.UserAccount;
 import Entity.UserProfile;

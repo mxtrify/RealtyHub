@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class UserAccount {
     private Connection conn;
+    private int accountID;
     private String username;
     private String password;
     private String fName;
@@ -42,13 +43,23 @@ public class UserAccount {
         this.status = status;
     }
 
-    // Getters and setters: Provide access and update capabilities for the user account properties.
+    public UserAccount(int accountID) {
+        this.accountID = accountID;
+    }
+
+    // Getters: Provide access for the user account properties.
+    public int getAccountID() { return accountID; }
     public String getUsername() { return username; }
     public String getPassword() { return password; }
     public String getfName() { return fName; }
     public String getlName() { return lName; }
     public UserProfile getUserProfile() { return userProfile; }
     public boolean isStatus() { return status; }
+
+    // Setters
+    public void setAccountID(int accountID) {
+        this.accountID = accountID;
+    }
 
     // Combines and returns the full name of the user.
     public String getFullName() {
@@ -266,6 +277,7 @@ public class UserAccount {
         }
     }
 
+    // Get selected account to update
     public UserAccount getSelectedAccount(String username) {
         String query = "SELECT * FROM user_account WHERE username = ?";
         try {

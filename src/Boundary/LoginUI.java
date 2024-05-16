@@ -120,8 +120,7 @@ public class LoginUI extends JFrame {
                 new SysAdminUI(userAccount);
                 break;
             case "Real Estate Agent":
-                //new AgentUI(userAccount);
-                System.out.println("Agent");
+                new AgentUI(userAccount);
                 break;
             case "Buyer":
                 //new BuyerUI(userAccount);
