@@ -13,4 +13,9 @@ public class AgentControl {
     public String getLoggedInUserFullName() {
         return userAccount.getFullName();
     }
+
+    // Get the ID of the logged-in user
+    public int getLoggedInUserID() {
+        return userAccount.getAccountID();
+    }
 }

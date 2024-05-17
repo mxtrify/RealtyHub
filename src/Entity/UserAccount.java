@@ -43,6 +43,17 @@ public class UserAccount {
         this.status = status;
     }
 
+    // Extended parameterized constructor: Includes account status along with basic user and profile information.
+    public UserAccount(int accountID, String username, String password, String fName, String lName, UserProfile userProfile, boolean status) {
+        this.accountID = accountID;
+        this.username = username;
+        this.password = password;
+        this.fName = fName;
+        this.lName = lName;
+        this.userProfile = userProfile;
+        this.status = status;
+    }
+
     public UserAccount(int accountID) {
         this.accountID = accountID;
     }
@@ -57,9 +68,7 @@ public class UserAccount {
     public boolean isStatus() { return status; }
 
     // Setters
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
-    }
+    public void setAccountID(int accountID) { this.accountID = accountID; }
 
     // Combines and returns the full name of the user.
     public String getFullName() {
@@ -68,7 +77,7 @@ public class UserAccount {
 
     // Validates login credentials against the database and returns the corresponding user account if successful.
     public UserAccount validateLogin(String username, String password) {
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus, profileStatus FROM user_account INNER JOIN user_profile ON  user_account.profileID = user_profile.profileID WHERE username = ? AND password = ?";
+        String query = "SELECT accountID, username, password, fName, lName, profileType, accountStatus, profileStatus FROM user_account INNER JOIN user_profile ON  user_account.profileID = user_profile.profileID WHERE username = ? AND password = ?";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -77,6 +86,7 @@ public class UserAccount {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()) {
+                int accountID = resultSet.getInt("accountID");
                 String fName = resultSet.getString("fName");
                 String lName = resultSet.getString("lName");
                 String profileType = resultSet.getString("profileType");
@@ -84,15 +94,15 @@ public class UserAccount {
                 boolean profileStatus = resultSet.getBoolean("profileStatus");
                 UserProfile userProfile = new UserProfile(profileType, profileStatus);
                 if(resultSet.getString("profileType").equals("System Admin")) {
-                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
                 } else if (resultSet.getString("profileType").equals("Real Estate Agent")) {
-                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
                 } else if (resultSet.getString("profileType").equals("Buyer")) {
-                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
                 } else if (resultSet.getString("profileType").equals("Seller")) {
-                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
                 } else {
-                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
                 }
             } else {
                 return null;

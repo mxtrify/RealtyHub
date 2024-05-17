@@ -102,7 +102,7 @@ public class CreatePropertyUI extends JFrame {
     private void setupActionListeners(UserAccount userAccount) {
         backButton.addActionListener(e -> {
             dispose(); // Closes the window
-            new SysAdminUI(userAccount); // Assumes SysAdminUI is another JFrame that needs to be shown
+            new AgentUI(userAccount); // Assumes AgentUI is another JFrame that needs to be shown
         });
 
         createButton.addActionListener(e -> {
