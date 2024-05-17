@@ -3,6 +3,7 @@ package Boundary;
 import Controller.AgentControl;
 import Controller.Property.*;
 import Controller.ViewRatingsControl;
+import Controller.ViewReviewControl;
 import Entity.Property;
 import Entity.RealEstateAgent;
 import Entity.UserAccount;
@@ -31,7 +32,11 @@ public class AgentUI extends JFrame {
 
     private DefaultTableModel ratingsModel;
     private ArrayList<RealEstateAgent> ratings;
-    private String[] ratingsColumnNames = {"ListingID", "Name", "Location", "Information", "Price", "SellerID", "Sale Status"};
+    private String[] ratingsColumnNames = {"ReviewerID", "ReviewerType", "Rating"};
+
+    private DefaultTableModel reviewsModel;
+    private ArrayList<RealEstateAgent> reviews;
+    private String[] reviewsColumnNames = {"ReviewerID", "ReviewerType", "Review"};
 
     // Constructor
     public AgentUI(UserAccount u) {
@@ -50,11 +55,13 @@ public class AgentUI extends JFrame {
 
         landingPanel = createLandingPanel();
         propertyPanel = createPropertyPanel(u);
-        ratingsPanel = createRatingPanel(u);
+        ratingsPanel = createRatingPanel();
+        reviewsPanel = createReviewPanel();
 
         tabbedPane.addTab("Welcome", landingPanel);
         tabbedPane.addTab("Property Management", propertyPanel);
         tabbedPane.addTab("Agent Ratings", ratingsPanel);
+       tabbedPane.addTab("Agent Reviews", reviewsPanel);
 
         add(tabbedPane);
         setVisible(true);
@@ -308,6 +315,116 @@ public class AgentUI extends JFrame {
                         saleStatus
                 });
             }
+        }
+    }
+
+    // Real Estate Agent Ratings Panel
+    private JPanel createRatingPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Create header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JLabel headerLabel = new JLabel("Agent's Ratings", JLabel.LEFT);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+        panel.add(headerPanel, BorderLayout.NORTH);
+
+        // Create a table ratingsModel with non-editable cells
+        ratingsModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        ratingsModel.setColumnIdentifiers(ratingsColumnNames);
+        getRatingList(control.getLoggedInUserID());
+
+        // Create the table using the extracted method
+        JTable table = createRatingTable(ratingsModel);
+        JScrollPane scrollPane = createTableScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    // Ratings Methods
+    private JTable createRatingTable(DefaultTableModel model) {
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return table;
+    }
+
+    public void getRatingList(int agentid) {
+        ratingsModel.setRowCount(0);
+        ratings = new ViewRatingsControl().getRatingsList(agentid);
+        for (RealEstateAgent realEstateAgent : ratings) {
+            ratingsModel.addRow(new Object[]{
+                    realEstateAgent.getReviewer().getAccountID(),
+                    realEstateAgent.getReviewerType().getProfileType(),
+                    realEstateAgent.getRating()
+            });
+        }
+    }
+
+    // Real Estate Agent Review Panel
+    private JPanel createReviewPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Create header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JLabel headerLabel = new JLabel("Agent's Reviews", JLabel.LEFT);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+        panel.add(headerPanel, BorderLayout.NORTH);
+
+        // Create a table reviewsModel with non-editable cells
+        reviewsModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        reviewsModel.setColumnIdentifiers(reviewsColumnNames);
+        getReviewList(control.getLoggedInUserID());
+
+        // Create the table using the extracted method
+        JTable table = createReviewTable(reviewsModel);
+        JScrollPane scrollPane = createTableScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    // Review Methods
+    private JTable createReviewTable(DefaultTableModel model) {
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return table;
+    }
+
+    public void getReviewList(int agentid) {
+        reviewsModel.setRowCount(0);
+        reviews = new ViewReviewControl().getReviewList(agentid);
+        for (RealEstateAgent realEstateAgent : reviews) {
+            reviewsModel.addRow(new Object[]{
+                    realEstateAgent.getReviewer().getAccountID(),
+                    realEstateAgent.getReviewerType().getProfileType(),
+                    realEstateAgent.getReview()
+            });
         }
     }
 
