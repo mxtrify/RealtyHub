@@ -1,12 +1,12 @@
 package Entity;
 
-import Database.DBConn;
 import java.sql.*;
 import java.util.ArrayList;
 
+import Config.DBConfig;
+
 public class UserAccount {
     private Connection conn;
-    private int accountID;
     private String username;
     private String password;
     private String fName;
@@ -43,32 +43,19 @@ public class UserAccount {
         this.status = status;
     }
 
-    // Extended parameterized constructor: Includes account status along with basic user and profile information.
-    public UserAccount(int accountID, String username, String password, String fName, String lName, UserProfile userProfile, boolean status) {
-        this.accountID = accountID;
-        this.username = username;
-        this.password = password;
-        this.fName = fName;
-        this.lName = lName;
-        this.userProfile = userProfile;
-        this.status = status;
-    }
-
-    public UserAccount(int accountID) {
-        this.accountID = accountID;
-    }
-
-    // Getters: Provide access for the user account properties.
-    public int getAccountID() { return accountID; }
+    // Getters and setters: Provide access and update capabilities for the user account properties.
     public String getUsername() { return username; }
     public String getPassword() { return password; }
     public String getfName() { return fName; }
     public String getlName() { return lName; }
     public UserProfile getUserProfile() { return userProfile; }
     public boolean isStatus() { return status; }
-
-    // Setters
-    public void setAccountID(int accountID) { this.accountID = accountID; }
+    public void setUsername(String username) { this.username = username; }
+    public void setPassword(String password) { this.password = password; }
+    public void setfName(String fName) { this.fName = fName; }
+    public void setlName(String lName) { this.lName = lName; }
+    public void setUserProfile(UserProfile userProfile) { this.userProfile = userProfile; }
+    public void setStatus(boolean status) { this.status = status; }
 
     // Combines and returns the full name of the user.
     public String getFullName() {
@@ -77,16 +64,15 @@ public class UserAccount {
 
     // Validates login credentials against the database and returns the corresponding user account if successful.
     public UserAccount validateLogin(String username, String password) {
-        String query = "SELECT accountID, username, password, fName, lName, profileType, accountStatus, profileStatus FROM user_account INNER JOIN user_profile ON  user_account.profileID = user_profile.profileID WHERE username = ? AND password = ?";
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus, profileStatus FROM user_account INNER JOIN user_profile ON  user_account.profileID = user_profile.profileID WHERE username = ? AND password = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()) {
-                int accountID = resultSet.getInt("accountID");
                 String fName = resultSet.getString("fName");
                 String lName = resultSet.getString("lName");
                 String profileType = resultSet.getString("profileType");
@@ -94,15 +80,15 @@ public class UserAccount {
                 boolean profileStatus = resultSet.getBoolean("profileStatus");
                 UserProfile userProfile = new UserProfile(profileType, profileStatus);
                 if(resultSet.getString("profileType").equals("System Admin")) {
-                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
                 } else if (resultSet.getString("profileType").equals("Real Estate Agent")) {
-                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
                 } else if (resultSet.getString("profileType").equals("Buyer")) {
-                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
                 } else if (resultSet.getString("profileType").equals("Seller")) {
-                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
                 } else {
-                    return new UserAccount(accountID, username, password, fName, lName, userProfile, accountStatus);
+                    return new UserAccount(username, password, fName, lName, userProfile, accountStatus);
                 }
             } else {
                 return null;
@@ -118,7 +104,7 @@ public class UserAccount {
     // Inserts a new user account into the database if the username does not already exist.
     public boolean insertAccount(UserAccount newUser) {
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
 
             String query = "SELECT * FROM user_account WHERE username = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -149,9 +135,9 @@ public class UserAccount {
     // Retrieves all user accounts from the database.
     public ArrayList<UserAccount> selectAll() {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID";
+        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -177,7 +163,7 @@ public class UserAccount {
     public boolean updateUserAccount(UserAccount updatedUser) {
         Connection conn = null;
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             String query = "UPDATE user_account SET password = ?, fname = ?, lname = ?, profileID = ? WHERE username = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, updatedUser.getPassword());
@@ -197,9 +183,9 @@ public class UserAccount {
 
     // Suspend User Account
     public boolean suspendUserAccount(String username) {
-        String query = "UPDATE user_account SET accountStatus = 0 WHERE username = ?";
+        String query = "UPDATE user_account SET status = 0 WHERE username = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -211,11 +197,11 @@ public class UserAccount {
         }
     }
 
-    // Activate User Account
+    // Activate
     public boolean activateUserAccount(String username) {
-        String query = "UPDATE user_account SET accountStatus = 1 WHERE username = ?";
+        String query = "UPDATE user_account SET status = 1 WHERE username = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -228,43 +214,39 @@ public class UserAccount {
     }
 
     // Search User Account
-    public ArrayList<UserAccount> getUserAccountsBySearch(String search) {
+    public ArrayList<UserAccount> getUserAccountByUsername(String search) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus " +
-                "FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID " +
-                "WHERE username LIKE ? OR fName LIKE ? OR lName LIKE ?";
-        try (Connection conn = new DBConn().getConnection(); // Use try-with-resources for connection and prepared statement
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            // Set the same search string for username, first name, and last name
-            preparedStatement.setString(1, "%" + search + "%");
-            preparedStatement.setString(2, "%" + search + "%");
-            preparedStatement.setString(3, "%" + search + "%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()) { // Use try-with-resources for result set
-                while (resultSet.next()) {
-                    String username = resultSet.getString("username");
-                    String password = resultSet.getString("password");
-                    String fName = resultSet.getString("fName");
-                    String lName = resultSet.getString("lName");
-                    String profileType = resultSet.getString("profileType");
-                    boolean status = resultSet.getBoolean("accountStatus");
-                    UserProfile userProfile = new UserProfile(profileType);
-                    UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
-                    userAccounts.add(userAccount);
-                }
+        String query = "SELECT username, password, f_name, l_name, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID WHERE username LIKE ?";
+        try {
+            conn = new DBConfig().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, search + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String username = resultSet.getString("username");
+                String password = resultSet.getString("password");
+                String fName = resultSet.getString("fName");
+                String lName = resultSet.getString("lName");
+                String profileType = resultSet.getString("profileType");
+                boolean status = resultSet.getBoolean("status");
+                UserProfile userProfile = new UserProfile(profileType);
+                UserAccount userAccount = new UserAccount(username, password, fName, lName, userProfile, status);
+                userAccounts.add(userAccount);
             }
             return userAccounts;
         } catch (SQLException e) {
-            // Handle or log the SQLException appropriately
-            throw new RuntimeException("Failed to retrieve user accounts by search criteria", e);
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 
     // Filter User Accounts
-    public ArrayList<UserAccount> selectByProfileType(String profileName) {
+    public ArrayList<UserAccount> selectByProfileName(String profileName) {
         ArrayList<UserAccount> userAccounts = new ArrayList<>();
-        String query = "SELECT username, password, fName, lName, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = user_profile.profileID WHERE profileType = ?";
+        String query = "SELECT username, password, f_name, l_name, profileType, accountStatus FROM user_account INNER JOIN user_profile ON user_account.profileID = profile.profileID WHERE profile_name = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileName);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -287,11 +269,10 @@ public class UserAccount {
         }
     }
 
-    // Get selected account to update
     public UserAccount getSelectedAccount(String username) {
         String query = "SELECT * FROM user_account WHERE username = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -312,12 +293,12 @@ public class UserAccount {
     }
 
     // Profile dropdown
-    public ArrayList<String> getProfileByType() {
-        String query = "SELECT profileType FROM user_profile";
+    public ArrayList<String> getProfileByName() {
+        String query = "SELECT profileType FROM profile";
         ArrayList<String> profileTypeList = new ArrayList<>();
 
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 

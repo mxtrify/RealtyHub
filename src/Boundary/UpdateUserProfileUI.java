@@ -1,95 +1,74 @@
 package Boundary;
 
-import Controller.UserProfile.UpdateUserProfileControl;
+import Controller.UpdateUserProfileController;
 import Entity.UserAccount;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class UpdateUserProfileUI extends JFrame {
-    private JTextField profileTypeField;
-    private JTextArea profileInfoArea;
-    private JButton backButton, saveButton;
-
-    public UpdateUserProfileUI(UserAccount userAccount, String profileType, String profileInfo) {
-        initializeUI(userAccount, profileType, profileInfo);
+public class UpdateUserProfileUI {
+    public UpdateUserProfileUI(UserAccount u, String profileName, String profileDesc) {
+        displayUpdateUserProfile(u, profileName, profileDesc);
     }
 
-    private void initializeUI(UserAccount userAccount, String profileType, String profileInfo) {
-        setTitle("Update User Profile");
-        setSize(1200, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        addComponentsToPane(getContentPane(), userAccount, profileType, profileInfo);
-        setVisible(true);
-    }
+    public void displayUpdateUserProfile(UserAccount u, String profileName, String profileDesc) {
+        JFrame frame = new JFrame("Edit User Profile");
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
 
-    private void addComponentsToPane(Container pane, UserAccount userAccount, String profileType, String profileInfo) {
-        pane.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel titleLabel = new JLabel("Edit User Profile");
+        titleLabel.setBounds(250, 30,350, 36);
+        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
+        panel.add(titleLabel);
 
-        JLabel titleLabel = new JLabel("Update User Profile");
-        titleLabel.setFont(new Font("Arial", Font.PLAIN, 30));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        addComponent(pane, titleLabel, 0, 0, 2, 1, GridBagConstraints.CENTER);
+        JLabel profileNameLabel = new JLabel("Profile Name");
+        profileNameLabel.setBounds(215, 125, 235, 50);
+        panel.add(profileNameLabel);
 
-        JLabel profileTypeLabel = new JLabel("Profile Name:");
-        profileTypeField = new JTextField(profileType, 20);
-        profileTypeField.setEnabled(false);
-        addComponent(pane, profileTypeLabel, 0, 1, 1, 1, GridBagConstraints.WEST);
-        addComponent(pane, profileTypeField, 1, 1, 1, 1, GridBagConstraints.EAST);
+        JTextField profileNameField = new JTextField(profileName);
+        profileNameField.setEnabled(false);
+        profileNameField.setBounds(315, 125, 235, 50);
+        panel.add(profileNameField);
 
-        JLabel infoLabel = new JLabel("Profile Information:");
-        profileInfoArea = new JTextArea(profileInfo, 5, 20);
-        profileInfoArea.setLineWrap(true);
-        profileInfoArea.setWrapStyleWord(true);
-        addComponent(pane, infoLabel, 0, 2, 1, 1, GridBagConstraints.WEST);
-        addComponent(pane, new JScrollPane(profileInfoArea), 1, 2, 1, 1, GridBagConstraints.EAST);
+        JLabel descLabel = new JLabel("Description");
+        descLabel.setBounds(215, 185, 235, 50);
+        panel.add(descLabel);
 
-        backButton = new JButton("Back");
-        saveButton = new JButton("Save");
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 15, 0));
-        buttonPanel.add(backButton);
-        buttonPanel.add(saveButton);
-        addComponent(pane, buttonPanel, 1, 3, 1, 1, GridBagConstraints.EAST);
+        JTextArea profileDescArea = new JTextArea(profileDesc);
+        profileDescArea.setBounds(315, 185, 235, 75);
+        profileDescArea.setLineWrap(true);
+        profileDescArea.setWrapStyleWord(true);
+        panel.add(profileDescArea);
 
-        setupActionListeners(userAccount);
-    }
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(100, 500, 235, 30);
+        panel.add(backButton);
 
-    private void addComponent(Container container, Component component, int x, int y, int width, int height, int anchor) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.gridwidth = width;
-        gbc.gridheight = height;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = anchor;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        container.add(component, gbc);
-    }
+        JButton saveButton = new JButton("Save");
+        saveButton.setBounds(500, 500, 235, 30);
+        panel.add(saveButton);
 
-    private void setupActionListeners(UserAccount userAccount) {
+        frame.add(panel);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+
         backButton.addActionListener(e -> {
-            dispose();
-            new SysAdminUI(userAccount);
+            frame.dispose();
+            new SysAdminUI(u);
         });
 
         saveButton.addActionListener(e -> {
-            String newProfileType = profileTypeField.getText();
-            String newProfileInfo = profileInfoArea.getText();
-            if (newProfileInfo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Description cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+            String newProfileDesc = profileDescArea.getText();
+            if(newProfileDesc.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Description cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (new UpdateUserProfileController().UpdateUserProfile(profileName, newProfileDesc)) {
+                JOptionPane.showMessageDialog(frame, "User profile successfully saved", "Success", JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                new SysAdminUI(u);
             } else {
-                boolean updateSuccessful = new UpdateUserProfileControl().UpdateUserProfile(newProfileType, newProfileInfo);
-                if (updateSuccessful) {
-                    JOptionPane.showMessageDialog(this, "User profile successfully saved", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                    new SysAdminUI(userAccount);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to save user profile", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(frame, "Failed to save user profile", "Error", JOptionPane.ERROR_MESSAGE);
+
             }
         });
     }

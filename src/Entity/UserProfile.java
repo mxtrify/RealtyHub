@@ -1,23 +1,23 @@
 package Entity;
 
-import Database.DBConn;
-
 import java.sql.*;
 import java.util.ArrayList;
+
+import Config.DBConfig;
 
 public class UserProfile {
     private Connection conn;
 
     private int profileID;
     private String profileType;
-    private String profileInfo;
     private boolean profileStatus;
+    private String profileInfo;
 
     public UserProfile() {
         this.profileID = 0;
         this.profileType = "";
-        this.profileInfo = "";
         this.profileStatus = false;
+        this.profileInfo = "";
     }
 
     public UserProfile(int profileID) {
@@ -33,32 +33,55 @@ public class UserProfile {
         this.profileStatus = status;
     }
 
-    public UserProfile(String profileType, String profileInfo, boolean status) {
+    public UserProfile(String profileType, boolean status, String profileInfo) {
         this.profileType = profileType;
         this.profileStatus = status;
         this.profileInfo = profileInfo;
     }
 
-    public UserProfile(int profileID, String profileType, String profileInfo, boolean status) {
+    public UserProfile(int profileID, String profileType, boolean status, String profileInfo) {
         this.profileID = profileID;
         this.profileType = profileType;
         this.profileStatus = status;
         this.profileInfo = profileInfo;
     }
 
-    // Getter
-    public int getProfileID() { return profileID; }
-    public String getProfileType() { return profileType; }
-    public String getProfileInfo() { return profileInfo; }
-    public boolean isProfileStatus() { return profileStatus; }
+    public int getProfileID() {
+        return profileID;
+    }
 
-    // Setter
-    public void setProfileID(int profileID) { this.profileID = profileID; }
+    public String getProfileType() {
+        return profileType;
+    }
+
+    public void setProfileID(int profileID) {
+        this.profileID = profileID;
+    }
+
+    public void setProfileType(String profileType) {
+        this.profileType = profileType;
+    }
+
+    public boolean isProfileStatus() {
+        return profileStatus;
+    }
+
+    public void setProfileStatus(boolean status) {
+        this.profileStatus = status;
+    }
+
+    public String getProfileInfo() {
+        return profileInfo;
+    }
+
+    public void setProfileInfo(String profileInfo) {
+        this.profileInfo = profileInfo;
+    }
 
     // Create User Profile
     public boolean createUserProfile(String profileType, String profileInfo) {
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
 
             String query = "SELECT * FROM user_profile WHERE profileType = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -68,18 +91,26 @@ public class UserProfile {
             if (resultSet.next()){
                 return false;
             }else {
-                query = "INSERT INTO user_profile (profileType, profileInfo, profileStatus) VALUES (?, ?, ?)";
+                query = "INSERT INTO user_profile (profileType, profileStatus, profileInfo) VALUES (?, ?, ?)";
                 preparedStatement = conn.prepareStatement(query);
                 preparedStatement.setString(1, profileType);
-                preparedStatement.setString(2, profileInfo);
-                preparedStatement.setBoolean(3, true);
+                preparedStatement.setBoolean(2, true);
+                preparedStatement.setString(3, profileInfo);
                 int rowsAffected = preparedStatement.executeUpdate();
                 return rowsAffected > 0;
             }
         } catch (SQLException e) {
             throw new RuntimeException();
         } finally {
-            closeConnection(); // Ensure connection is closed after operation.
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -88,22 +119,30 @@ public class UserProfile {
         ArrayList<UserProfile> userProfiles = new ArrayList<>();
         String query = "SELECT * FROM user_profile";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 int profileID = resultSet.getInt("profileID");
                 String profileType = resultSet.getString("profileType");
-                String profileInfo = resultSet.getString("profileInfo");
                 boolean profileStatus = resultSet.getBoolean("profileStatus");
-                UserProfile userProfile = new UserProfile(profileID, profileType, profileInfo, profileStatus);
+                String profileInfo = resultSet.getString("profileInfo");
+                UserProfile userProfile = new UserProfile(profileID, profileType, profileStatus, profileInfo);
                 userProfiles.add(userProfile);
             }
             return userProfiles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnection(); // Ensure connection is closed after operation.
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -111,7 +150,7 @@ public class UserProfile {
     public boolean updateUserProfile(String profileType, String newProfileInfo) {
         String query = "UPDATE user_profile SET profileInfo = ? WHERE profileType = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, newProfileInfo);
             preparedStatement.setString(2, profileType);
@@ -120,7 +159,15 @@ public class UserProfile {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnection(); // Ensure connection is closed after operation.
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -128,7 +175,7 @@ public class UserProfile {
     public boolean suspendUserProfile(String profileType) {
         String query = "UPDATE user_profile SET profileStatus = 0 WHERE profileType = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileType);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -136,7 +183,15 @@ public class UserProfile {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnection(); // Ensure connection is closed after operation.
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -144,7 +199,7 @@ public class UserProfile {
     public boolean activateUserProfile(String profileType) {
         String query = "UPDATE user_profile SET profileStatus = 1 WHERE profileType = ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, profileType);
             int rowsAffected = preparedStatement.executeUpdate();
@@ -152,7 +207,15 @@ public class UserProfile {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnection(); // Ensure connection is closed after operation.
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
+            }
         }
     }
 
@@ -161,33 +224,30 @@ public class UserProfile {
         ArrayList<UserProfile> userProfiles = new ArrayList<>();
         String query = "SELECT profileType, profileStatus, profileInfo FROM user_profile WHERE profileType LIKE ?";
         try {
-            conn = new DBConn().getConnection();
+            conn = new DBConfig().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, search + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String profileType = resultSet.getString("profileType");
-                String profileInfo = resultSet.getString("profileInfo");
                 boolean profileStatus = resultSet.getBoolean("profileStatus");
-                UserProfile userProfile = new UserProfile(profileType, profileInfo, profileStatus);
+                String profileInfo = resultSet.getString("profileInfo");
+                UserProfile userProfile = new UserProfile(profileType, profileStatus, profileInfo);
                 userProfiles.add(userProfile);
             }
             return userProfiles;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnection(); // Ensure connection is closed after operation.
-        }
-    }
-
-    // Closes the database connection to release resources.
-    private void closeConnection() {
-        try {
-            if (conn != null) {
-                conn.close();
+            // Close the connection in a final block to ensure it happens even if an exception occurs.
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // Handle the SQLException during closing.
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }

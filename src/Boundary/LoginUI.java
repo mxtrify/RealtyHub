@@ -17,7 +17,7 @@ public class LoginUI extends JFrame {
 
     // Initializes the login control and sets up the UI components
     public LoginUI() {
-        loginControl = new LoginControl();
+        loginControl = new LoginControl();  // Corrected constructor
         setupUI();
     }
 
@@ -120,10 +120,12 @@ public class LoginUI extends JFrame {
                 new SysAdminUI(userAccount);
                 break;
             case "Real Estate Agent":
-                new AgentUI(userAccount);
+                //new AgentUI(userAccount);
+                System.out.println("Agent");
                 break;
             case "Buyer":
                 new BuyerUI(userAccount);
+                System.out.println("Buyer");
                 break;
             case "Seller":
                 //new SellerUI(userAccount);
@@ -131,6 +133,7 @@ public class LoginUI extends JFrame {
                 break;
             default:
                 //new OtherProfileUI(userAccount);
+                System.out.println("Others");
                 break;
         }
     }
