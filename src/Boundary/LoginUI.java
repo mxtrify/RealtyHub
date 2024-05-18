@@ -123,8 +123,7 @@ public class LoginUI extends JFrame {
                 new AgentUI(userAccount);
                 break;
             case "Buyer":
-                //new BuyerUI(userAccount);
-                System.out.println("Buyer");
+                new BuyerUI(userAccount);
                 break;
             case "Seller":
                 //new SellerUI(userAccount);
@@ -132,7 +131,6 @@ public class LoginUI extends JFrame {
                 break;
             default:
                 //new OtherProfileUI(userAccount);
-                System.out.println("Others");
                 break;
         }
     }

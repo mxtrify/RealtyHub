@@ -24,8 +24,8 @@ public class Property {
         this.saleStatus = false;
     }
 
-    // Parameterized constructor: Initializes a new property with specific values for basic property information.
-    public Property(String name, String location, String info, int price, UserAccount userAccount ) {
+    // Constructor for insertProperty
+    public Property(String name, String location, String info, int price, UserAccount userAccount) {
         this.name = name;
         this.location = location;
         this.info = info;
@@ -33,7 +33,7 @@ public class Property {
         this.userAccount = userAccount;
     }
 
-    // Parameterized constructor: Initializes a new property with specific values for basic property information.
+    // Constructor for getSelectedProperty
     public Property(int listingID, String name, String location, String info, int price) {
         this.listingID = listingID;
         this.name = name;
@@ -42,7 +42,7 @@ public class Property {
         this.price = price;
     }
 
-    // Extended parameterized constructor: Includes account status along with basic user and profile information.
+    // Constructor for selectAllProperty
     public Property(int listingID, String name, String location, String info, int price, UserAccount userAccount, boolean saleStatus) {
         this.listingID = listingID;
         this.name = name;
@@ -53,7 +53,17 @@ public class Property {
         this.saleStatus = saleStatus;
     }
 
-    // Getters: Provide access for the property properties.
+    // Constructor for selectNewProperty, getNewPropertyBySearch, selectSoldProperty, getSoldPropertyBySearch
+    public Property(int listingID, String name, String location, String info, int price, boolean saleStatus) {
+        this.listingID = listingID;
+        this.name = name;
+        this.location = location;
+        this.info = info;
+        this.price = price;
+        this.saleStatus = saleStatus;
+    }
+
+    // Getters: Provide access for the entity's properties
     public int getListingID() {
         return listingID;
     }
@@ -82,7 +92,7 @@ public class Property {
         return saleStatus;
     }
 
-    // Retrieves all user accounts from the database.
+    // Retrieves all properties from the database.
     public ArrayList<Property> selectAllProperty() {
         ArrayList<Property> properties = new ArrayList<>();
         String query = "SELECT listingID, name, location, info, price, accountID, saleStatus FROM property INNER JOIN user_account ON property.sellerID = user_account.accountID";
@@ -165,13 +175,7 @@ public class Property {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            if (conn != null) {
-                try {
-                    conn.close(); // Ensure connection is closed after operation.
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            closeConnection();
         }
     }
 
@@ -297,6 +301,197 @@ public class Property {
         } catch (SQLException e) {
             // Handle or log the SQLException appropriately
             throw new RuntimeException("Failed to retrieve user accounts by search criteria", e);
+        }
+    }
+
+    // Retrieves all available properties from the database.
+    public ArrayList<Property> selectNewProperty() {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT listingID, name, location, info, price, saleStatus FROM property WHERE saleStatus = 1";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int listingID = resultSet.getInt("listingID");
+                String name = resultSet.getString("name");
+                String location = resultSet.getString("location");
+                String info = resultSet.getString("info");
+                int price = resultSet.getInt("price");
+                boolean saleStatus = resultSet.getBoolean("saleStatus");
+                Property property = new Property(listingID, name, location, info, price, saleStatus);
+                properties.add(property);
+            }
+            return properties;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(); // Ensure connection is closed after operation.
+        }
+    }
+
+    // Search New Property
+    public ArrayList<Property> getNewPropertyBySearch(String search) {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT listingID, name, location, info, price, saleStatus FROM property WHERE saleStatus = 1 " +
+                "AND (name LIKE ? OR location LIKE ? OR info LIKE ?)";
+        try (Connection conn = new DBConn().getConnection(); // Use try-with-resources for connection and prepared statement
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            // Set the same search string for name, location, and info
+            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(2, "%" + search + "%");
+            preparedStatement.setString(3, "%" + search + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) { // Use try-with-resources for result set
+                while (resultSet.next()) {
+                    int listingID = resultSet.getInt("listingID");
+                    String name = resultSet.getString("name");
+                    String location = resultSet.getString("location");
+                    String info = resultSet.getString("info");
+                    int price = resultSet.getInt("price");
+                    boolean saleStatus = resultSet.getBoolean("saleStatus");
+                    Property property = new Property(listingID, name, location, info, price, saleStatus);
+                    properties.add(property);
+                }
+            }
+            return properties;
+        } catch (SQLException e) {
+            // Handle or log the SQLException appropriately
+            throw new RuntimeException("Failed to retrieve user accounts by search criteria", e);
+        }
+    }
+
+    // Retrieves all sold properties from the database.
+    public ArrayList<Property> selectSoldProperty() {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT listingID, name, location, info, price, saleStatus FROM property WHERE saleStatus = 0";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int listingID = resultSet.getInt("listingID");
+                String name = resultSet.getString("name");
+                String location = resultSet.getString("location");
+                String info = resultSet.getString("info");
+                int price = resultSet.getInt("price");
+                boolean saleStatus = resultSet.getBoolean("saleStatus");
+                Property property = new Property(listingID, name, location, info, price, saleStatus);
+                properties.add(property);
+            }
+            return properties;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(); // Ensure connection is closed after operation.
+        }
+    }
+
+    // Search Sold Property
+    public ArrayList<Property> getSoldPropertyBySearch(String search) {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT listingID, name, location, info, price, saleStatus FROM property WHERE saleStatus = 0 " +
+                "AND (name LIKE ? OR location LIKE ? OR info LIKE ?)";
+        try (Connection conn = new DBConn().getConnection(); // Use try-with-resources for connection and prepared statement
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            // Set the same search string for name, location, and info
+            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(2, "%" + search + "%");
+            preparedStatement.setString(3, "%" + search + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) { // Use try-with-resources for result set
+                while (resultSet.next()) {
+                    int listingID = resultSet.getInt("listingID");
+                    String name = resultSet.getString("name");
+                    String location = resultSet.getString("location");
+                    String info = resultSet.getString("info");
+                    int price = resultSet.getInt("price");
+                    boolean saleStatus = resultSet.getBoolean("saleStatus");
+                    Property property = new Property(listingID, name, location, info, price, saleStatus);
+                    properties.add(property);
+                }
+            }
+            return properties;
+        } catch (SQLException e) {
+            // Handle or log the SQLException appropriately
+            throw new RuntimeException("Failed to retrieve user accounts by search criteria", e);
+        }
+    }
+
+    // Inserts a new property save into the database if it doesn't already exist.
+    public boolean insertPropertySave(int listingID, int saverID) {
+        Connection conn = null;
+        try {
+            // Get database connection
+            conn = new DBConn().getConnection();
+
+            // Check if the save already exists
+            String checkQuery = "SELECT saveID FROM property_saves WHERE listingID = ? AND saverID = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+            checkStmt.setInt(1, listingID);
+            checkStmt.setInt(2, saverID);
+            ResultSet checkResult = checkStmt.executeQuery();
+
+            if (checkResult.next()) {
+                // If save already exists, do not insert duplicate
+                return false;
+            }
+
+            // Check if the property listing with the given listingID exists
+            String listingQuery = "SELECT listingID FROM property WHERE listingID = ?";
+            PreparedStatement listingStatement = conn.prepareStatement(listingQuery);
+            listingStatement.setInt(1, listingID);
+            ResultSet listingResult = listingStatement.executeQuery();
+
+            // Check if the user with the given saverID exists
+            String saverQuery = "SELECT accountID FROM user_account WHERE accountID = ?";
+            PreparedStatement saverStatement = conn.prepareStatement(saverQuery);
+            saverStatement.setInt(1, saverID);
+            ResultSet saverResult = saverStatement.executeQuery();
+
+            if (!listingResult.next() || !saverResult.next()) {
+                // If either the property listing or the saver does not exist, we cannot add the save
+                return false;
+            } else {
+                // Insert the new property save into the property_saves table
+                String query = "INSERT INTO property_saves (listingID, saverID) VALUES (?, ?)";
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setInt(1, listingID);
+                preparedStatement.setInt(2, saverID);
+                int rowsAffected = preparedStatement.executeUpdate();
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection();
+        }
+    }
+
+    // Retrieves all favourite properties for a given user from the database.
+    public ArrayList<Property> selectFavouriteProperty(int buyerID) {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT p.listingID, p.name, p.location, p.info, p.price, p.saleStatus " +
+                "FROM property p JOIN property_saves ps ON p.listingID = ps.listingID " +
+                "WHERE ps.saverID = ?";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, buyerID);  // Set the saverID in the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int listingID = resultSet.getInt("listingID");
+                String name = resultSet.getString("name");
+                String location = resultSet.getString("location");
+                String info = resultSet.getString("info");
+                int price = resultSet.getInt("price");
+                boolean saleStatus = resultSet.getBoolean("saleStatus");
+                Property property = new Property(listingID, name, location, info, price, saleStatus);
+                properties.add(property);
+            }
+            return properties;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(); // Ensure connection is closed after operation.
         }
     }
 

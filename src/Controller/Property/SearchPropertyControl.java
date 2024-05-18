@@ -14,4 +14,12 @@ public class SearchPropertyControl {
     public ArrayList<Property> SearchProperty(String search) {
         return property.getPropertyBySearch(search);
     }
+
+    public ArrayList<Property> SearchNewProperty(String search) {
+        return property.getNewPropertyBySearch(search);
+    }
+
+    public ArrayList<Property> SearchSoldProperty(String search) {
+        return property.getSoldPropertyBySearch(search);
+    }
 }
