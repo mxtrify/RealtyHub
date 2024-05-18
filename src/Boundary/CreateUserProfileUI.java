@@ -1,74 +1,111 @@
 package Boundary;
 
-import Controller.CreateUserProfileControl;
+import Controller.UserProfile.CreateUserProfileControl;
 import Entity.UserAccount;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CreateUserProfileUI {
-    private JFrame frame;
-    public CreateUserProfileUI(UserAccount u) {
-        displayCreateUserProfile(u);
+public class CreateUserProfileUI extends JFrame {
+    // Declare Variables
+    private JTextField profileTypeField;
+    private JTextArea profileInfoArea;
+    private JButton backButton, createButton;
+
+    public CreateUserProfileUI(UserAccount userAccount) {
+        initializeUI(userAccount);
     }
 
-    private void displayCreateUserProfile(UserAccount u) {
-        frame = new JFrame("Create User Profile");
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
+    // Sets up the main UI components of the Create User Profile window
+    private void initializeUI(UserAccount userAccount) {
+        setTitle("Create User Profile");
+        setSize(1200, 800);  // Updated window size
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        addComponentsToPane(getContentPane(), userAccount);
+        setVisible(true);
+    }
 
+    // Adds Create User Profile Form components to the panel
+    private void addComponentsToPane(Container pane, UserAccount userAccount) {
+        pane.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Title Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
         JLabel titleLabel = new JLabel("Create User Profile");
-        titleLabel.setBounds(230, 30,350, 36);
-        titleLabel.setFont(new Font("Helvetica", Font.PLAIN,36));
-        panel.add(titleLabel);
+        titleLabel.setFont(new Font("Arial", Font.PLAIN, 30));  // Updated font and size
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        pane.add(titleLabel, gbc);
 
-        JLabel profileNameLabel = new JLabel("Profile Name");
-        profileNameLabel.setBounds(215, 125, 235, 50);
-        panel.add(profileNameLabel);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
 
-        JTextField profileNameField = new JTextField();
-        profileNameField.setBounds(315, 125, 235, 50);
-        panel.add(profileNameField);
+        // Profile Name Label and Text Field
+        JLabel profileTypeLabel = new JLabel("Profile Name:");
+        gbc.gridx = 0;
+        pane.add(profileTypeLabel, gbc);
 
-        JLabel descLabel = new JLabel("Description");
-        descLabel.setBounds(215, 185, 235, 50);
-        panel.add(descLabel);
+        profileTypeField = new JTextField(20);
+        gbc.gridx = 1;
+        pane.add(profileTypeField, gbc);
 
-        JTextArea profileDescArea = new JTextArea();
-        profileDescArea.setBounds(315, 185, 235, 75);
-        profileDescArea.setLineWrap(true);
-        profileDescArea.setWrapStyleWord(true);
-        panel.add(profileDescArea);
+        // Description Label and Text Area
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel InfoLabel = new JLabel("Profile Information:");
+        pane.add(InfoLabel, gbc);
 
-        JButton backButton = new JButton("Back");
-        backButton.setBounds(100, 500, 235, 30);
-        panel.add(backButton);
+        profileInfoArea = new JTextArea(5, 20);
+        profileInfoArea.setLineWrap(true);
+        profileInfoArea.setWrapStyleWord(true);
+        gbc.gridx = 1;
+        pane.add(new JScrollPane(profileInfoArea), gbc);
 
-        JButton createButton = new JButton("Create");
-        createButton.setBounds(500, 500, 235, 30);
-        panel.add(createButton);
+        // Back and Create Buttons
+        gbc.gridy++;
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.EAST;
 
-        frame.add(panel);
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 15, 0));
+        backButton = new JButton("Back");
+        createButton = new JButton("Create");
 
+        int buttonWidth = profileInfoArea.getPreferredSize().width / 2 - 5;
+        backButton.setPreferredSize(new Dimension(buttonWidth, 25));
+        createButton.setPreferredSize(new Dimension(buttonWidth, 25));
+
+        buttonPanel.add(backButton);
+        buttonPanel.add(createButton);
+        pane.add(buttonPanel, gbc);
+
+        setupActionListeners(userAccount);
+    }
+
+    // Configure action listeners for buttons
+    private void setupActionListeners(UserAccount userAccount) {
         backButton.addActionListener(e -> {
-            frame.dispose();
-            new SysAdminUI(u);
+            dispose();  // Closes the window
+            new SysAdminUI(userAccount);  // Assumes SysAdminUI is another JFrame that needs to be shown
         });
 
         createButton.addActionListener(e -> {
-            String profileName = profileNameField.getText();
-            String profileDesc = profileDescArea.getText();
-            if(profileName.isEmpty() || profileDesc.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Name or Description cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
+            String profileName = profileTypeField.getText();
+            String profileDesc = profileInfoArea.getText();
+            if (profileName.isEmpty() || profileDesc.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Name or Description cannot be empty", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (new CreateUserProfileControl().createUserProfile(profileName, profileDesc)) {
-                JOptionPane.showMessageDialog(frame, "User profile created successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                frame.dispose();
-                new SysAdminUI(u);
+                JOptionPane.showMessageDialog(this, "User profile created successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+                new SysAdminUI(userAccount);
             } else {
-                JOptionPane.showMessageDialog(frame, "Failed to create user profile", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to create user profile", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }

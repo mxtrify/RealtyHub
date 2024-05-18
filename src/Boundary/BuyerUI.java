@@ -1,11 +1,9 @@
 package Boundary;
 
-import Controller.PropertyController;
-import Controller.SoldPropertyController;
-import Entity.Property;
-import Entity.RealEstateAgent;
-import Entity.UserAccount;
-import Entity.UserProfile;
+import Controller.BuyerControl;
+import Controller.Property.*;
+import Controller.ViewReviewControl;
+import Entity.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,429 +12,459 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class BuyerUI extends JFrame {
+public class BuyerUI extends JFrame{
     // Declare Variables
     private JTabbedPane tabbedPane;
-    private JPanel propertyPanel;
+    private JPanel landingPanel;
+    private JPanel newPropertyPanel;
     private JPanel soldPropertyPanel;
-    private JPanel agentRatingPanel;
-    private JPanel mortgageCalculatorPanel;
+    private JPanel favouritesPanel;
 
-    private DefaultTableModel propertyTableModel;
-    private DefaultTableModel soldPropertyTableModel;
-    private DefaultTableModel agentRatingTableModel;
+    private BuyerControl control;
 
-    private JTextField searchTextField;
-    private JButton searchButton;
+    private DefaultTableModel newPropertyModel;
+    private JTextField searchNewProperty;
+    private ArrayList<Property> newProperties;
+    private String[] newPropertyColumnNames = {"ListingID", "Name", "Location", "Information", "Price", "Sale Status"};
 
-    private ArrayList<Property> properties;
+    private DefaultTableModel soldPropertyModel;
+    private JTextField searchSoldProperty;
     private ArrayList<Property> soldProperties;
-    private ArrayList<RealEstateAgent> agents;
+    private String[] soldPropertyColumnNames = {"ListingID", "Name", "Location", "Information", "Price", "Sale Status"};
 
-    private String[] propertyColumnNames = {"Property Name", "Location", "Price", "Status"};
-    private String[] soldPropertyColumnNames = {"Property Name", "Location", "Price", "Sold Date"};
-    private String[] agentRatingColumnNames = {"Agent Name", "Rating", "Review"};
+    private DefaultTableModel favPropertyModel;
+    private JTextField searchFavProperty;
+    private ArrayList<Property> favProperties;
+    private String[] favPropertyColumnNames = {"ListingID", "Name", "Location", "Information", "Price", "Sale Status"};
 
-
+    // Constructor
     public BuyerUI(UserAccount u) {
-        initializeUI();
+        control = new BuyerControl(u);
+        initializeUI(u);
     }
 
-    private void initializeUI() {
-        setTitle("Buyer dashboard");
+    // Initializes the main user interface components
+    private void initializeUI(UserAccount u) {
+        setTitle("Real Estate Agent Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
         setLocationRelativeTo(null);
 
         tabbedPane = new JTabbedPane();
 
-        propertyPanel = createPropertyPanel();
-        soldPropertyPanel = createSoldPropertyPanel();
-        agentRatingPanel = createAgentRatingPanel();
-        mortgageCalculatorPanel = createMortgageCalculatorPanel();
+        landingPanel = createLandingPanel();
+        newPropertyPanel = createNewPropertyPanel(u);
+        soldPropertyPanel = createSoldPropertyPanel(u);
+        favouritesPanel = createFavPropertyPanel(u);
 
-        tabbedPane.addTab("New Properties", propertyPanel);
-        tabbedPane.addTab("Sold Properties", soldPropertyPanel);
-        tabbedPane.addTab("Agent Ratings", agentRatingPanel);
-        tabbedPane.addTab("Mortgage Calculator", mortgageCalculatorPanel);
+        tabbedPane.addTab("Welcome", landingPanel);
+        tabbedPane.addTab("View New Properties", newPropertyPanel);
+        tabbedPane.addTab("View Sold Properties", soldPropertyPanel);
+        tabbedPane.addTab("View Favourites", favouritesPanel);
+
+        // Add the ChangeListener to the JTabbedPane
+        tabbedPane.addChangeListener(e -> {
+            JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+            int index = sourceTabbedPane.getSelectedIndex();
+            String title = sourceTabbedPane.getTitleAt(index);
+            if (title.equals("View Favourites")) {
+                getFavouritesList(control.getLoggedInUserID());
+                createFavouritesTable(favPropertyModel);
+            }
+        });
 
         add(tabbedPane);
         setVisible(true);
     }
-    private JPanel createPropertyPanel() {
+
+    // Buyer Landing Panel
+    private JPanel createLandingPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Initialize the searchTextField here if not initialized in initializeUI
-        searchTextField = new JTextField(20); // Ensure it is instantiated here
-        searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
-        searchTextField.addKeyListener(new KeyAdapter() {
+        // Container panel to hold multiple labels and the logout button
+        JPanel containerPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        // Display welcome message for the logged-in user using controller method
+        JLabel titleLabel = new JLabel("Welcome, " + control.getLoggedInUserFullName(), JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
+
+        // Test label below the welcome message
+        JLabel testLabel = new JLabel("Click on a tab to start!", JLabel.CENTER);
+        testLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+
+        // Add labels to the container panel with constraints
+        containerPanel.add(titleLabel, gbc);
+        containerPanel.add(testLabel, gbc);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH); // Add the logout button panel to the bottom right corner
+
+        // Add container panel to the main panel
+        panel.add(containerPanel, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    // Buyer New Property Panel
+    private JPanel createNewPropertyPanel(UserAccount u) {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Initialize the searchProfile here if not initialized in initializeUI
+        searchNewProperty = new JTextField(20); // Ensure it is instantiated here
+        searchNewProperty.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchNewProperty.getPreferredSize().height));
+        searchNewProperty.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchProperties();
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchNewProperties();
                 }
             }
         });
-    
+
         // Create header panel
         JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel("New Properties", JLabel.LEFT);
+        JLabel headerLabel = new JLabel("New Property Management", JLabel.LEFT);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(headerLabel, BorderLayout.CENTER);
 
-        // Search panel
-        JPanel searchPanel = new JPanel();
-        searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> searchProperties());
-        searchPanel.add(searchTextField);
-        searchPanel.add(searchButton);
+        // Button Panel configured with BorderLayout
+        JPanel buttonPanel = new JPanel(new BorderLayout());
 
-        // Combine header and search in a single panel
+        // Panel for Save buttons
+        JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton favoriteButton = new JButton("Save as Favourites");
+        actionButtonPanel.add(favoriteButton);
+
+        // Search and Buttons Panel
+        JPanel searchAndButtonsPanel = new JPanel();
+        searchAndButtonsPanel.setLayout(new BoxLayout(searchAndButtonsPanel, BoxLayout.LINE_AXIS));
+        searchAndButtonsPanel.add(searchNewProperty);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> searchNewProperties());
+        searchAndButtonsPanel.add(searchButton);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(e -> {
+            searchNewProperty.setText("");
+            searchNewProperties();
+        });
+        searchAndButtonsPanel.add(clearButton);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+
+        // Add panels to buttonPanel
+        buttonPanel.add(actionButtonPanel, BorderLayout.WEST);
+        buttonPanel.add(searchAndButtonsPanel, BorderLayout.EAST);
+
+        // Combine header and buttons in a single panel
         JPanel combinedPanel = new JPanel(new BorderLayout());
         combinedPanel.add(headerPanel, BorderLayout.NORTH);
-        combinedPanel.add(searchPanel, BorderLayout.CENTER);
+        combinedPanel.add(buttonPanel, BorderLayout.CENTER);
+        panel.add(combinedPanel, BorderLayout.NORTH);
 
-        // Create a table model with non-editable cells
-        propertyTableModel = new DefaultTableModel() {
+        // Create a table propertyModel with non-editable cells
+        newPropertyModel = new DefaultTableModel() {
             public boolean isCellEditable(int row, int column) {
                 return false; // Make all cells non-editable
             }
         };
 
-        propertyTableModel.setColumnIdentifiers(propertyColumnNames);
-        getProperties();
+        newPropertyModel.setColumnIdentifiers(newPropertyColumnNames);
+        getNewPropertyList();
 
-        // Create the table
-        JTable propertyTable = createTable(propertyTableModel);
-
-        // Add the table to a scroll pane
-        JScrollPane scrollPane = createScrollPane(propertyTable);
-
-        // Add components to the main panel
-        panel.add(combinedPanel, BorderLayout.NORTH);
+        // Create the table using the extracted method
+        JTable table = createNewPropertyTable(newPropertyModel);
+        JScrollPane scrollPane = createTableScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        return panel;
-    }
-    private JPanel createSoldPropertyPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-    
-        // Initialize the searchTextField here if not initialized in initializeUI
-        searchTextField = new JTextField(20); // Ensure it is instantiated here
-        searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
-        searchTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchSoldProperties();
-                }
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        // Listener to Save Property
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                favoriteButton.setEnabled(table.getSelectedRow() != -1);
             }
         });
-    
-        // Create header panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel("Sold Properties", JLabel.LEFT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-    
-        // Search panel
-        JPanel searchPanel = new JPanel();
-        searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> searchSoldProperties());
-        searchPanel.add(searchTextField);
-        searchPanel.add(searchButton);
-    
-        // Combine header and search in a single panel
-        JPanel combinedPanel = new JPanel(new BorderLayout());
-        combinedPanel.add(headerPanel, BorderLayout.NORTH);
-        combinedPanel.add(searchPanel, BorderLayout.CENTER);
-    
-        // Create a table model with non-editable cells
-        soldPropertyTableModel = new DefaultTableModel() {
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make all cells non-editable
-            }
-        };
-    
-        soldPropertyTableModel.setColumnIdentifiers(soldPropertyColumnNames);
-        getSoldProperties();
-    
-        // Create the table
-        JTable soldPropertyTable = createTable(soldPropertyTableModel);
-    
-        // Add the table to a scroll pane
-        JScrollPane scrollPane = createScrollPane(soldPropertyTable);
-    
-        // Add components to the main panel
-        panel.add(combinedPanel, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-    
-        return panel;
-    }
-    private JPanel createAgentRatingPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-    
-        // Initialize the searchTextField here if not initialized in initializeUI
-        searchTextField = new JTextField(20); // Ensure it is instantiated here
-        searchTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchTextField.getPreferredSize().height));
-        searchTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchAgentRatings();
-                }
+
+        favoriteButton.addActionListener(e -> {
+            int ListingID = (Integer) newPropertyModel.getValueAt(table.getSelectedRow(), 0);
+            int SaverID = control.getLoggedInUserID();
+            if (new FavouritePropertyControl().favouriteProperty(ListingID, SaverID)) {
+                getNewPropertyList(); // Refresh the property list
+                JOptionPane.showMessageDialog(newPropertyPanel, "Property saved successfully", "Success", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(newPropertyPanel, "Failed to save property", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-    
-        // Create header panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel("Agent Ratings", JLabel.LEFT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-    
-        // Search panel
-        JPanel searchPanel = new JPanel();
-        searchButton = new JButton("Search");
-        searchButton.addActionListener(e -> searchAgentRatings());
-        searchPanel.add(searchTextField);
-        searchPanel.add(searchButton);
-    
-        // Combine header and search in a single panel
-        JPanel combinedPanel = new JPanel(new BorderLayout());
-        combinedPanel.add(headerPanel, BorderLayout.NORTH);
-        combinedPanel.add(searchPanel, BorderLayout.CENTER);
-    
-        // Create a table model with non-editable cells
-        agentRatingTableModel = new DefaultTableModel() {
-            public boolean isCellEditable(int row, int column) {
-                return false; // Make all cells non-editable
-            }
-        };
-    
-        agentRatingTableModel.setColumnIdentifiers(agentRatingColumnNames);
-        getAgentRatings();
-    
-        // Create the table
-        JTable agentRatingTable = createTable(agentRatingTableModel);
-    
-        // Add the table to a scroll pane
-        JScrollPane scrollPane = createScrollPane(agentRatingTable);
-    
-        // Add components to the main panel
-        panel.add(combinedPanel, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-    
         return panel;
-    }
-    private void searchAgentRatings() {
-        // Clear the existing table data
-        agentRatingTableModel.setRowCount(0);
-    
-        // Get the search term from the search text field
-        String searchTerm = searchTextField.getText().toLowerCase();
-    
-        // Perform the search based on the provided search term
-        for (RealEstateAgent agent : agents) {
-            // Check if the agent name or any other relevant information matches the search term
-            if (agent.getName().toLowerCase().contains(searchTerm)) {
-                // Add the matching agent to the table model
-                agentRatingTableModel.addRow(new Object[]{
-                        agent.getName(),
-                        agent.getRating(),
-                        agent.getReview()
-                });
-            }
-        }
-    }
-    private JPanel createMortgageCalculatorPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-    
-        // Create header panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        JLabel headerLabel = new JLabel("Mortgage Calculator", JLabel.LEFT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-    
-        // Create input fields for loan amount, interest rate, and loan term
-        JLabel loanAmountLabel = new JLabel("Loan Amount:");
-        JTextField loanAmountField = new JTextField(10);
-    
-        JLabel interestRateLabel = new JLabel("Interest Rate (%):");
-        JTextField interestRateField = new JTextField(10);
-    
-        JLabel loanTermLabel = new JLabel("Loan Term (years):");
-        JTextField loanTermField = new JTextField(10);
-    
-        // Create button to calculate mortgage payment
-        JButton calculateButton = new JButton("Calculate");
-        JLabel resultLabel = new JLabel("", JLabel.CENTER);
-    
-        calculateButton.addActionListener(e -> {
-            // Get values from input fields
-            double loanAmount = Double.parseDouble(loanAmountField.getText());
-            double interestRate = Double.parseDouble(interestRateField.getText());
-            int loanTerm = Integer.parseInt(loanTermField.getText());
-    
-            // Calculate mortgage payment using formula
-            double monthlyInterestRate = interestRate / 1200.0; // Monthly interest rate
-            int numberOfPayments = loanTerm * 12; // Total number of payments
-            double mortgagePayment = loanAmount * monthlyInterestRate /
-                    (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
-    
-            // Display result
-            resultLabel.setText("Monthly Mortgage Payment: $" + String.format("%.2f", mortgagePayment));
-        });
-    
-        // Create panel to hold input fields and button
-        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
-        inputPanel.add(loanAmountLabel);
-        inputPanel.add(loanAmountField);
-        inputPanel.add(interestRateLabel);
-        inputPanel.add(interestRateField);
-        inputPanel.add(loanTermLabel);
-        inputPanel.add(loanTermField);
-        inputPanel.add(new JLabel()); // Empty label for spacing
-        inputPanel.add(calculateButton);
-    
-        // Add header and input panel to the main panel
-        panel.add(headerPanel, BorderLayout.NORTH);
-        panel.add(inputPanel, BorderLayout.CENTER);
-        panel.add(resultLabel, BorderLayout.SOUTH);
-    
-        return panel;
-    }
-    private void searchProperties() {
-        String searchQuery = searchTextField.getText().trim(); // Get the search query from the text field
-    
-        if (searchQuery.isEmpty()) {
-            // If the search query is empty, display all properties
-            getProperties();
-        } else {
-            // If there is a search query, clear the table model
-            propertyTableModel.setRowCount(0);
-    
-            // Filter properties based on the search query
-            ArrayList<Property> filteredProperties = new ArrayList<>();
-            for (Property property : properties) {
-                // Check if the property name or location contains the search query (case-insensitive)
-                if (property.getPropertyName().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                    property.getLocation().toLowerCase().contains(searchQuery.toLowerCase())) {
-                    filteredProperties.add(property);
-                }
-            }
-    
-            // Add filtered properties to the table model
-            for (Property property : filteredProperties) {
-                propertyTableModel.addRow(new Object[]{
-                        property.getPropertyName(),
-                        property.getLocation(),
-                        property.getPrice(),
-                        property.getStatus()
-                });
-            }
-        }
-    }
-    private void searchSoldProperties() {
-        String searchQuery = searchTextField.getText().trim(); // Get the search query from the text field
-        
-        if (searchQuery.isEmpty()) {
-            getSoldProperties();
-        } else {
-            soldPropertyTableModel.setRowCount(0); // Clear existing rows
-            ArrayList<Property> filteredProperties = new ArrayList<>();
-            // Assuming soldProperties is a list of Property objects containing sold properties
-            for (Property property : soldProperties) {
-                // Perform search based on property attributes like name, location, etc.
-                if (property.getPropertyName().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                    property.getLocation().toLowerCase().contains(searchQuery.toLowerCase())) {
-                    filteredProperties.add(property);
-                }
-            }
-            // Add filtered properties to the table model
-            for (Property property : filteredProperties) {
-                soldPropertyTableModel.addRow(new Object[]{
-                        property.getPropertyName(),
-                        property.getLocation(),
-                        property.getPrice(),
-                        property.getSoldDate()
-                });
-            }
-        }
-    }
-    private void getProperties() {
-        // Assuming there's a controller method to retrieve properties
-        PropertyController propertyController = new PropertyController();
-    
-        // Fetch properties from the database or other data source
-        properties = propertyController.getProperties();
-    
-        // Clear existing rows from the table model
-        propertyTableModel.setRowCount(0);
-    
-        // Populate the table model with fetched properties
-        for (Property property : properties) {
-            // Assuming Property object has getters for name, location, price, and status
-            propertyTableModel.addRow(new Object[]{
-                    property.getPropertyName(),
-                    property.getLocation(),
-                    property.getPrice(),
-                    property.getStatus()
-            });
-        }
-    }
-    private void getSoldProperties() {
-        // Assuming you have a method in your controller or service layer to retrieve sold properties
-        // This method may vary depending on how you fetch data in your application architecture
-        
-        // Example: Fetch sold properties from a controller
-        SoldPropertyController soldPropertyController = new SoldPropertyController();
-        soldProperties = soldPropertyController.getSoldProperties();
-        
-        // Clear existing rows in the table model
-        soldPropertyTableModel.setRowCount(0);
-        
-        // Populate the table model with sold properties
-        for (Property property : soldProperties) {
-            soldPropertyTableModel.addRow(new Object[]{
-                    property.getPropertyName(),
-                    property.getLocation(),
-                    property.getPrice(),
-                    property.getSoldDate()
-            });
-        }
-    }
-    private void getAgentRatings() {
-        // Clear existing data in the table model
-        agentRatingTableModel.setRowCount(0);
-    
-        // Fetch agent ratings from the database or any other data source
-        agents = new ArrayList<>(); // Assuming agents are fetched from a data source
-    
-        // Iterate through the list of agents
-        for (RealEstateAgent agent : agents) {
-            // Extract agent information
-            String agentName = agent.getName();
-            double rating = agent.getRating();
-            String review = agent.getReview(); // Assuming the review is stored as a String
-    
-            // Add agent information to the table model
-            agentRatingTableModel.addRow(new Object[]{agentName, rating, review});
-        }
     }
 
-
-    private JTable createTable(DefaultTableModel model) {
-        // Create a table with single selection mode
+    // New Property Panel Methods
+    private JTable createNewPropertyTable(DefaultTableModel model) {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return table;
     }
 
-    private JScrollPane createScrollPane(JTable table) {
-        // Create a scroll pane for the table
-        return new JScrollPane(table);
+    public void getNewPropertyList() {
+        newPropertyModel.setRowCount(0);
+        newProperties = new ViewPropertyControl().getNewPropertyList();
+        for (Property property : newProperties) {
+            newPropertyModel.addRow(new Object[]{
+                    property.getListingID(),
+                    property.getName(),
+                    property.getLocation(),
+                    property.getInfo(),
+                    property.getPrice(),
+                    "Available"
+            });
+        }
     }
 
+    public void searchNewProperties() {
+        String search = searchNewProperty.getText();
+
+        if (search.isEmpty()) {
+            getNewPropertyList();
+        } else {
+            newPropertyModel.setRowCount(0);
+            newProperties = new SearchPropertyControl().SearchNewProperty(search);
+            for (Property property : newProperties) {
+                newPropertyModel.addRow(new Object[]{
+                        property.getListingID(),
+                        property.getName(),
+                        property.getLocation(),
+                        property.getInfo(),
+                        property.getPrice(),
+                        "Available"
+                });
+            }
+        }
+    }
+
+    // Buyer Sold Property Panel
+    private JPanel createSoldPropertyPanel(UserAccount u) {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Initialize the searchProfile here if not initialized in initializeUI
+        searchSoldProperty = new JTextField(20); // Ensure it is instantiated here
+        searchSoldProperty.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchSoldProperty.getPreferredSize().height));
+        searchSoldProperty.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchSoldProperties();
+                }
+            }
+        });
+
+        // Create header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JLabel headerLabel = new JLabel("Sold Property Management", JLabel.LEFT);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+
+        // Button Panel configured with BorderLayout
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+
+        // Panel for Save buttons
+        JPanel actionButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton favoriteButton = new JButton("Save as Favourites");
+        actionButtonPanel.add(favoriteButton);
+
+        // Search and Buttons Panel
+        JPanel searchAndButtonsPanel = new JPanel();
+        searchAndButtonsPanel.setLayout(new BoxLayout(searchAndButtonsPanel, BoxLayout.LINE_AXIS));
+        searchAndButtonsPanel.add(searchSoldProperty);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> searchSoldProperties());
+        searchAndButtonsPanel.add(searchButton);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(e -> {
+            searchSoldProperty.setText("");
+            searchSoldProperties();
+        });
+        searchAndButtonsPanel.add(clearButton);
+        searchAndButtonsPanel.add(Box.createHorizontalStrut(5));
+
+        // Add panels to buttonPanel
+        buttonPanel.add(actionButtonPanel, BorderLayout.WEST);
+        buttonPanel.add(searchAndButtonsPanel, BorderLayout.EAST);
+
+        // Combine header and buttons in a single panel
+        JPanel combinedPanel = new JPanel(new BorderLayout());
+        combinedPanel.add(headerPanel, BorderLayout.NORTH);
+        combinedPanel.add(buttonPanel, BorderLayout.CENTER);
+        panel.add(combinedPanel, BorderLayout.NORTH);
+
+        // Create a table propertyModel with non-editable cells
+        soldPropertyModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        soldPropertyModel.setColumnIdentifiers(soldPropertyColumnNames);
+        getSoldPropertyList();
+
+        // Create the table using the extracted method
+        JTable table = createSoldPropertyTable(soldPropertyModel);
+        JScrollPane scrollPane = createTableScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        // Listener to Save Property
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                favoriteButton.setEnabled(table.getSelectedRow() != -1);
+            }
+        });
+
+        favoriteButton.addActionListener(e -> {
+            int ListingID = (Integer) soldPropertyModel.getValueAt(table.getSelectedRow(), 0);
+            int SaverID = control.getLoggedInUserID();
+            if (new FavouritePropertyControl().favouriteProperty(ListingID, SaverID)) {
+                getSoldPropertyList(); // Refresh the property list
+                JOptionPane.showMessageDialog(soldPropertyPanel, "Property saved successfully", "Success", JOptionPane.PLAIN_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(soldPropertyPanel, "Failed to save property", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        return panel;
+    }
+
+    // Sold Property Panel Methods
+    private JTable createSoldPropertyTable(DefaultTableModel model) {
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return table;
+    }
+
+    public void getSoldPropertyList() {
+        soldPropertyModel.setRowCount(0);
+        soldProperties = new ViewPropertyControl().getSoldPropertyList();
+        for (Property property : soldProperties) {
+            soldPropertyModel.addRow(new Object[]{
+                    property.getListingID(),
+                    property.getName(),
+                    property.getLocation(),
+                    property.getInfo(),
+                    property.getPrice(),
+                    "Sold"
+            });
+        }
+    }
+
+    public void searchSoldProperties() {
+        String search = searchSoldProperty.getText();
+
+        if (search.isEmpty()) {
+            getSoldPropertyList();
+        } else {
+            soldPropertyModel.setRowCount(0);
+            soldProperties = new SearchPropertyControl().SearchSoldProperty(search);
+            for (Property property : soldProperties) {
+                soldPropertyModel.addRow(new Object[]{
+                        property.getListingID(),
+                        property.getName(),
+                        property.getLocation(),
+                        property.getInfo(),
+                        property.getPrice(),
+                        "Sold"
+                });
+            }
+        }
+    }
+
+    // Buyer Favourite Property Panel
+    private JPanel createFavPropertyPanel(UserAccount u) {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Create header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        JLabel headerLabel = new JLabel("My Favourites", JLabel.LEFT);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+        panel.add(headerPanel, BorderLayout.NORTH);
+
+        // Create a table reviewsModel with non-editable cells
+        favPropertyModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        favPropertyModel.setColumnIdentifiers(favPropertyColumnNames);
+        getFavouritesList(control.getLoggedInUserID());
+
+        // Create the table using the extracted method
+        JTable table = createFavouritesTable(favPropertyModel);
+        JScrollPane scrollPane = createTableScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        panel.add(logoutPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    // Favourite Methods
+    private JTable createFavouritesTable(DefaultTableModel model) {
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        return table;
+    }
+
+    public void getFavouritesList(int buyerid) {
+        favPropertyModel.setRowCount(0);
+        favProperties = new FavouritePropertyControl().getFavouriteProperty(buyerid);
+        for (Property favProperty : favProperties) {
+            String saleStatus;
+            if (favProperty.isSaleStatus()) {
+                saleStatus = "Available";
+            } else {
+                saleStatus = "Sold";
+            }
+            favPropertyModel.addRow(new Object[]{
+                    favProperty.getListingID(),
+                    favProperty.getName(),
+                    favProperty.getLocation(),
+                    favProperty.getInfo(),
+                    favProperty.getPrice(),
+                    saleStatus
+            });
+        }
+    }
+
+    // Global Methods
+    // Create a scroll pane for the table
+    private JScrollPane createTableScrollPane(JTable table) {
+        return new JScrollPane(table);
+    }
 
     // Logout Procedure
     private void performLogout() {
