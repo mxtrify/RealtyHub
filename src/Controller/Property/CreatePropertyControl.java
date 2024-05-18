@@ -5,17 +5,17 @@ import Entity.Property;
 import java.util.ArrayList;
 
 public class CreatePropertyControl {
-    private Property userAccount;
+    private Property property;
 
     public CreatePropertyControl() {
-        this.userAccount = new Property();
+        this.property = new Property();
     }
 
     public ArrayList<Integer> getSellerList() {
-        return userAccount.getSellerIDList();
+        return property.getSellerIDList();
     }
 
     public boolean addProperty(Property newProperty) {
-        return userAccount.insertProperty(newProperty);
+        return property.insertProperty(newProperty);
     }
 }

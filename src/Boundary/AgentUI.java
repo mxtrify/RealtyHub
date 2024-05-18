@@ -67,7 +67,7 @@ public class AgentUI extends JFrame {
         setVisible(true);
     }
 
-    // SysAdmin Landing Panel
+    // Real Estate Agent Landing Panel
     private JPanel createLandingPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
@@ -106,7 +106,7 @@ public class AgentUI extends JFrame {
     private JPanel createPropertyPanel(UserAccount u) {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Initialize the searchProfile here if not initialized in initializeUI
+        // Initialize the searchProperty here if not initialized in initializeUI
         searchProperty = new JTextField(20); // Ensure it is instantiated here
         searchProperty.setMaximumSize(new Dimension(Integer.MAX_VALUE, searchProperty.getPreferredSize().height));
         searchProperty.addKeyListener(new KeyAdapter() {
@@ -176,7 +176,7 @@ public class AgentUI extends JFrame {
         getPropertyList();
 
         // Create the table using the extracted method
-        JTable table = createProfileTable(propertyModel);
+        JTable table = createPropertyTable(propertyModel);
         JScrollPane scrollPane = createTableScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -262,7 +262,7 @@ public class AgentUI extends JFrame {
     }
 
     // Property Panel Methods
-    private JTable createProfileTable(DefaultTableModel model) {
+    private JTable createPropertyTable(DefaultTableModel model) {
         JTable table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         return table;

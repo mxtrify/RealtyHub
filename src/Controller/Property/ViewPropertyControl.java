@@ -14,4 +14,12 @@ public class ViewPropertyControl {
     public ArrayList<Property> getPropertyList() {
         return property.selectAllProperty();
     }
+
+    public ArrayList<Property> getNewPropertyList() {
+        return property.selectNewProperty();
+    }
+
+    public ArrayList<Property> getSoldPropertyList() {
+        return property.selectSoldProperty();
+    }
 }
