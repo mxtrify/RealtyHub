@@ -2,15 +2,17 @@ package Boundary;
 
 import Controller.BuyerControl;
 import Controller.Property.*;
-import Controller.ViewReviewControl;
 import Entity.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class BuyerUI extends JFrame{
     // Declare Variables
@@ -19,6 +21,7 @@ public class BuyerUI extends JFrame{
     private JPanel newPropertyPanel;
     private JPanel soldPropertyPanel;
     private JPanel favouritesPanel;
+    private JPanel mortgagePanel;
 
     private BuyerControl control;
 
@@ -33,7 +36,6 @@ public class BuyerUI extends JFrame{
     private String[] soldPropertyColumnNames = {"ListingID", "Name", "Location", "Information", "Price", "Sale Status"};
 
     private DefaultTableModel favPropertyModel;
-    private JTextField searchFavProperty;
     private ArrayList<Property> favProperties;
     private String[] favPropertyColumnNames = {"ListingID", "Name", "Location", "Information", "Price", "Sale Status"};
 
@@ -56,11 +58,13 @@ public class BuyerUI extends JFrame{
         newPropertyPanel = createNewPropertyPanel(u);
         soldPropertyPanel = createSoldPropertyPanel(u);
         favouritesPanel = createFavPropertyPanel(u);
+        mortgagePanel = createMortgagePanel();
 
         tabbedPane.addTab("Welcome", landingPanel);
         tabbedPane.addTab("View New Properties", newPropertyPanel);
         tabbedPane.addTab("View Sold Properties", soldPropertyPanel);
         tabbedPane.addTab("View Favourites", favouritesPanel);
+        tabbedPane.addTab("Mortgage Calculator", mortgagePanel);
 
         // Add the ChangeListener to the JTabbedPane
         tabbedPane.addChangeListener(e -> {
@@ -458,6 +462,91 @@ public class BuyerUI extends JFrame{
                     saleStatus
             });
         }
+    }
+
+    // Buyer Mortgage Calculator
+    private JPanel createMortgagePanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        MortgageControl mortgageControl = new MortgageControl();
+
+        // Title Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        JLabel titleLabel = new JLabel("Mortgage Calculator");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(titleLabel, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+
+        // Fields and Labels
+        JTextField loanAmountField = new JTextField(10);
+        JTextField interestRateField = new JTextField(10);
+        JTextField loanTermField = new JTextField(10);
+
+        addFieldAndLabel("Loan Amount:", loanAmountField, panel, gbc);
+        addFieldAndLabel("Interest Rate (%):", interestRateField, panel, gbc);
+        addFieldAndLabel("Loan Term (years):", loanTermField, panel, gbc);
+
+        // Button panel for Calculate and Clear
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 0));
+        JButton calculateButton = new JButton("Calculate");
+        JButton clearButton = new JButton("Clear");
+        buttonPanel.add(calculateButton);
+        buttonPanel.add(clearButton);
+        panel.add(buttonPanel, gbc);
+
+        // Result label
+        gbc.gridy++;
+        JLabel resultLabel = new JLabel("Your monthly payment will appear here.", JLabel.CENTER);
+        resultLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        panel.add(resultLabel, gbc);
+
+        // Setup action listeners for Calculate
+        calculateButton.addActionListener(e -> {
+            try {
+                double loanAmount = Double.parseDouble(loanAmountField.getText());
+                double interestRate = Double.parseDouble(interestRateField.getText());
+                int loanTerm = Integer.parseInt(loanTermField.getText());
+
+                double mortgagePayment = mortgageControl.getMortgage(loanAmount, interestRate, loanTerm);
+                resultLabel.setText(String.format("Monthly Mortgage Payment: $%.2f", mortgagePayment));
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(panel, "Please enter valid numbers.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Setup action listeners for Clear
+        clearButton.addActionListener(e -> {
+            loanAmountField.setText("");
+            interestRateField.setText("");
+            loanTermField.setText("");
+            resultLabel.setText("Your monthly payment will appear here.");
+        });
+
+        return panel;
+    }
+
+    private void addFieldAndLabel(String labelText, JComponent field, Container pane, GridBagConstraints gbc) {
+        JLabel label = new JLabel(labelText);
+        gbc.gridx = 0;
+        pane.add(label, gbc);
+
+        gbc.gridx = 1;
+        pane.add(field, gbc);
+
+        gbc.gridy++;
     }
 
     // Global Methods
