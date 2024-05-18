@@ -1,18 +1,13 @@
 package Entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-
-import javax.swing.table.DefaultTableModel;
-
-import Controller.PropertyController;
 
 public class Property {
     private String name;
     private String location;
     private double price;
     private PropertyStatus status;
-    private Date soldDate; 
+    private Date soldDate;
 
     // Constructor for unsold properties
     public Property(String name, String location, double price, PropertyStatus status) {
@@ -51,6 +46,7 @@ public class Property {
     public double getPrice() {
         return price;
     }
+
     public void setPrice(double price) {
         this.price = price;
     }
@@ -70,5 +66,4 @@ public class Property {
     public void setSoldDate(Date soldDate) {
         this.soldDate = soldDate;
     }
-    
 }

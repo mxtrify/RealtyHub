@@ -1,44 +1,55 @@
 package Controller;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import Config.DBConfig;
+import java.util.Date;
+
 import Entity.Property;
 import Entity.PropertyStatus;
 
 public class PropertyController {
     private ArrayList<Property> properties;
-    private DBConfig dbConfig;
 
     public PropertyController() {
+        // Initialize the list of properties
         properties = new ArrayList<>();
-        dbConfig = new DBConfig();
+        // Add some sample properties (for demonstration purposes)
+        properties.add(new Property("House 1", "City A", 250000, PropertyStatus.AVAILABLE));
+        properties.add(new Property("Apartment 2", "City B", 150000, PropertyStatus.AVAILABLE));
+        properties.add(new Property("Villa 3", "City C", 500000, PropertyStatus.SOLD, new Date()));
     }
 
-    // Method to retrieve properties from the database
-    public ArrayList<Property> getPropertiesFromDatabase() {
-        ArrayList<Property> propertiesFromDB = new ArrayList<>();
-        try (Connection connection = dbConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM properties");
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                String location = resultSet.getString("address");
-                double price = resultSet.getDouble("price");
-                PropertyStatus status = PropertyStatus.valueOf(resultSet.getString("status").toUpperCase());
+    public ArrayList<Property> getProperties() {
+        return properties;
+    }
 
-                // Creating Property objects based on the status
-                if (status != PropertyStatus.SOLD) {
-                    propertiesFromDB.add(new Property(name, location, price, status));
-                }
+    public ArrayList<Property> searchProperties(String keyword) {
+        ArrayList<Property> searchResults = new ArrayList<>();
+        for (Property property : properties) {
+            if (property.getPropertyName().toLowerCase().contains(keyword.toLowerCase()) ||
+                property.getLocation().toLowerCase().contains(keyword.toLowerCase())) {
+                searchResults.add(property);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return propertiesFromDB;
+        return searchResults;
+    }
+    
+    public ArrayList<Property> searchSoldProperties(String keyword) {
+        ArrayList<Property> soldProperties = new ArrayList<>();
+        for (Property property : properties) {
+            if (property.getStatus() == PropertyStatus.SOLD &&
+                (property.getPropertyName().toLowerCase().contains(keyword.toLowerCase()) ||
+                 property.getLocation().toLowerCase().contains(keyword.toLowerCase()))) {
+                soldProperties.add(property);
+            }
+        }
+        return soldProperties;
+    }
+    public void addProperty(Property property) {
+        properties.add(property);
+    }
+
+    public void removeProperty(Property property) {
+        properties.remove(property);
     }
 }
+
