@@ -2,7 +2,9 @@ package Config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 import java.sql.SQLException;
+
 
 // Database Connector
 public class DBConfig {
@@ -18,6 +20,6 @@ public class DBConfig {
             e.printStackTrace();
             return null;
         }
-
     }
+
 }
