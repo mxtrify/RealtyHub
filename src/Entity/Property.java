@@ -13,6 +13,7 @@ public class Property {
     private int price;
     private UserAccount userAccount;
     private boolean saleStatus;
+    private int favouritesCount;
 
     // Default constructor: Initializes a new user account with empty or default values.
     public Property() {
@@ -63,6 +64,17 @@ public class Property {
         this.saleStatus = saleStatus;
     }
 
+    // Constructor for selectFavouriteList
+    public Property(int listingID, String name, String location, String info, int price, boolean saleStatus, int favouritesCount) {
+        this.listingID = listingID;
+        this.name = name;
+        this.location = location;
+        this.info = info;
+        this.price = price;
+        this.saleStatus = saleStatus;
+        this.favouritesCount = favouritesCount; // Initialize the new field
+    }
+
     // Getters: Provide access for the entity's properties
     public int getListingID() {
         return listingID;
@@ -90,6 +102,10 @@ public class Property {
 
     public boolean isSaleStatus() {
         return saleStatus;
+    }
+
+    public int getFavouritesCount() {
+        return favouritesCount;
     }
 
     // Retrieves all properties from the database.
@@ -503,6 +519,108 @@ public class Property {
         return loanAmount * yearlyInterestRate / (1 - Math.pow(1 + yearlyInterestRate, -numberOfPayments));
     }
 
+    // Insert buyer views into database for seller to track
+    public boolean insertViews(int listingID) {
+        String sql = "INSERT INTO property_views (listingID, viewCount) VALUES (?, 1) ON DUPLICATE KEY UPDATE viewCount = viewCount + 1";
+        try (Connection conn = new DBConn().getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setInt(1, listingID);
+            preparedStatement.executeUpdate();
+            return true; // Successfully updated
+        } catch (SQLException e) {
+            System.err.println("SQL Exception: " + e.getMessage());
+            return false; // Failed to update
+        }
+    }
+
+    // Retrieves property belonging to the user with a views count
+    public ArrayList<Property> selectViewsList(int sellerID) {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT "
+                + "p.listingID AS 'ListingID', "
+                + "p.name AS 'Name', "
+                + "p.location AS 'Location', "
+                + "p.info AS 'Information', "
+                + "p.price AS 'Price', "
+                + "p.saleStatus AS 'Sale Status', "
+                + "IFNULL(v.viewCount, 0) AS 'Number of Views' "
+                + "FROM property p "
+                + "LEFT JOIN property_views v ON p.listingID = v.listingID "
+                + "WHERE p.sellerID = ?;";
+
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, sellerID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int listingID = resultSet.getInt("ListingID");
+                String name = resultSet.getString("Name");
+                String location = resultSet.getString("Location");
+                String info = resultSet.getString("Information");
+                int price = resultSet.getInt("Price");
+                boolean saleStatus = resultSet.getBoolean("Sale Status");
+                int vcount = resultSet.getInt("Number of Views");
+                Property property = new Property(listingID, name, location, info, price, saleStatus, vcount);
+                properties.add(property);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Exception: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection();
+        }
+        return properties;
+    }
+
+    // Retrieves property belonging to the user with a favourite count
+    public ArrayList<Property> selectFavouriteList(int sellerID) {
+        ArrayList<Property> properties = new ArrayList<>();
+        String query = "SELECT " +
+                "p.listingID AS 'ListingID', " +
+                "p.name AS 'Name', " +
+                "p.location AS 'Location', " +
+                "p.info AS 'Information', " +
+                "p.price AS 'Price', " +
+                "p.saleStatus AS 'Sale Status', " +
+                "COUNT(ps.saveID) AS 'Number of Favourites' " +
+                "FROM " +
+                "property p " +
+                "LEFT JOIN " +
+                "property_saves ps ON p.listingID = ps.listingID " +
+                "WHERE " +
+                "p.sellerID = ? " +
+                "GROUP BY " +
+                "p.listingID, p.name, p.location, p.info, p.price, p.saleStatus " +
+                "ORDER BY " +
+                "p.listingID, p.saleStatus;";
+
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, sellerID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int listingID = resultSet.getInt("ListingID");
+                String name = resultSet.getString("Name");
+                String location = resultSet.getString("Location");
+                String info = resultSet.getString("Information");
+                int price = resultSet.getInt("Price");
+                boolean saleStatus = resultSet.getBoolean("Sale Status");
+                int fcount = resultSet.getInt("Number of Favourites");
+                Property property = new Property(listingID, name, location, info, price, saleStatus, fcount);
+                properties.add(property);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Exception: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection();
+        }
+        return properties;
+    }
 
     // Closes the database connection to release resources.
     private void closeConnection() {

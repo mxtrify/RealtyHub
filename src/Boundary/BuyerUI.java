@@ -1,7 +1,7 @@
 package Boundary;
 
 import Controller.BuyerControl;
-import Controller.CreateRateReviewControl;
+import Controller.RateReview.CreateRateReviewControl;
 import Controller.Property.*;
 import Entity.*;
 
@@ -187,6 +187,20 @@ public class BuyerUI extends JFrame{
 
         // Create the table using the extracted method
         JTable table = createNewPropertyTable(newPropertyModel);
+        // Listener to Track Views
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    int listingID = (Integer) newPropertyModel.getValueAt(selectedRow, 0);
+                    if (new TrackViewsControl().addViews(listingID)) {
+                        System.out.println("View Added");
+                    } else {
+                        System.out.println("View failed to be added");
+                    }
+                }
+            }
+        });
         JScrollPane scrollPane = createTableScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -329,6 +343,20 @@ public class BuyerUI extends JFrame{
 
         // Create the table using the extracted method
         JTable table = createSoldPropertyTable(soldPropertyModel);
+        // Listener to Track Views
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    int listingID = (Integer) soldPropertyModel.getValueAt(selectedRow, 0);
+                    if (new TrackViewsControl().addViews(listingID)) {
+                        System.out.println("View Added");
+                    } else {
+                        System.out.println("View failed to be added");
+                    }
+                }
+            }
+        });
         JScrollPane scrollPane = createTableScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -475,8 +503,6 @@ public class BuyerUI extends JFrame{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        MortgageControl mortgageControl = new MortgageControl();
 
         // Title Label
         gbc.gridx = 0;

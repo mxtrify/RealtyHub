@@ -1,8 +1,6 @@
-package Controller;
+package Controller.RateReview;
 
 import Entity.RealEstateAgent;
-
-import java.util.ArrayList;
 
 public class CreateRateReviewControl {
     private RealEstateAgent realEstateAgent;
