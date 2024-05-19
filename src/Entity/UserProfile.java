@@ -46,11 +46,14 @@ public class UserProfile {
         this.profileInfo = profileInfo;
     }
 
-
+    // Getter
     public int getProfileID() { return profileID; }
     public String getProfileType() { return profileType; }
     public String getProfileInfo() { return profileInfo; }
     public boolean isProfileStatus() { return profileStatus; }
+
+    // Setter
+    public void setProfileID(int profileID) { this.profileID = profileID; }
 
     // Create User Profile
     public boolean createUserProfile(String profileType, String profileInfo) {
