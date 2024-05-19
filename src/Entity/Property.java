@@ -498,9 +498,9 @@ public class Property {
 
     // Mortgage calculator
     public double calculateMortgage(double loanAmount, double interestRate, int loanTerm) {
-        double monthlyInterestRate = interestRate / 1200.0;
+        double yearlyInterestRate = interestRate / 1200.0;
         int numberOfPayments = loanTerm * 12;
-        return loanAmount * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+        return loanAmount * yearlyInterestRate / (1 - Math.pow(1 + yearlyInterestRate, -numberOfPayments));
     }
 
 

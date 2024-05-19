@@ -1,18 +1,17 @@
 package Boundary;
 
 import Controller.BuyerControl;
+import Controller.CreateRateReviewControl;
 import Controller.Property.*;
 import Entity.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.function.BiConsumer;
 
 public class BuyerUI extends JFrame{
     // Declare Variables
@@ -21,6 +20,7 @@ public class BuyerUI extends JFrame{
     private JPanel newPropertyPanel;
     private JPanel soldPropertyPanel;
     private JPanel favouritesPanel;
+    private JPanel rateReviewPanel;
     private JPanel mortgagePanel;
 
     private BuyerControl control;
@@ -57,13 +57,15 @@ public class BuyerUI extends JFrame{
         landingPanel = createLandingPanel();
         newPropertyPanel = createNewPropertyPanel(u);
         soldPropertyPanel = createSoldPropertyPanel(u);
-        favouritesPanel = createFavPropertyPanel(u);
+        favouritesPanel = createFavPropertyPanel();
+        rateReviewPanel = createRateReviewPanel(u);
         mortgagePanel = createMortgagePanel();
 
         tabbedPane.addTab("Welcome", landingPanel);
         tabbedPane.addTab("View New Properties", newPropertyPanel);
         tabbedPane.addTab("View Sold Properties", soldPropertyPanel);
         tabbedPane.addTab("View Favourites", favouritesPanel);
+        tabbedPane.addTab("Rate and Review Agent", rateReviewPanel);
         tabbedPane.addTab("Mortgage Calculator", mortgagePanel);
 
         // Add the ChangeListener to the JTabbedPane
@@ -401,7 +403,7 @@ public class BuyerUI extends JFrame{
     }
 
     // Buyer Favourite Property Panel
-    private JPanel createFavPropertyPanel(UserAccount u) {
+    private JPanel createFavPropertyPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Create header panel
@@ -464,9 +466,146 @@ public class BuyerUI extends JFrame{
         }
     }
 
+    // Buyer Rate and Review Agent
+    private JPanel createRateReviewPanel(UserAccount u) {
+        JPanel mainPanel = new JPanel(new BorderLayout()); // Main panel with BorderLayout
+        JPanel panel = new JPanel(new GridBagLayout()); // Sub-panel with GridBagLayout
+        mainPanel.add(panel, BorderLayout.CENTER);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        MortgageControl mortgageControl = new MortgageControl();
+
+        // Title Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        JLabel titleLabel = new JLabel("Rate and Review Agent");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(titleLabel, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+
+        // Fields and Labels
+        JComboBox<Byte> rateField = new JComboBox<>();
+        rateField.addItem(null); // Adds a blank option
+        for (byte i = 1; i <= 5; i++) {
+            rateField.addItem(i); // Adds numbers 1 to 5
+        }
+        JTextField reviewField = new JTextField(10);
+
+        // Retrieve user ID and user type
+        int userID = control.getLoggedInUserID();
+        int userType = control.getLoggedInUserType();
+
+        String UserType = "";
+        if (userType == 3) {
+            UserType = "Buyer";
+        } else if (userType == 4) {
+            UserType =  "Seller";
+        }
+
+        // Add User ID and User Type labels
+        BiConsumer<String, String> addLabel = (labelText, value) -> {
+            JLabel label = new JLabel(labelText + value);
+            gbc.gridx = 0;
+            panel.add(label, gbc);
+
+            gbc.gridx = 1; // Optionally add an empty label or component to align grid
+            panel.add(new JLabel(""), gbc);
+
+            gbc.gridy++;
+        };
+
+        addLabel.accept("UserID: ", Integer.toString(userID));
+        addLabel.accept("User Type: ", UserType);
+
+        // Profile ComboBox
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel profileLabel = new JLabel("AgentID:");
+        panel.add(profileLabel, gbc);
+
+        gbc.gridx = 1;
+        ArrayList<Integer> agentList = control.getAgentList();
+        Integer[] agentArray = agentList.toArray(new Integer[0]);  // Convert ArrayList<Integer> to Integer[]
+        JComboBox<Integer> agentComboBox = new JComboBox<>(new DefaultComboBoxModel<>(agentArray));
+        panel.add(agentComboBox, gbc);
+        gbc.gridy++;
+
+        // Local function to add fields and labels
+        BiConsumer<String, JComponent> addFieldAndLabel = (labelText, field) -> {
+            JLabel label = new JLabel(labelText);
+            gbc.gridx = 0;
+            panel.add(label, gbc);
+
+            gbc.gridx = 1;
+            panel.add(field, gbc);
+
+            gbc.gridy++;
+        };
+        addFieldAndLabel.accept("Give Agent Rating:", rateField);
+        addFieldAndLabel.accept("Give Agent Review:", reviewField);
+
+        // Button panel for Calculate and Clear
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 0));
+        JButton submitButton = new JButton("Submit Rating and Review");
+        JButton clearButton = new JButton("Clear");
+        buttonPanel.add(clearButton);
+        buttonPanel.add(submitButton);
+        panel.add(buttonPanel, gbc);
+
+        // Setup action listeners for Calculate
+        submitButton.addActionListener(e -> {
+            int ReviewID = userID;
+            int ReviewType = userType;
+            Byte rate = (Byte) rateField.getSelectedItem();
+            String review = reviewField.getText();
+
+            if (rate == null || review.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please don't leave any field empty", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Integer agentId = (Integer) agentComboBox.getSelectedItem();
+                RealEstateAgent newRateReview = new RealEstateAgent(ReviewID, ReviewType, agentId, rate, review);
+                if (new CreateRateReviewControl().addRateReview(newRateReview)) {
+                    JOptionPane.showMessageDialog(panel, "Successfully left a review.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(panel, "Failed to leave a review.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Setup action listeners for Clear
+        clearButton.addActionListener(e -> {
+            rateField.setSelectedItem(null);
+            reviewField.setText("");
+        });
+
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        mainPanel.add(logoutPanel, BorderLayout.SOUTH);
+
+        return mainPanel;
+    }
+
     // Buyer Mortgage Calculator
     private JPanel createMortgagePanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout()); // Main panel with BorderLayout
+        JPanel panel = new JPanel(new GridBagLayout()); // Sub-panel with GridBagLayout
+        mainPanel.add(panel, BorderLayout.CENTER);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -490,9 +629,21 @@ public class BuyerUI extends JFrame{
         JTextField interestRateField = new JTextField(10);
         JTextField loanTermField = new JTextField(10);
 
-        addFieldAndLabel("Loan Amount:", loanAmountField, panel, gbc);
-        addFieldAndLabel("Interest Rate (%):", interestRateField, panel, gbc);
-        addFieldAndLabel("Loan Term (years):", loanTermField, panel, gbc);
+        // Local function to add fields and labels
+        BiConsumer<String, JComponent> addFieldAndLabel = (labelText, field) -> {
+            JLabel label = new JLabel(labelText);
+            gbc.gridx = 0;
+            panel.add(label, gbc);
+
+            gbc.gridx = 1;
+            panel.add(field, gbc);
+
+            gbc.gridy++;
+        };
+
+        addFieldAndLabel.accept("Loan Amount:", loanAmountField);
+        addFieldAndLabel.accept("Interest Rate (%):", interestRateField);
+        addFieldAndLabel.accept("Loan Term (years):", loanTermField);
 
         // Button panel for Calculate and Clear
         gbc.gridx = 0;
@@ -503,8 +654,8 @@ public class BuyerUI extends JFrame{
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 0));
         JButton calculateButton = new JButton("Calculate");
         JButton clearButton = new JButton("Clear");
-        buttonPanel.add(calculateButton);
         buttonPanel.add(clearButton);
+        buttonPanel.add(calculateButton);
         panel.add(buttonPanel, gbc);
 
         // Result label
@@ -535,18 +686,14 @@ public class BuyerUI extends JFrame{
             resultLabel.setText("Your monthly payment will appear here.");
         });
 
-        return panel;
-    }
+        // Add the logout button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> performLogout());
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Panel for the logout button
+        logoutPanel.add(logoutButton);
+        mainPanel.add(logoutPanel, BorderLayout.SOUTH);
 
-    private void addFieldAndLabel(String labelText, JComponent field, Container pane, GridBagConstraints gbc) {
-        JLabel label = new JLabel(labelText);
-        gbc.gridx = 0;
-        pane.add(label, gbc);
-
-        gbc.gridx = 1;
-        pane.add(field, gbc);
-
-        gbc.gridy++;
+        return mainPanel;
     }
 
     // Global Methods
