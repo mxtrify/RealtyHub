@@ -40,7 +40,7 @@ public class SellerUI extends JFrame{
 
     // Initializes the main user interface components
     private void initializeUI(UserAccount u) {
-        setTitle("Real Estate Agent Dashboard");
+        setTitle("Seller Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
         setLocationRelativeTo(null);
@@ -365,7 +365,7 @@ public class SellerUI extends JFrame{
     }
 
     // Logout Procedure
-    private void performLogout() {
+    public void performLogout() {
         dispose();
         new LoginUI();
     }

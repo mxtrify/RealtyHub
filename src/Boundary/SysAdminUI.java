@@ -542,7 +542,7 @@ public class SysAdminUI extends JFrame {
     }
 
     // Logout Procedure
-    private void performLogout() {
+    public void performLogout() {
         dispose();
         new LoginUI();
     }

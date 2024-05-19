@@ -47,7 +47,7 @@ public class BuyerUI extends JFrame{
 
     // Initializes the main user interface components
     private void initializeUI(UserAccount u) {
-        setTitle("Real Estate Agent Dashboard");
+        setTitle("Buyer Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
         setLocationRelativeTo(null);
@@ -697,6 +697,20 @@ public class BuyerUI extends JFrame{
                 double interestRate = Double.parseDouble(interestRateField.getText());
                 int loanTerm = Integer.parseInt(loanTermField.getText());
 
+                // Validation checks
+                if (loanAmount >= 230000000) {
+                    JOptionPane.showMessageDialog(panel, "Loan amount must be less than $230,000,000.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (interestRate >= 10) {
+                    JOptionPane.showMessageDialog(panel, "Interest rate must be less than 10%.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (loanTerm < 10 || loanTerm > 35) {
+                    JOptionPane.showMessageDialog(panel, "Loan term must be between 10 and 35 years.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 double mortgagePayment = mortgageControl.getMortgage(loanAmount, interestRate, loanTerm);
                 resultLabel.setText(String.format("Monthly Mortgage Payment: $%.2f", mortgagePayment));
             } catch (NumberFormatException nfe) {
@@ -729,7 +743,7 @@ public class BuyerUI extends JFrame{
     }
 
     // Logout Procedure
-    private void performLogout() {
+    public void performLogout() {
         dispose();
         new LoginUI();
     }
