@@ -7,6 +7,9 @@ import java.util.ArrayList;
 public class RealEstateAgent {
     private Connection conn;
     private int ratingId;
+    private int reviewId;
+    private int reviewType;
+    private int agentId;
     private UserAccount reviewer;
     private UserAccount agent;
     private UserProfile reviewerType;
@@ -36,13 +39,79 @@ public class RealEstateAgent {
         this.review = review;
     }
 
+    public RealEstateAgent(int agentId) {
+        this.agentId = agentId;
+    }
+
+    public RealEstateAgent(int reviewId, int reviewType, int agentId, byte rate, String review) {
+        this.reviewId = reviewId;
+        this.reviewType = reviewType;
+        this.agentId = agentId;
+        this.rating = rate;
+        this.review = review;
+    }
+
     // Getters
-    public int getRatingId() { return ratingId; }
+    public int getReviewId() { return reviewId; }
+    public int getReviewType() { return reviewType; }
+    public int getAgentId() { return agentId; }
     public UserAccount getReviewer() { return reviewer; }
     public UserAccount getAgent() { return agent; }
     public UserProfile getReviewerType() { return reviewerType; }
     public byte getRating() { return rating; }
     public String getReview() { return review; }
+
+    // Insert User Rating and User Review into the rating and review table
+    public boolean insertRateReview(RealEstateAgent newRateReview) {
+        String insertRatingSQL = "INSERT INTO agent_ratings (reviewerID, reviewerType, agentId, rating) VALUES (?, ?, ?, ?)";
+        String insertReviewSQL = "INSERT INTO agent_reviews (reviewerID, reviewerType, agentId, review) VALUES (?, ?, ?, ?)";
+
+        Connection conn = null;
+        PreparedStatement ratingStmt = null;
+        PreparedStatement reviewStmt = null;
+        try {
+            conn = new DBConn().getConnection();
+            conn.setAutoCommit(false);  // Start transaction
+
+            // Prepare and execute the first statement for ratings
+            ratingStmt = conn.prepareStatement(insertRatingSQL);
+            ratingStmt.setInt(1, newRateReview.getReviewId());
+            ratingStmt.setInt(2, newRateReview.getReviewType());
+            ratingStmt.setInt(3, newRateReview.getAgentId());
+            ratingStmt.setInt(4, newRateReview.getRating());
+            ratingStmt.executeUpdate();
+
+            // Prepare and execute the second statement for reviews
+            reviewStmt = conn.prepareStatement(insertReviewSQL);
+            reviewStmt.setInt(1, newRateReview.getReviewId());
+            reviewStmt.setInt(2, newRateReview.getReviewType());
+            reviewStmt.setInt(3, newRateReview.getAgentId());
+            reviewStmt.setString(4, newRateReview.getReview());
+            reviewStmt.executeUpdate();
+
+            // Commit the transaction
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if (conn != null) conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            // Close statements and connection
+            if (ratingStmt != null) {
+                try { ratingStmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+            }
+            if (reviewStmt != null) {
+                try { reviewStmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+            }
+            closeConnection();
+        }
+    }
+
 
     // Retrieves ratings from the database for this agent and returns them
     public ArrayList<RealEstateAgent> fetchAgentRatings(int agentID) {

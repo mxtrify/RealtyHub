@@ -333,6 +333,51 @@ public class UserAccount {
         }
     }
 
+    // Method to retrieve the profileID associated with a user's username.
+    public int getProfileID() {
+        String username =  getUsername();
+        String query = "SELECT profileID FROM user_account WHERE username = ?";
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("profileID");
+            } else {
+                return -1; // Return -1 or another indicator to signify that the profile ID was not found.
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // Return -1 or throw a custom exception depending on your error handling strategy.
+        } finally {
+            closeConnection();
+        }
+    }
+
+    // AgentID dropdown
+    public ArrayList<Integer> getAgentIDList() {
+        String query = "SELECT accountID FROM user_account WHERE profileID = 2";
+        ArrayList<Integer> agentIDList = new ArrayList<>();
+
+        try {
+            conn = new DBConn().getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int accountID = resultSet.getInt("accountID");
+                agentIDList.add(accountID);
+            }
+            return agentIDList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(); // Ensure connection is closed after operation.
+        }
+    }
+
     // Closes the database connection to release resources.
     private void closeConnection() {
         try {

@@ -469,9 +469,10 @@ public class Property {
     // Retrieves all favourite properties for a given user from the database.
     public ArrayList<Property> selectFavouriteProperty(int buyerID) {
         ArrayList<Property> properties = new ArrayList<>();
+        // Added ORDER BY clause to sort by listingID and saleStatus
         String query = "SELECT p.listingID, p.name, p.location, p.info, p.price, p.saleStatus " +
                 "FROM property p JOIN property_saves ps ON p.listingID = ps.listingID " +
-                "WHERE ps.saverID = ?";
+                "WHERE ps.saverID = ? ORDER BY p.listingID";
         try {
             conn = new DBConn().getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -494,6 +495,14 @@ public class Property {
             closeConnection(); // Ensure connection is closed after operation.
         }
     }
+
+    // Mortgage calculator
+    public double calculateMortgage(double loanAmount, double interestRate, int loanTerm) {
+        double yearlyInterestRate = interestRate / 1200.0;
+        int numberOfPayments = loanTerm * 12;
+        return loanAmount * yearlyInterestRate / (1 - Math.pow(1 + yearlyInterestRate, -numberOfPayments));
+    }
+
 
     // Closes the database connection to release resources.
     private void closeConnection() {

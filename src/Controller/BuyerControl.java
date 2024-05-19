@@ -2,6 +2,8 @@ package Controller;
 
 import Entity.UserAccount;
 
+import java.util.ArrayList;
+
 public class BuyerControl {
     private UserAccount userAccount;
 
@@ -17,5 +19,15 @@ public class BuyerControl {
     // Get the ID of the logged-in user
     public int getLoggedInUserID() {
         return userAccount.getAccountID();
+    }
+
+    // Get the profileType of the logged-in user
+    public int getLoggedInUserType() {
+        return userAccount.getProfileID();
+    }
+
+    // Get a list of agentIDs
+    public ArrayList<Integer> getAgentList() {
+        return userAccount.getAgentIDList();
     }
 }
