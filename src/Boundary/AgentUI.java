@@ -2,8 +2,8 @@ package Boundary;
 
 import Controller.AgentControl;
 import Controller.Property.*;
-import Controller.ViewRatingsControl;
-import Controller.ViewReviewControl;
+import Controller.RateReview.ViewRatingsControl;
+import Controller.RateReview.ViewReviewControl;
 import Entity.Property;
 import Entity.RealEstateAgent;
 import Entity.UserAccount;

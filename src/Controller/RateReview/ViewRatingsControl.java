@@ -1,7 +1,6 @@
-package Controller;
+package Controller.RateReview;
 
 import Entity.RealEstateAgent;
-import Entity.UserAccount;
 
 import java.util.ArrayList;
 
