@@ -16,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class SysAdminUI extends JFrame {
-    // Declare Variables
+    // Initialize UI components
     private JTabbedPane tabbedPane;
     private JPanel landingPanel;
     private JPanel userProfilePanel;
@@ -24,20 +24,25 @@ public class SysAdminUI extends JFrame {
 
     private SysAdminControl control;
 
+    // Table models and search fields for user profiles
     private DefaultTableModel profileModel;
     private JTextField searchProfile;
     private ArrayList<UserProfile> userProfiles;
     private String[] profileColumnNames = {"Profile Type", "Information", "Status"};
+
+    // Table models and search fields for user accounts
     private DefaultTableModel accountModel;
     private JTextField searchAccount;
     private ArrayList<UserAccount> userAccounts;
     private String[] accountColumnNames = {"Username", "First Name", "Last Name", "Profile", "Status"};
 
+    // Constructor sets up the user interface
     public SysAdminUI(UserAccount u) {
         control = new SysAdminControl(u);
         initializeUI(u);
     }
 
+    // Initializes the main user interface components
     private void initializeUI(UserAccount u) {
         setTitle("System Administrator Console");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,10 +51,12 @@ public class SysAdminUI extends JFrame {
 
         tabbedPane = new JTabbedPane();
 
+        // Constructing the tab panels
         landingPanel = createLandingPanel();
         userProfilePanel = userProfilePanel(u);
         userAccountPanel = userAccountPanel(u);
 
+        // Adding tabs to the tabbed pane
         tabbedPane.addTab("Welcome", landingPanel);
         tabbedPane.addTab("User Profiles", userProfilePanel);
         tabbedPane.addTab("User Accounts", userAccountPanel);
