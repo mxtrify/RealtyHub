@@ -743,7 +743,7 @@ public class BuyerUI extends JFrame{
     }
 
     // Logout Procedure
-    private void performLogout() {
+    public void performLogout() {
         dispose();
         new LoginUI();
     }
